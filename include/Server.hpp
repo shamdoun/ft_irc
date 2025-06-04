@@ -49,11 +49,11 @@ public:
 	void 								parseParams(std::vector<std::string> &params, Client *c);
 	void 								parseMessage(char *buf, Client *c);
 	int									nickNameAlreadyExists(std::string const &nick);
-	void handleNickNameCommand(std::vector<std::string> &params, Client *c);
+	void 								handleNickNameCommand(std::vector<std::string> &params, Client *c);
+	void 								handleUserCommand(std::vector<std::string> &params, Client *c);
 };
 
 int	identifyCommand(std::string cmd);
-void handleUserCommand(std::vector<std::string> &params, Client *c);
 std::string extractMessage(std::string m);
 void signalHander(int sig);
 #endif

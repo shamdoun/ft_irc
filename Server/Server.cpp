@@ -152,7 +152,10 @@ void Server::parseMessage(char *buf, Client *c)
 	size_t start = 0;
 	size_t end;
 
+	std::cout << "len of message" << parse.length() << std::endl;
 	parse = extractMessage(parse);
+	std::cout << "len of message after" << parse.length() << std::endl;
+	std::cout << "params size before " << params.size() << std::endl;
 	while ((end = parse.find(" ", start)) != std::string::npos)
 	{
 		params.push_back(parse.substr(start, end - start));
@@ -160,11 +163,17 @@ void Server::parseMessage(char *buf, Client *c)
 	}
 	if (start < parse.size())
 		params.push_back(parse.substr(start));
+	std::cout << "params size after " << params.size() << std::endl;
+	for (size_t i = 0; i < params.size(); i++)
+	{
+		std::cout << "value is " << params[i] << std::endl;
+	}
 	if (params.size() && params[0] != "QUIT")
 	{
 		std::cout << "handling " << params[0] << std::endl;
 		parseParams(params, c);
 	}
+	params.clear();
 	// std::cout << "nick name: " << c->getNickName() << " username: " << c->getUserName() << std::endl;
 }
 
@@ -268,6 +277,8 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
 	std::string err;
+	std::cout << "params size for nick " << params.size() << std::endl;
+	std::cout << "len of nick value " << params[1].length() << " and its value is " << static_cast<char>(params[1][0]) << std::endl;
 	if (!c->getIsAuthenticated())
 	{
 		err = ERR_NOTREGISTERED(c->getNickName());
@@ -277,7 +288,7 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 		}
 		return ;
 	}
-	else if (params.size() < 2)
+	else if (params.size() < 2 || (params[1] == ":"))
 	{
 		err = ERR_NONICKNAMEGIVEN(c->getNickName());
 		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
@@ -309,7 +320,19 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	c->setNickName(params[1]);
 }
 
-void handleUserCommand(std::vector<std::string> &params, Client *c)
+bool isValidUsername(const std::string& username)
+{
+    if (username.empty() || username.size() > 9)
+        return false;
+    for (size_t i = 0; i < username.length(); i++)
+	{
+        if (!(isalnum(username[i]) || username[i] == '-' || username[i] == '_' || username[i] == '.'))
+            return false;
+    }
+    return true;
+}
+
+void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
 	//handle long real name
@@ -317,7 +340,7 @@ void handleUserCommand(std::vector<std::string> &params, Client *c)
 	std::string username;
 	std::string hostname;
 	std::string servername;
-	std::string realmame;
+	std::string realname;
 
 	if (c->getIsAuthenticated())
 	{
@@ -328,18 +351,51 @@ void handleUserCommand(std::vector<std::string> &params, Client *c)
 		}
 		return ;
 	}
-	else if (params.size() != 5)
+	if (params.size() < 5)
 	{
-		err = ERR_NEEDMOREPARAMS(c->getNickName(), "PASS");
+		err = ERR_NEEDMOREPARAMS(c->getNickName(), "USER");
 		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
 		{
 			std::cerr << "failed to send " << err << std::endl;
 		}
 		return ;
 	}
-	
-	c->setUserName(params[1]);
-	c->setRealName(params.back());
+	username = params[1];
+	hostname = params[2];
+	servername = params[3];
+	realname = params[4];
+	if (!isValidUsername(username))
+	{
+		err = ERR_ERRONEUSUSERNAME(username);
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	if (servername != this->_name)
+	{
+		err = ERR_NOSUCHSERVER(c->getNickName(), servername);
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	if (realname.find(':') != std::string::npos)
+	{
+		realname = realname.substr(1) + " ";
+		for (size_t i = 5; i < params.size(); i++)
+		{
+			realname += params[i];
+			if (i != (params.size() - 1))
+				realname += " ";
+		}
+		std::cout << "realname is " << realname << std::endl;
+	}
+	c->setUserName(username);
+	c->setRealName(realname);
+	c->setHostName(hostname);
 }
 
 std::string extractMessage(std::string m)

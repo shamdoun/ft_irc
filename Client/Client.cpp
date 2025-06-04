@@ -39,6 +39,11 @@ std::string Client::getUserName() const
 	return this->_username;
 }
 
+std::string Client::getHostName() const
+{
+	return this->_username;
+}
+
 std::string Client::getRealName() const
 {
 	return this->_realName;
@@ -69,6 +74,11 @@ void Client::setRealName(std::string &value)
 	_realName = value;
 }
 
+void Client::setHostName(std::string &value)
+{
+	_hostName = value;
+}
+
 void Client::setIsAuthenticated(bool b)
 {
 	_isAuthenticated = b;
@@ -83,3 +93,5 @@ void Client::setHasNickname()
 {
 	_hasNickname = true;
 }
+
+

@@ -11,7 +11,7 @@ private:
 	std::string _username;
 	std::string _realName;
 	std::string _hostName;
-	std::string _serverName;
+	// std::string _serverName;
 	// std::string	_password;
 	bool		_isAuthenticated;
 	bool 		_hasNickname;
@@ -24,6 +24,7 @@ public:
 	std::string getNickName() const;
 	std::string getUserName() const;
 	std::string getRealName() const;
+	std::string getHostName() const;
 	bool		getIsAuthenticated() const;
 	// std::string	getPassword() const;
 	bool		getHasNickname() const;
@@ -33,6 +34,7 @@ public:
 	void		setUserName(std::string &value);
 	void		setClientSocket(Socket	&clientSocket);
 	void		setHasNickname();
+	void		setHostName(std::string &value);
 	void 		setIsAuthenticated(bool b);
 };
 #endif
