@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 	if (argc != 3)
 	{
 		std::cerr << "insuficiant number of args" << std::endl;
-		exit(1);
+		return (1);
 	}
 	std::string password(argv[2]);
 	port = std::atoi(argv[1]);

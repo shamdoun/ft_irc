@@ -1,4 +1,5 @@
 #include "../include/Server.hpp"
+#include "../include/numericReplies.hpp"
 
 std::vector<pollfd> Server::_pfds;
 
@@ -95,7 +96,7 @@ Client *Server::getClientByFd(int fd)
 		if (it->getClientSocket().getSocketFd() == fd)
 			return (&(*it));
 	}
-	return nullptr;
+	return NULL;
 }
 
 Socket &Server::getServerSocket()
@@ -144,7 +145,7 @@ void signalHander(int sig)
 }
 
 
-void parseMessage(char *buf, Client *c)
+void Server::parseMessage(char *buf, Client *c)
 {
 	std::string parse(buf);
 	std::vector<std::string> params;
@@ -178,7 +179,7 @@ int	identifyCommand(std::string cmd)
 	return (-1);
 } 
 
-void parseParams(std::vector<std::string> &params, Client *c)
+void Server::parseParams(std::vector<std::string> &params, Client *c)
 {
 	int cmd;
 
@@ -199,15 +200,112 @@ void parseParams(std::vector<std::string> &params, Client *c)
 	}
 }
 
-void handlePassCommand(std::vector<std::string> &params, Client *c)
+void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
-	c->setPassword(params[1]);
+	std::string err;
+	if (c->getIsAuthenticated())
+	{
+		err = ERR_ALREADYREGISTERED(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+	}
+	else if (params.size() < 2)
+	{
+		err = ERR_NEEDMOREPARAMS(c->getNickName(), "PASS");
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+	}
+	else if (params[1] != _password)
+	{
+		err = ERR_PASSMISMATCH(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+	}
+	else
+		c->setIsAuthenticated(true);
 }
 
-void handleNickNameCommand(std::vector<std::string> &params, Client *c)
+int isValidNickname(std::string const &nick)
+{
+	size_t i = 0;
+	std::string specialChars("[]\\`_^{|}");
+	if (nick.length() > 9)
+		return (0);
+	if (!std::isalpha(nick[0]) && (specialChars.find(nick[0]) == std::string::npos))
+		return (0);
+	i++;
+	while (i < nick.length())
+	{
+		if (!std::isalnum(nick[i]) && (specialChars.find(nick[i]) == std::string::npos))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int Server::nickNameAlreadyExists(std::string const &nick)
+{
+	std::vector<Client>::iterator it;
+
+	it = _allClients.begin();
+	while (it != _allClients.end())
+	{
+		if(it->getNickName() == nick)
+			return (1);
+		++it;
+	}
+	return (0);
+}
+
+void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
+	std::string err;
+	if (!c->getIsAuthenticated())
+	{
+		err = ERR_NOTREGISTERED(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	else if (params.size() < 2)
+	{
+		err = ERR_NONICKNAMEGIVEN(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	else if (!isValidNickname(params[1]))
+	{
+		err = ERR_ERRONEUSNICKNAME(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	else if (nickNameAlreadyExists(params[1]))
+	{
+		err = ERR_NICKNAMEINUSE(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	if (!c->getHasNickname())
+		c->setHasNickname();
 	c->setNickName(params[1]);
 }
 
@@ -215,6 +313,31 @@ void handleUserCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
 	//handle long real name
+	std::string err;
+	std::string username;
+	std::string hostname;
+	std::string servername;
+	std::string realmame;
+
+	if (c->getIsAuthenticated())
+	{
+		err = ERR_ALREADYREGISTERED(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	else if (params.size() != 5)
+	{
+		err = ERR_NEEDMOREPARAMS(c->getNickName(), "PASS");
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
+	
 	c->setUserName(params[1]);
 	c->setRealName(params.back());
 }
