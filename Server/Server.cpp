@@ -144,7 +144,6 @@ void signalHander(int sig)
 	Server::quitServer();
 }
 
-
 void Server::parseMessage(char *buf, Client *c)
 {
 	std::string parse(buf);
@@ -174,7 +173,6 @@ void Server::parseMessage(char *buf, Client *c)
 		parseParams(params, c);
 	}
 	params.clear();
-	// std::cout << "nick name: " << c->getNickName() << " username: " << c->getUserName() << std::endl;
 }
 
 int	identifyCommand(std::string cmd)
@@ -213,7 +211,7 @@ void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
 	std::string err;
-	if (c->getIsAuthenticated())
+	if (c->getIsRegistered())
 	{
 		err = ERR_ALREADYREGISTERED(c->getNickName());
 		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
@@ -238,7 +236,7 @@ void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
 		}
 	}
 	else
-		c->setIsAuthenticated(true);
+		c->setIsRegistered(true);
 }
 
 int isValidNickname(std::string const &nick)
@@ -279,7 +277,7 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	std::string err;
 	std::cout << "params size for nick " << params.size() << std::endl;
 	std::cout << "len of nick value " << params[1].length() << " and its value is " << static_cast<char>(params[1][0]) << std::endl;
-	if (!c->getIsAuthenticated())
+	if (!c->getIsRegistered())
 	{
 		err = ERR_NOTREGISTERED(c->getNickName());
 		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
@@ -318,6 +316,15 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	if (!c->getHasNickname())
 		c->setHasNickname();
 	c->setNickName(params[1]);
+	if (c->getHasNickname() && c->getHasUser())
+	{
+		err = RPL_WELCOME(c->getNickName(),c->getUserName(), c->getAlteredHost(), c->getClientSocket().getIpAddress());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		c->setIsAuthenticated(true);
+	}
 }
 
 bool isValidUsername(const std::string& username)
@@ -342,6 +349,15 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	std::string servername;
 	std::string realname;
 
+	if (!c->getIsRegistered())
+	{
+		err = ERR_NOTREGISTERED(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		return ;
+	}
 	if (c->getIsAuthenticated())
 	{
 		err = ERR_ALREADYREGISTERED(c->getNickName());
@@ -396,6 +412,16 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	c->setUserName(username);
 	c->setRealName(realname);
 	c->setHostName(hostname);
+	c->setHasUserame();
+	if(c->getHasNickname() && c->getHasUser())
+	{
+		err = RPL_WELCOME(c->getNickName(),c->getUserName(), c->getAlteredHost(), c->getClientSocket().getIpAddress());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+		{
+			std::cerr << "failed to send " << err << std::endl;
+		}
+		c->setIsAuthenticated(true);
+	}
 }
 
 std::string extractMessage(std::string m)
