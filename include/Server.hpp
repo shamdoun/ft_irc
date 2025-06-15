@@ -3,6 +3,7 @@
 
 #include  "Socket.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -15,6 +16,7 @@
 #define MAX_CONNECTIONS 5
 
 
+
 class Server
 {
 private:
@@ -25,6 +27,9 @@ private:
 	std::vector<Client>					_allClients;
 	static std::vector<struct pollfd>	_pfds;
 	char								_buffer[BUFFER_SIZE];
+
+	std::vector<Channel>					_channels; // List of channels on the server
+
 public:
 	Server();
 	Server(std::string name, std::string password, unsigned short port);
@@ -51,6 +56,19 @@ public:
 	int									nickNameAlreadyExists(std::string const &nick);
 	void 								handleNickNameCommand(std::vector<std::string> &params, Client *c);
 	void 								handleUserCommand(std::vector<std::string> &params, Client *c);
+	
+	// member functions (Anass)
+	void Commands(std::vector<std::string> &params, Client *c);
+	// void parseMessage(char *buf, Client *c);
+	// void parseParams(std::vector<std::string> &params, Client *c);
+	void SendPrivMsg_User(const std::string &target_name, const std::string &message, Client *c);
+	Client *getClientByNickName(std::string nickName);
+	void priv_msg(std::vector<std::string> &params, Client *c);
+	void join(std::vector<std::string> &params, Client *c);
+	std::vector<Channel> getChannels() const { return _channels; }
+	Channel *GetOrCreateChannel(const std::string &channelName);
+
+
 };
 
 int	identifyCommand(std::string cmd);

@@ -1,4 +1,5 @@
-srcs = main.cpp Server/Server.cpp Client/Client.cpp Socket.cpp
+srcs = main.cpp Server/Server.cpp Client/Client.cpp Socket.cpp treat_commands.cpp Server/Server_utils.cpp \
+		Commands/priv_msg.cpp
 objs = $(srcs:.cpp=.o)
 cc = c++
 flags = -Werror -Wall -Wextra -std=c++98
