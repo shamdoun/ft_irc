@@ -203,7 +203,7 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 			handlePassCommand(params, c);
 			break ;
 		default:
-			std::cout << "unknown command " << cmd << std::endl;
+			Server::Commands(params, c);
 	}
 }
 
