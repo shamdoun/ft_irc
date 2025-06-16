@@ -18,19 +18,46 @@ void Server::SendPrivMsg_User(const std::string &target_name, const std::string 
 }
 	
 
-// void SendPrivMsg_Channel(const std::string &target_name, const std::string &message, Client *c)
-// {
+void Server::SendPrivMsg_Channel(const std::string &target_name, const std::string &message, Client *c)
+{
+	Channel *channel = Server::getChannelByName(target_name);
+	if (!channel)
+	{
+		std::string err = ERR_NOSUCHCHANNEL(c->getNickName(), target_name);
+		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	if (!channel->alreadyInChannel(c))
+	{
+		std::string err = ERR_NOTONCHANNEL(c->getNickName(), channel->getChannelName());
+		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	// Send the message to all clients in the channel except the sender
+	for (Client *client : channel->getClients())
+	{
+		if (client != c) // Don't send the message to the sender
+		{
+			std::string response = ":" + c->getNickName() + " PRIVMSG " + target_name + " :" + message + "\r\n";
+			send(client->getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
+		}
+	}
 
-	
-// }
+}
 
 void Server::priv_msg(std::vector<std::string> &params, Client *c)
 {
-	// if (params.size() < 3)
-	// {
-	// 	std::cerr << "PRIVMSG command requires at least 2 parameters" << std::endl;
-	// 	return;
-	// }
+	if (params.size() == 2)
+	{
+		std::string err = ERR_NORECIPIENT(c->getNickName());
+		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	else if (params.size() < 3)
+	{
+		std::string err = ERR_NOTEXTTOSEND(c->getNickName());
+		return;
+	}
 
 	std::string target_name = params[1];
 	std::string message ;
@@ -48,8 +75,8 @@ void Server::priv_msg(std::vector<std::string> &params, Client *c)
 	else
 		message = params[2];
 
-	// if (target_name[0] == '#')
-	// 	SendPrivMsg_Channel(target_name, message, c);
-	// else
+	if (target_name[0] == '#')
+		SendPrivMsg_Channel(target_name, message, c);
+	else
 		Server::SendPrivMsg_User(target_name, message, c);
 }

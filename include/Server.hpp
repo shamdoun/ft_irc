@@ -13,6 +13,7 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <sstream>
 #define MAX_CONNECTIONS 5
 
 
@@ -64,9 +65,13 @@ public:
 	void SendPrivMsg_User(const std::string &target_name, const std::string &message, Client *c);
 	Client *getClientByNickName(std::string nickName);
 	void priv_msg(std::vector<std::string> &params, Client *c);
+	void SendPrivMsg_Channel(const std::string &target_name, const std::string &message, Client *c);
 	void join(std::vector<std::string> &params, Client *c);
 	std::vector<Channel> getChannels() const { return _channels; }
 	Channel *GetOrCreateChannel(const std::string &channelName);
+	void join_each_channel(const std::string &channelName, Client *c, const std::string &password);
+	bool valid_joining_channel(Channel *channel, Client *c, const std::string &password);
+	Channel *getChannelByName(const std::string &channelName);
 
 
 };
