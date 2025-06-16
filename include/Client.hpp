@@ -2,6 +2,7 @@
 #define CLIENT_HPP
 
 #include "Socket.hpp"
+#include <string>
 
 class Client
 {
@@ -11,10 +12,10 @@ private:
 	std::string _username;
 	std::string _realName;
 	std::string _hostName;
-	// std::string _serverName;
-	// std::string	_password;
 	bool		_isAuthenticated;
+	bool		_isRegistered;
 	bool 		_hasNickname;
+	bool 		_hasUsername;
 public:
 	Client();
 	Client(Socket _clientSocket);
@@ -26,15 +27,18 @@ public:
 	std::string getRealName() const;
 	std::string getHostName() const;
 	bool		getIsAuthenticated() const;
-	// std::string	getPassword() const;
+	bool		getIsRegistered() const;
 	bool		getHasNickname() const;
-	// void		setPassword(std::string &value);
+	std::string getAlteredHost() const;
+	bool		getHasUser() const;
 	void		setNickName(std::string &value);
 	void		setRealName(std::string &value);
 	void		setUserName(std::string &value);
 	void		setClientSocket(Socket	&clientSocket);
 	void		setHasNickname();
+	void		setHasUserame();
 	void		setHostName(std::string &value);
 	void 		setIsAuthenticated(bool b);
+	void 		setIsRegistered(bool b);
 };
 #endif

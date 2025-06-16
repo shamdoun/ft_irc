@@ -5,7 +5,7 @@ Client::Client()
 	_clientSocket = Socket(1);
 }
 
-Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_isAuthenticated(false),_hasNickname(false)
+Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false)
 {
 	
 }
@@ -59,6 +59,12 @@ bool Client::getIsAuthenticated() const
 	return _isAuthenticated;
 }
 
+bool Client::getIsRegistered() const
+{
+	return _isRegistered;
+}
+
+
 void Client::setNickName(std::string &value)
 {
 	_nickName = value;
@@ -84,14 +90,26 @@ void Client::setIsAuthenticated(bool b)
 	_isAuthenticated = b;
 }
 
-// void Client::setPassword(std::string &value)
-// {
-// 	_password = value;
-// }
-
 void Client::setHasNickname()
 {
 	_hasNickname = true;
 }
+void Client::setHasUserame()
+{
+	_hasUsername = true;
+}
 
+void Client::setIsRegistered(bool b)
+{
+	_isRegistered = b;
+}
 
+bool Client::getHasUser() const
+{
+	return _hasUsername;
+}
+
+std::string Client::getAlteredHost() const
+{
+	return (_nickName+ "!" + _username + "@");
+}
