@@ -151,10 +151,7 @@ void Server::parseMessage(char *buf, Client *c)
 	size_t start = 0;
 	size_t end;
 
-	std::cout << "len of message" << parse.length() << std::endl;
 	parse = extractMessage(parse);
-	std::cout << "len of message after" << parse.length() << std::endl;
-	std::cout << "params size before " << params.size() << std::endl;
 	while ((end = parse.find(" ", start)) != std::string::npos)
 	{
 		params.push_back(parse.substr(start, end - start));
@@ -162,16 +159,8 @@ void Server::parseMessage(char *buf, Client *c)
 	}
 	if (start < parse.size())
 		params.push_back(parse.substr(start));
-	std::cout << "params size after " << params.size() << std::endl;
-	for (size_t i = 0; i < params.size(); i++)
-	{
-		std::cout << "value is " << params[i] << std::endl;
-	}
-	if (params.size() && params[0] != "QUIT")
-	{
-		std::cout << "handling " << params[0] << std::endl;
+	if (params.size())
 		parseParams(params, c);
-	}
 	params.clear();
 }
 
@@ -183,8 +172,19 @@ int	identifyCommand(std::string cmd)
 		return (1);
 	if (!cmd.compare("PASS"))
 		return (2);
+	if (!cmd.compare("PRIVMSG"))
+		return (3);
 	return (-1);
 } 
+
+void handleUnkownCommand(std::string cmd, Client *c)
+{
+        std::string err = ERR_UNKNOWNCOMMAND(c->getNickName(), cmd);
+        if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+        {
+                std::cerr << "failed to send " << err << std::endl;
+        }
+}
 
 void Server::parseParams(std::vector<std::string> &params, Client *c)
 {
@@ -202,8 +202,11 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 		case 2:
 			handlePassCommand(params, c);
 			break ;
-		default:
+		case 3:
 			Server::Commands(params, c);
+			break ;
+		default:
+			handleUnkownCommand(params[0], c);
 	}
 }
 
@@ -275,8 +278,6 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 {
 	//handle errors
 	std::string err;
-	std::cout << "params size for nick " << params.size() << std::endl;
-	std::cout << "len of nick value " << params[1].length() << " and its value is " << static_cast<char>(params[1][0]) << std::endl;
 	if (!c->getIsRegistered())
 	{
 		err = ERR_NOTREGISTERED(c->getNickName());
@@ -426,10 +427,12 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 
 std::string extractMessage(std::string m)
 {
-	size_t end;
-
-	end = m.find("\r\n");
-	if (end != std::string::npos)
-		return (m.substr(0, end));
-	return (m);
+    size_t end;
+    size_t end_w;
+    end = m.find("\r\n");
+    if (end != std::string::npos)
+            return (m.substr(0, end));
+    end_w = m.find("\n");
+    if (end_w != std::string::npos)
+            return (m.substr(0, end_w));
 }
