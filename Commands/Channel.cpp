@@ -1,37 +1,51 @@
-#include "../include/Client.hpp"
-#include "../include/Server.hpp"
-#include "../include/numericReplies.hpp"
+
 #include "../include/Channel.hpp"
 
 Channel::Channel(std::string name) : _Channel_name(name) {}
 
 // Getters
-std::string Channel::getChannelName() const{return _Channel_name;}
-std::vector<Client*> Channel::getClients() const {return _Clients;}
-int Channel::getClientSize() const {	return _Clients.size();}
+std::string Channel::getChannelName() const 
+{return _Channel_name;}
+std::vector<Client>& Channel::getClients()  
+{return _Clients;}
+int Channel::getClientSize() const 
+{	return _Clients.size();}
 
-bool Channel::alreadyInChannel(Client *client) const 
+bool Channel::Is_ClientInChannel(Client &client)  
 {
-	for (const Client* client_channel : _Clients) 
+	std::vector<Client>::iterator it = _Clients.begin();
+	for (; it != _Clients.end(); it++)
 	{
-		if (client_channel->getNickName() == client->getNickName()) 
+		if (it->getNickName() == client.getNickName()) 
 			return true;
 	}
 	return false;
 }
 
-void Channel::addAsOperator(Client *client) 
+bool Channel::Is_OperatorInChannel(Client &client)  
 {
-	if (client && !alreadyInChannel(client)) 
+	std::vector<std::string>::iterator it = _Operators.begin();
+	for (; it != _Operators.end(); it++)
+	{
+		if (*it == client.getNickName()) 
+			return true;
+	}
+	return false;
+}
+
+
+void Channel::addAsOperator(Client &client) 
+{
+	if (!Is_ClientInChannel(client))
 	{
 		_Clients.push_back(client);
-		_Operators.push_back(client->getNickName());
+		_Operators.push_back(client.getNickName());
 	}	
 }
 
-void Channel::addAsClient(Client *client) 
+void Channel::addAsClient(Client &client) 
 {
-	if (client && !alreadyInChannel(client)) 
+	if (!Is_ClientInChannel(client))
 	{
 		_Clients.push_back(client);
 	}

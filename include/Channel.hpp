@@ -9,19 +9,24 @@ class Channel
 {
 	private:
 		std::string _Channel_name;
-		std::vector<Client*> _Clients; // Pointers to clients in the channel
+		std::vector<Client> _Clients;
 		std::vector<std::string> _Operators; // Operators of the channel
 		std::string _topic;
+		bool	Invite; //false
+		// l = infinty 5 =  limit = 5
+
+
 	public:
 		Channel(std::string name);
 
-		std::vector<Client*> getClients() const;
+		std::vector<Client>& getClients() ;
 		int getClientSize() const;
 		std::string getChannelName() const;
-		void addAsOperator(Client *client);
-		bool alreadyInChannel(Client *client) const;
-		void addAsClient(Client *client);
+		bool Is_ClientInChannel(Client &client);
 		
+		void addAsOperator(Client &client);
+		void addAsClient(Client &client);
+		bool Is_OperatorInChannel(Client &client);  
 		// void addClient(Client *client);
 };
 

@@ -1,9 +1,9 @@
 srcs = main.cpp Server/Server.cpp Client/Client.cpp Socket.cpp treat_commands.cpp Server/Server_utils.cpp \
-		Commands/priv_msg.cpp
+		Commands/priv_msg.cpp Commands/Channel.cpp Commands/join.cpp
 objs = $(srcs:.cpp=.o)
 cc = c++
 flags = -Werror -Wall -Wextra -std=c++98
-headers = include/Server.hpp include/Client.hpp include/Socket.hpp
+headers = include/Server.hpp include/Client.hpp include/Socket.hpp include/Channel.hpp
 name = irc
 
 %.o : %.cpp

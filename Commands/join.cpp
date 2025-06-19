@@ -3,63 +3,64 @@
 #include "../include/numericReplies.hpp"
 #include "../include/Channel.hpp"
 
-Channel *Server::GetOrCreateChannel(const std::string &channelName)
+Channel &Server::GetOrCreateChannel(const std::string &channelName)
 {
-	for (int i = 0; i < _channels.size(); ++i)
+	for (size_t i = 0; i < _channels.size(); ++i)
 	{
-		Channel &channel = _channels[i];
 		// Check if the channel already exists
-		if (channel.getChannelName() == channelName)
-			return &channel;
+		if (_channels[i].getChannelName() == channelName)
+			return _channels[i];
 	}
 	// If channel does not exist, create a new one
 	_channels.push_back(Channel(channelName));
-	return &_channels.back();
+	return _channels.back();
 }
 
-bool Server::valid_joining_channel(Channel *channel, Client *c, const std::string &password)
+// bool Server::valid_joining_channel(Channel *channel, Client *c, const std::string &password)
+// {
+
+// }
+
+
+
+
+void Server::join_each_channel(std::string &channelName, Client &c, const std::string &password)
 {
-
-}
-
-
-
-
-void Server::join_each_channel(const std::string &channelName, Client *c, const std::string &password)
-{
+	(void)password; // password is not used in this implementation, but can be used for future enhancements
 	if (channelName[0] != '#' || channelName.empty())
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c->getNickName(), channelName);
-		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), channelName);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
 	//create or get the channel
-	Channel *channel = GetOrCreateChannel(channelName);
+	Channel &channel = GetOrCreateChannel(channelName);
 	
 	bool isNewChannel = false;
-	if (channel->getClientSize() == 0) // if the channel is empty then it is a new channel
+	if (channel.getClientSize() == 0) // if the channel is empty then it is a new channel
 		isNewChannel = true;
 
-	if (channel->alreadyInChannel(c))
+	if (channel.Is_ClientInChannel(c))
 	{
-		std::string err = ERR_USERONCHANNEL(c->getNickName(), c->getNickName(), channelName);
-		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		std::string err = ERR_USERONCHANNEL(c.getNickName(), c.getNickName(), channelName);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	if (valid_joining_channel(channel, c, password))
-	{
-		// i hve to add the client to the channel
+	// if (valid_joining_channel(channel, c, password))
+	// {
+	// 	// i hve to add the client to the channel
 
-	}
+	// }
 	if (isNewChannel)
-		channel->addAsOperator(c);
+		channel.addAsOperator(c);
 	else
-		channel->addAsClient(c);
-	
-	// std::string joinMsg = RPL_JOINMSG(c->getHostName(), c->getIpAddress(), channelName);
+		channel.addAsClient(c);
+	std::string newchannelName = channelName.substr(1, channelName.length());
+	std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), newchannelName);
+	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client
 
-
-
+	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except the sender
+	Server::SendChannelInfos(newchannelName, c);
 }
 
 std::vector <std::string> split(const std::string &str, char del)
@@ -73,12 +74,12 @@ std::vector <std::string> split(const std::string &str, char del)
 	return tokens;
 }
 
-void Server::join(std::vector<std::string> &params, Client *c)
+void Server::join(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() < 2)
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c->getNickName(), "JOIN");
-		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "JOIN");
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
 	std::string channelsNames = params[1];

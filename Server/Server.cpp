@@ -174,6 +174,8 @@ int	identifyCommand(std::string cmd)
 		return (2);
 	if (!cmd.compare("PRIVMSG"))
 		return (3);
+	if (!cmd.compare("JOIN"))
+		return (3);
 	return (-1);
 } 
 
@@ -435,4 +437,5 @@ std::string extractMessage(std::string m)
     end_w = m.find("\n");
     if (end_w != std::string::npos)
             return (m.substr(0, end_w));
+		return m; // If no newline found, return the whole string 
 }
