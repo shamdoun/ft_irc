@@ -29,7 +29,7 @@ private:
 	static std::vector<struct pollfd>	_pfds;
 	char								_buffer[BUFFER_SIZE];
 	std::vector<Channel>					_channels; // List of channels on the server
-
+	
 public:
 	Server();
 	Server(std::string name, std::string password, unsigned short port);
@@ -64,7 +64,6 @@ public:
 	// Client *getClientByNickName(std::string nickName);
 	void priv_msg(std::vector<std::string> &params, Client &c);
 	std::vector<Channel> getChannels() const { return _channels; }
-	bool valid_joining_channel(Channel &channel, Client &c, const std::string &password);
 	// Channel *getChannelByName(const std::string &channelName);
 	Channel &get_channel( std::string &channel_name);
 	Client &get_client( std::string &nickName);
@@ -77,9 +76,18 @@ public:
 	void join(std::vector<std::string> &params, Client &c);
 	void join_each_channel( std::string &channelName, Client &c, const std::string &password);
 	Channel &GetOrCreateChannel(const std::string &channelName);
-	void message_to_Allclients( std::string &channelName, const std::string &message, Client &c);
+	// void message_to_Allclients( std::string &channelName, const std::string &message, Client &c);
 	void message_to_Channel( std::string &channelName, const std::string &message, Client &c);
 	void SendChannelInfos(std::string &channelName, Client &c);
+	
+	bool valid_joining_channel(Channel &channel, Client &c, const std::string &password);
+
+
+
+    //======================================================================//
+    void Mode(std::vector<std::string> &params, Client &c);
+    //======================================================================//
+
 };
 
 int	identifyCommand(std::string cmd);

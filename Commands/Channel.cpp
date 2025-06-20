@@ -1,7 +1,9 @@
 
 #include "../include/Channel.hpp"
 
-Channel::Channel(std::string name) : _Channel_name(name) {}
+
+	
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(true), Passwd(false), Limit(0) {}
 
 // Getters
 std::string Channel::getChannelName() const 
@@ -50,4 +52,48 @@ void Channel::addAsClient(Client &client)
 		_Clients.push_back(client);
 	}
 }
+
+
+
+// FLAGS SETTER AND GETTERS ==================================
+
+bool	Channel::getterInvite(void)
+{
+	return(this->Invite);
+}
+bool	Channel::getterTopic(void)
+{
+	return(this->Topic);
+}
+bool	Channel::getterPasswd(void)
+{
+	return(this->Passwd);
+}
+int		Channel::getterLimit(void)
+{
+	return(this->Limit);
+}
+	
+void	Channel::SetterInvite(bool Value_To_Give)
+{
+	this->Invite = Value_To_Give;
+}
+void	Channel::SetterTopic(bool Value_To_Give)
+{
+	this->Topic = Value_To_Give;
+}
+void	Channel::SetterPasswd(bool Value_To_Give)
+{
+	this->Passwd = Value_To_Give;
+}
+void	Channel::SetterLimit(int Value_To_Give)
+{
+	this->Limit = Value_To_Give;
+}
+
+
+
+
+
+
 

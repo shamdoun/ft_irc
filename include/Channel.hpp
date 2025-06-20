@@ -13,7 +13,9 @@ class Channel
 		std::vector<std::string> _Operators; // Operators of the channel
 		std::string _topic;
 		bool	Invite; //false
-		// l = infinty 5 =  limit = 5
+		bool	Topic;
+		bool	Passwd;
+		int 	Limit;
 
 
 	public:
@@ -27,6 +29,20 @@ class Channel
 		void addAsOperator(Client &client);
 		void addAsClient(Client &client);
 		bool Is_OperatorInChannel(Client &client);  
+		// void addClient(Client *client);
+
+
+		// MODE ===================================================================
+		void	handleModeCommand(std::vector<std::string> &params, Client *c);
+		bool	getterInvite(void);
+		bool	getterTopic(void);
+		bool	getterPasswd(void);
+		int		getterLimit(void);
+		void	SetterInvite(bool Value_To_Give);
+		void	SetterTopic(bool Value_To_Give);
+		void	SetterPasswd(bool Value_To_Give);
+		void	SetterLimit(int Value_To_Give);
+		
 
 };
 
