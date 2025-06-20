@@ -29,7 +29,7 @@ private:
 	static std::vector<struct pollfd>	_pfds;
 	char								_buffer[BUFFER_SIZE];
 	std::vector<Channel>					_channels; // List of channels on the server
-
+	
 public:
 	Server();
 	Server(std::string name, std::string password, unsigned short port);
@@ -80,6 +80,14 @@ public:
 	// void message_to_Allclients( std::string &channelName, const std::string &message, Client &c);
 	void message_to_Channel( std::string &channelName, const std::string &message, Client &c);
 	void SendChannelInfos(std::string &channelName, Client &c);
+
+
+
+
+    //======================================================================//
+    void Mode(std::vector<std::string> &params, Client &c);
+    //======================================================================//
+
 };
 
 int	identifyCommand(std::string cmd);
