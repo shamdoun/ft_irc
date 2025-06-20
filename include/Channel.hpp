@@ -16,10 +16,6 @@ class Channel
 		bool	Topic;
 		bool	Passwd;
 		int 	Limit;
-	
-
-
-		// l = infinty 5 =  limit = 5
 
 
 	public:

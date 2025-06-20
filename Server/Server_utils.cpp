@@ -52,13 +52,13 @@ Client &Server::get_client( std::string &nickName)
 }
 
 
-void Server::message_to_Allclients( std::string &channelName, const std::string &message, Client &c)
-{
-	Channel &channel = get_channel(channelName);
-	std::vector<Client>::iterator it = channel.getClients().begin();
-	for (; it != channel.getClients().end(); it++)
-		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-}
+// void Server::message_to_Allclients( std::string &channelName, const std::string &message, Client &c)
+// {
+// 	Channel &channel = get_channel(channelName);
+// 	std::vector<Client>::iterator it = channel.getClients().begin();
+// 	for (; it != channel.getClients().end(); it++)
+// 		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+// }
 
 
 void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
