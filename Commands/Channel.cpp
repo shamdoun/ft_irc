@@ -8,7 +8,7 @@ std::string Channel::getChannelName() const
 {return _Channel_name;}
 std::vector<Client>& Channel::getClients()  
 {return _Clients;}
-int Channel::getClientSize() const 
+int Channel::getClientSize_inChannel() const 
 {	return _Clients.size();}
 
 bool Channel::Is_ClientInChannel(Client &client)  

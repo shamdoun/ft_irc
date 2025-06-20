@@ -20,7 +20,7 @@ class Channel
 		Channel(std::string name);
 
 		std::vector<Client>& getClients() ;
-		int getClientSize() const;
+		int getClientSize_inChannel() const;
 		std::string getChannelName() const;
 		bool Is_ClientInChannel(Client &client);
 		

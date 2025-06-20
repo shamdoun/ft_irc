@@ -16,10 +16,10 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 	return _channels.back();
 }
 
-// bool Server::valid_joining_channel(Channel *channel, Client *c, const std::string &password)
-// {
+bool Server::valid_joining_channel(Channel &channel, Client &c, const std::string &password)
+{
 
-// }
+}
 
 
 
@@ -37,7 +37,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, const std::s
 	Channel &channel = GetOrCreateChannel(channelName);
 	
 	bool isNewChannel = false;
-	if (channel.getClientSize() == 0) // if the channel is empty then it is a new channel
+	if (channel.getClientSize_inChannel() == 0) // if the channel is empty then it is a new channel
 		isNewChannel = true;
 
 	if (channel.Is_ClientInChannel(c))
@@ -57,13 +57,13 @@ void Server::join_each_channel(std::string &channelName, Client &c, const std::s
 		channel.addAsClient(c);
 	std::string newchannelName = channelName.substr(1, channelName.length());
 	std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), newchannelName);
-	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client
+	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client who has joined
 
-	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except the sender
+	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except onewho has joined
 	Server::SendChannelInfos(newchannelName, c);
 }
 
-std::vector <std::string> split(const std::string &str, char del)
+std::vector <std::string> splitBy_delimeter(const std::string &str, char del)
 {
 	std::vector<std::string> tokens;
 	std::stringstream ss(str);
@@ -86,8 +86,8 @@ void Server::join(std::vector<std::string> &params, Client &c)
 	std::string channelsPasswords = "";
 	if (params.size() > 2)
 		channelsPasswords = params[2];
-	std::vector<std::string> channels = split(channelsNames, ',');
-	std::vector<std::string> passwords = split(channelsPasswords, ',');
+	std::vector<std::string> channels = splitBy_delimeter(channelsNames, ',');
+	std::vector<std::string> passwords = splitBy_delimeter(channelsPasswords, ',');
 	for (size_t i = 0; i < channels.size(); ++i)
 		Server::join_each_channel(channels[i], c, passwords[i]);
 }
