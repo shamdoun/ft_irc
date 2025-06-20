@@ -46,7 +46,7 @@ class Channel
 		void	SetterTopic(bool Value_To_Give);
 		void	SetterPasswd(bool Value_To_Give);
 		void	SetterLimit(int Value_To_Give);
-		
+		void	PrintChannelInfo(void);
 
 };
 

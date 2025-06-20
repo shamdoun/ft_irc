@@ -176,8 +176,8 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("JOIN") || !cmd.compare("join"))
 		return (3);
-	// if (!cmd.compare("MODE"))
-	// 	return (3);
+	if (!cmd.compare("MODE") || !cmd.compare("mode"))
+		return (3);
 	return (-1);
 } 
 

@@ -91,6 +91,28 @@ void	Channel::SetterLimit(int Value_To_Give)
 	this->Limit = Value_To_Give;
 }
 
+void	Channel::PrintChannelInfo(void)
+{
+	std::cout << "Channel Name: " << this->_Channel_name << std::endl;
+	std::cout << "Invite: " << (this->Invite ? "true" : "false") << std::endl;
+	std::cout << "Topic: " << (this->Topic ? "true" : "false") << std::endl;
+	std::cout << "Password: " << (this->Passwd ? "true" : "false") << std::endl;
+	std::cout << "Limit: " << this->Limit << std::endl;
+	std::cout << "Number of Clients in Channel: " << this->getClientSize_inChannel() << std::endl;
+	for (size_t i = 0; i < _Clients.size(); i++)
+	{
+		std::cout << "Client " << i + 1 << ": " << _Clients[i].getNickName() << std::endl;
+	}
+	std::cout << "Operators: ";
+	for (size_t i = 0; i < _Operators.size(); i++)
+	{
+		std::cout << _Operators[i];
+		if (i < _Operators.size() - 1)
+			std::cout << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << "------------------------" << std::endl;
+}
 
 
 

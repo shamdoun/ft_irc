@@ -11,8 +11,8 @@ void Server::Commands(std::vector<std::string> &params, Client *c)
 		Server::priv_msg(params, client);
 	if (params[0] == "JOIN")
 		Server::join(params, client);
-	// if (params[0] == "MODE")
-	// 	Server::Mode(params, client);
+	if (params[0] == "MODE" || params[0] == "mode")
+		Server::Mode(params, client);
 	
 		
 }
