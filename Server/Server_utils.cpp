@@ -52,19 +52,16 @@ Client &Server::get_client( std::string &nickName)
 }
 
 
-// void Server::message_to_Allclients( std::string &channelName, const std::string &message, Client &c)
-// {
-// 	Channel &channel = get_channel(channelName);
-// 	std::vector<Client>::iterator it = channel.getClients().begin();
-// 	for (; it != channel.getClients().end(); it++)
-// 	{
-// 		std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), channelName);
-// 		send(it->getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0);
-// 	}
-// }
+void Server::message_to_Allclients( std::string &channelName, const std::string &message, Client &c)
+{
+	Channel &channel = get_channel(channelName);
+	std::vector<Client>::iterator it = channel.getClients().begin();
+	for (; it != channel.getClients().end(); it++)
+		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+}
 
 
-void Server::message_to_Channel( std::string &channelName, const std::string &message, Client &c)
+void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
 {
 	// Send the message to all clients in the channel except the sender
 	Channel &channel = get_channel(channelName);
@@ -72,10 +69,7 @@ void Server::message_to_Channel( std::string &channelName, const std::string &me
 	for (; it != channel.getClients().end(); it++)
 	{
 		if (it->getNickName() != c.getNickName())
-		{
-			// std::string response = ":" + c.getNickName() + " PRIVMSG " + channelName + " :" + message + "\r\n";
 			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-		}
 	}
 }
 void Server::SendChannelInfos(std::string &channelName, Client &c)

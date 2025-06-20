@@ -166,15 +166,15 @@ void Server::parseMessage(char *buf, Client *c)
 
 int	identifyCommand(std::string cmd)
 {
-	if (!cmd.compare("NICK"))
+	if (!cmd.compare("NICK") || !cmd.compare("nick"))
 		return (0);
-	if (!cmd.compare("USER"))
+	if (!cmd.compare("USER")|| !cmd.compare("user"))
 		return (1);
-	if (!cmd.compare("PASS"))
+	if (!cmd.compare("PASS") || !cmd.compare("pass"))
 		return (2);
-	if (!cmd.compare("PRIVMSG"))
+	if (!cmd.compare("PRIVMSG") || !cmd.compare("privmsg"))
 		return (3);
-	if (!cmd.compare("JOIN"))
+	if (!cmd.compare("JOIN") || !cmd.compare("join"))
 		return (3);
 	// if (!cmd.compare("MODE"))
 	// 	return (3);
