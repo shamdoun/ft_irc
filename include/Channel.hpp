@@ -27,7 +27,7 @@ class Channel
 		void addAsOperator(Client &client);
 		void addAsClient(Client &client);
 		bool Is_OperatorInChannel(Client &client);  
-		// void addClient(Client *client);
+
 };
 
 #endif
