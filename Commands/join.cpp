@@ -16,10 +16,10 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 	return _channels.back();
 }
 
-bool Server::valid_joining_channel(Channel &channel, Client &c, const std::string &password)
-{
+// bool Server::valid_joining_channel(Channel &channel, Client &c, const std::string &password)
+// {
 
-}
+// }
 
 
 
