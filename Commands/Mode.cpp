@@ -42,13 +42,14 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client *c)
 		if (params[1].find('k') != std::string::npos)
 		{
 			this->SetterPasswd(true);
-			debug = "Password mode set to true";
+			this->SetterPassAsString(params[2]);
+			debug = "Password mode set to true\n" + params[2];
 			send(c->getClientSocket().getSocketFd(), debug.c_str(), debug.size(), 0);
 		}
 		if (params[1].find('l') != std::string::npos)
 		{
 			this->SetterLimit(atoi(params[2].c_str()));
-			debug = "Limit mode set to " + std::to_string(this->getterLimit());
+			// debug = "Limit mode set to " + std::to_string(this->getterLimit());
 			send(c->getClientSocket().getSocketFd(), debug.c_str(), debug.size(), 0);
 		
 		}
@@ -72,6 +73,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client *c)
 		if (params[1].find('k') != std::string::npos)
 		{
 			this->SetterPasswd(false);
+			this->SetterPassAsString("");
 			debug = "Password mode set to false";
 			send(c->getClientSocket().getSocketFd(), debug.c_str(), debug.size(), 0);
 		}

@@ -15,6 +15,7 @@ class Channel
 		bool	Invite; //false
 		bool	Topic;
 		bool	Passwd;
+		std::string pass_as_stirng;
 		int 	Limit;
 
 
@@ -38,10 +39,13 @@ class Channel
 		bool	getterTopic(void);
 		bool	getterPasswd(void);
 		int		getterLimit(void);
+		std::string &getterPassAsString(void);
 		void	SetterInvite(bool Value_To_Give);
 		void	SetterTopic(bool Value_To_Give);
 		void	SetterPasswd(bool Value_To_Give);
 		void	SetterLimit(int Value_To_Give);
+		void	SetterPassAsString(std::string Value_To_Give);
+
 		void	PrintChannelInfo(void);
 
 };

@@ -3,7 +3,7 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(true), Passwd(false), Limit(0) {}
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(true), Passwd(false), pass_as_stirng(""), Limit(0) {}
 
 // Getters
 std::string Channel::getChannelName() const 
@@ -69,11 +69,17 @@ bool	Channel::getterPasswd(void)
 {
 	return(this->Passwd);
 }
+
+std::string &Channel::getterPassAsString(void)
+{
+	return (this->pass_as_stirng);
+}
+
 int		Channel::getterLimit(void)
 {
 	return(this->Limit);
 }
-	
+
 void	Channel::SetterInvite(bool Value_To_Give)
 {
 	this->Invite = Value_To_Give;
@@ -91,12 +97,17 @@ void	Channel::SetterLimit(int Value_To_Give)
 	this->Limit = Value_To_Give;
 }
 
+void	Channel::SetterPassAsString(std::string Value_To_Give)
+{
+	 this->pass_as_stirng = Value_To_Give;
+}
 void	Channel::PrintChannelInfo(void)
 {
 	std::cout << "Channel Name: " << this->_Channel_name << std::endl;
 	std::cout << "Invite: " << (this->Invite ? "true" : "false") << std::endl;
 	std::cout << "Topic: " << (this->Topic ? "true" : "false") << std::endl;
 	std::cout << "Password: " << (this->Passwd ? "true" : "false") << std::endl;
+	std::cout << "Password as string " << this->pass_as_stirng << std::endl;
 	std::cout << "Limit: " << this->Limit << std::endl;
 	std::cout << "Number of Clients in Channel: " << this->getClientSize_inChannel() << std::endl;
 	for (size_t i = 0; i < _Clients.size(); i++)

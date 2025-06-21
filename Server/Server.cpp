@@ -394,15 +394,15 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 		}
 		return ;
 	}
-	if (servername != this->_name)
-	{
-		err = ERR_NOSUCHSERVER(c->getNickName(), servername);
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
+	// if (servername != this->_name)
+	// {
+	// 	err = ERR_NOSUCHSERVER(c->getNickName(), servername);
+	// 	if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+	// 	{
+	// 		std::cerr << "failed to send " << err << std::endl;
+	// 	}
+	// 	return ;
+	// }
 	if (realname.find(':') != std::string::npos)
 	{
 		realname = realname.substr(1) + " ";

@@ -18,7 +18,33 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 
 // bool Server::valid_joining_channel(Channel &channel, Client &c, const std::string &password)
 // {
-
+// 	if (channel.getterLimit() >  channel.getClientSize_inChannel())
+// 	{
+// 		std::string err_join = ERR_CHANNELISFULL(c.getNickName(), channel.getChannelName());
+// 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+// 		return false;
+// 	}
+// 	if (channel.getterInvite())
+// 	{
+// 		std::string err_join = ERR_INVITEONLYCHAN(c.getNickName(), channel.getChannelName());
+// 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+// 		return false;
+// 	}
+// 	if (channel.getterPasswd())
+// 	{
+// 		if (!channel.getterPassAsString().empty())
+// 		{
+// 			if(channel.getterPassAsString().compare(password))
+// 			{
+				
+// 				return false;
+// 			}
+// 			else
+// 			{
+				
+// 			}
+// 		}
+// 	}
 // }
 
 
@@ -35,7 +61,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, const std::s
 	}
 	//create or get the channel
 	Channel &channel = GetOrCreateChannel(channelName);
-	
+	std::string Pass_check;
 	bool isNewChannel = false;
 	if (channel.getClientSize_inChannel() == 0) // if the channel is empty then it is a new channel
 		isNewChannel = true;
