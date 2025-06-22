@@ -8,17 +8,46 @@
 class Channel
 {
 	private:
-		std::string _name;
-		std::vector<Client*> _Clients; // Pointers to clients in the channel
+		std::string _Channel_name;
+		std::vector<Client> _Clients;
+		std::vector<std::string> _Operators; // Operators of the channel
 		std::string _topic;
+		bool	Invite; //false
+		bool	Topic;
+		bool	Passwd;
+		std::string pass_as_stirng;
+		int 	Limit;
+
+
 	public:
 		Channel(std::string name);
 
-		std::vector<Client*> getClients() const;
-		int getClientSize() const;
+		std::vector<Client>& getClients() ;
+		int getClientSize_inChannel() const;
 		std::string getChannelName() const;
-		bool is_member(Client *client) const;
+		bool Is_ClientInChannel(Client &client);
+		
+		void addAsOperator(Client &client);
+		void addAsClient(Client &client);
+		bool Is_OperatorInChannel(Client &client);  
 		// void addClient(Client *client);
+
+
+		// MODE ===================================================================
+		void	handleModeCommand(std::vector<std::string> &params, Client *c);
+		bool	getterInvite(void);
+		bool	getterTopic(void);
+		bool	getterPasswd(void);
+		int		getterLimit(void);
+		std::string &getterPassAsString(void);
+		void	SetterInvite(bool Value_To_Give);
+		void	SetterTopic(bool Value_To_Give);
+		void	SetterPasswd(bool Value_To_Give);
+		void	SetterLimit(int Value_To_Give);
+		void	SetterPassAsString(std::string Value_To_Give);
+
+		void	PrintChannelInfo(void);
+
 };
 
 #endif

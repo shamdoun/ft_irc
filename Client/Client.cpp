@@ -113,3 +113,8 @@ std::string Client::getAlteredHost() const
 {
 	return (_nickName+ "!" + _username + "@");
 }
+
+std::string Client::getPrefix() const 
+{
+    return (_nickName+ "!" + _username + "@" + _hostName);
+}

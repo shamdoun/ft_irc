@@ -30,6 +30,7 @@ public:
 	bool		getIsRegistered() const;
 	bool		getHasNickname() const;
 	std::string getAlteredHost() const;
+	std::string getPrefix() const;
 	bool		getHasUser() const;
 	void		setNickName(std::string &value);
 	void		setRealName(std::string &value);

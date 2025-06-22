@@ -3,41 +3,136 @@
 #include "../include/numericReplies.hpp"
 #include "../include/Channel.hpp"
 
-Channel *Server::GetOrCreateChannel(const std::string &channelName)
+Channel &Server::GetOrCreateChannel(const std::string &channelName)
 {
-	for (Channel &channel : _channels)
+	for (size_t i = 0; i < _channels.size(); ++i)
 	{
-		if (channel.getChannelName() == channelName)
-		{
-			return &channel;
-		}
+		// Check if the channel already exists
+		if (_channels[i].getChannelName() == channelName)
+			return _channels[i];
 	}
 	// If channel does not exist, create a new one
 	_channels.push_back(Channel(channelName));
-	return &_channels.back();
+	return _channels.back();
 }
 
-void Server::join(std::vector<std::string> &params, Client *c)
+bool Server::valid_joining_channel(Channel &channel, Client &c, std::string password)
+{
+	// (void)password;
+	// std::cout << "Limit in channel "<< channel.getterLimit() << std::endl;
+	// std::cout << "getClientSize_inChannel "<< channel.getClientSize_inChannel() << std::endl;
+	if (channel.getterLimit() <=  channel.getClientSize_inChannel() && channel.getterLimit())
+	{
+		std::string err_join = ERR_CHANNELISFULL(c.getNickName(), channel.getChannelName());
+		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+		return false;
+	}
+	else if (channel.getterInvite())
+	{
+		std::string err_join = ERR_INVITEONLYCHAN(c.getNickName(), channel.getChannelName());
+		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+		return false;
+	}
+	else if (channel.getterPasswd())
+	{
+		// std::cout << "Password provided by client: " << password << std::endl;
+		// if (!channel.getterPassAsString().empty())	
+		// {
+			// std::cout << "Password in channel: " << channel.getterPassAsString() << std::endl;
+			if (!channel.getterPassAsString().empty() && password.empty())
+			{
+				// std::cout << "hnaya taqba" << std::endl;
+				std::string err_join = ERR_BADCHANNELKEY(c.getNickName(), channel.getChannelName());
+				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+				return false;
+			}
+			else if (!channel.getterPassAsString().empty() && password != channel.getterPassAsString())
+			{
+				// std::cout << "Password mismatch for channel: "  << std::endl;
+				std::string err_join = ERR_PASSMISMATCH(c.getNickName());
+				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
+				return false;
+			}
+			else
+				return true;
+		// }
+	}
+	else
+		return true;
+}
+
+
+
+
+void Server::join_each_channel(std::string &channelName, Client &c, std::string password)
+{
+	//(void)password; // password is not used in this implementation, but can be used for future enhancements
+	if (channelName[0] != '#' || channelName.empty())
+	{
+		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), channelName);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	//create or get the channel
+	Channel &channel = GetOrCreateChannel(channelName);
+	std::string Pass_check;
+	bool isNewChannel = false;
+	if (channel.getClientSize_inChannel() == 0) // if the channel is empty then it is a new channel
+		isNewChannel = true;
+
+	if (channel.Is_ClientInChannel(c))
+	{
+		std::string err = ERR_USERONCHANNEL(c.getNickName(), c.getNickName(), channelName);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	
+	if (!valid_joining_channel(channel, c, password))
+	{
+		std::cout << "here" << std::endl;
+		return ;
+	}
+	if (isNewChannel)
+		channel.addAsOperator(c);
+	else
+		channel.addAsClient(c);
+	std::string newchannelName = channel.getChannelName();
+	std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), newchannelName);
+	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client who has joined
+
+	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except teh one who has joined
+	Server::SendChannelInfos(newchannelName, c);
+}
+
+std::vector <std::string> splitBy_delimeter(const std::string &str, char del)
+{
+	std::vector<std::string> tokens;
+	std::stringstream ss(str);
+	std::string token;
+
+	while (std::getline(ss, token, del))
+		tokens.push_back(token);
+	return tokens;
+}
+
+void Server::join(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() < 2)
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c->getNickName(), "JOIN");
-		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "JOIN");
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	std::string Channel_name = params[1];
-	// std::string Channel_password = "";
-	// if (params.size() >= 3)
-	// 	Channel_password = params[2];
+	std::string channelsNames = params[1];
+	std::string channelsPasswords = "";
+	if (params.size() > 2)
+		channelsPasswords = params[2];
+	std::vector<std::string> channels = splitBy_delimeter(channelsNames, ',');
+	std::vector<std::string> passwords = splitBy_delimeter(channelsPasswords, ',');
 
-	if (Channel_name[0] != '#')
+	for (size_t i = 0; i < channels.size(); ++i) 
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c->getNickName(), Channel_name);
-		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
-		return;
+    	std::string pass = (i < passwords.size()) ? passwords[i] : "";
+    	Server::join_each_channel(channels[i], c, pass);
 	}
-	// check if channel already exists
-	Channel *channel = GetOrCreateChannel(Channel_name);
-
-
 }

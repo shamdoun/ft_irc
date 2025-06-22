@@ -12,7 +12,7 @@
 #define ERR_ERRONEUSUSERNAME(userName) ": 432 " + userName + " :Erroneous username" + CRLF
 #define ERR_NOTONCHANNEL(nickName, channelName) ": 442 " + nickName + " #" + channelName + " :You're not on that channel" + CRLF
 #define ERR_NOSUCHCHANNEL(nickName, channelName) ": 403 " + nickName + " #" + channelName + " :No such channel" + CRLF
-#define ERR_NOSUCHNICK(nickName, recipient) ": 401 " + nickName + " " + recipient + " :No such nick/channel" + CRLF
+#define ERR_NOSUCHNICK(nickName, recipient) ": 401 " + nickName + " " + recipient + " :No such nick" + CRLF
 #define ERR_NORECIPIENT(nickName) ": 411 " + nickName + " :No recipient given (PRIVMSG)" + CRLF
 #define ERR_NOTEXTTOSEND(nickName) ": 412 " + nickName + " :No text to send" + CRLF
 #define ERR_INVITEONLYCHAN(nickName, channelName) ": 473 " + nickName + " #" + channelName + " :Cannot join channel (+i)" + CRLF
@@ -35,7 +35,7 @@
 #define RPL_CHANNELMODEIS(nickName, channelName, modes) ": 324 " + nickName + " #" + channelName + " " + modes + CRLF
 #define RPL_CREATIONTIME(nickName, channelName, time) ": 329 " + nickName + " #" + channelName + " " + time + CRLF
 #define RPL_TOPICWHOTIME(nickName, channelName, who, time) ": 333 " + nickName + " #" + channelName + " " + who + " " + time + CRLF
-#define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + ipaddress + " JOIN #" + channelname + CRLF)
+#define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + ipaddress + " JOIN " + channelname + CRLF)
 #define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " #" + channelname + " :" + clientslist + CRLF)
 #define RPL_ENDOFNAMES(nickname, channelname) (": 366 " + nickname + " #" + channelname + " :END of /NAMES list" + CRLF)
 #define RPL_INVITING(nickName, new_user, channelName) ": 341 " + nickName + " " + new_user + " " + channelName + CRLF

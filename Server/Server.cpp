@@ -166,13 +166,17 @@ void Server::parseMessage(char *buf, Client *c)
 
 int	identifyCommand(std::string cmd)
 {
-	if (!cmd.compare("NICK"))
+	if (!cmd.compare("NICK") || !cmd.compare("nick"))
 		return (0);
-	if (!cmd.compare("USER"))
+	if (!cmd.compare("USER")|| !cmd.compare("user"))
 		return (1);
-	if (!cmd.compare("PASS"))
+	if (!cmd.compare("PASS") || !cmd.compare("pass"))
 		return (2);
-	if (!cmd.compare("PRIVMSG"))
+	if (!cmd.compare("PRIVMSG") || !cmd.compare("privmsg"))
+		return (3);
+	if (!cmd.compare("JOIN") || !cmd.compare("join"))
+		return (3);
+	if (!cmd.compare("MODE") || !cmd.compare("mode"))
 		return (3);
 	return (-1);
 } 
@@ -390,15 +394,15 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 		}
 		return ;
 	}
-	if (servername != this->_name)
-	{
-		err = ERR_NOSUCHSERVER(c->getNickName(), servername);
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
+	// if (servername != this->_name)
+	// {
+	// 	err = ERR_NOSUCHSERVER(c->getNickName(), servername);
+	// 	if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
+	// 	{
+	// 		std::cerr << "failed to send " << err << std::endl;
+	// 	}
+	// 	return ;
+	// }
 	if (realname.find(':') != std::string::npos)
 	{
 		realname = realname.substr(1) + " ";
@@ -435,4 +439,5 @@ std::string extractMessage(std::string m)
     end_w = m.find("\n");
     if (end_w != std::string::npos)
             return (m.substr(0, end_w));
+		return m; // If no newline found, return the whole string 
 }
