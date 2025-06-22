@@ -35,7 +35,7 @@
 #define RPL_CHANNELMODEIS(nickName, channelName, modes) ": 324 " + nickName + " #" + channelName + " " + modes + CRLF
 #define RPL_CREATIONTIME(nickName, channelName, time) ": 329 " + nickName + " #" + channelName + " " + time + CRLF
 #define RPL_TOPICWHOTIME(nickName, channelName, who, time) ": 333 " + nickName + " #" + channelName + " " + who + " " + time + CRLF
-#define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + ipaddress + " JOIN #" + channelname + CRLF)
+#define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + ipaddress + " JOIN " + channelname + CRLF)
 #define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " #" + channelname + " :" + clientslist + CRLF)
 #define RPL_ENDOFNAMES(nickname, channelname) (": 366 " + nickname + " #" + channelname + " :END of /NAMES list" + CRLF)
 #define RPL_INVITING(nickName, new_user, channelName) ": 341 " + nickName + " " + new_user + " " + channelName + CRLF

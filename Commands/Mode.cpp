@@ -30,13 +30,13 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client *c)
 		if (params[1].find('i') != std::string::npos)
 		{
 			this->SetterInvite(true);
-			debug = "Invite mode set to true";
+			debug = "Invite mode set to true\n";
 			send(c->getClientSocket().getSocketFd(), debug.c_str(), debug.size(), 0);
 		}
 		if (params[1].find('t') != std::string::npos)
 		{
 			this->SetterTopic(true);
-			debug = "Topic mode set to true";
+			debug = "Topic mode set to true\n";
 			send(c->getClientSocket().getSocketFd(), debug.c_str(), debug.size(), 0);
 		}
 		if (params[1].find('k') != std::string::npos)
