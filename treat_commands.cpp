@@ -4,6 +4,15 @@
 
 void Server::Commands(std::vector<std::string> &params, Client *c)
 {	
+	std::string err;   
+	if (!c->getIsAuthenticated())  
+	{   
+		err = ERR_NOTREGISTERED(c->getNickName());
+		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)   
+		{    
+			std::cerr << "failed to send " << err << std::endl;
+		}   return ;
+	} 
 	if (c == NULL)
 		return; // Handle case where client pointer is null
 	Client &client = *c;
