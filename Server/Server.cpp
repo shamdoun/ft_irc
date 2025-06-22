@@ -431,8 +431,9 @@ std::string extractMessage(std::string m)
     size_t end_w;
     end = m.find("\r\n");
     if (end != std::string::npos)
-            return (m.substr(0, end));
+		return (m.substr(0, end));
     end_w = m.find("\n");
     if (end_w != std::string::npos)
-            return (m.substr(0, end_w));
+		return (m.substr(0, end_w));
+	return (m);
 }
