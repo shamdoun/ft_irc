@@ -34,7 +34,7 @@ class Channel
 
 
 		// MODE ===================================================================
-		void	handleModeCommand(std::vector<std::string> &params, Client *c);
+		void	handleModeCommand(std::vector<std::string> &params, Client &c);
 		bool	getterInvite(void);
 		bool	getterTopic(void);
 		bool	getterPasswd(void);
@@ -45,7 +45,10 @@ class Channel
 		void	SetterPasswd(bool Value_To_Give);
 		void	SetterLimit(int Value_To_Give);
 		void	SetterPassAsString(std::string Value_To_Give);
-
+		void	handleInvite(int flag);
+		void	handleTopicPermission(int flag);
+		int		handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count);
+		int		handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		void	PrintChannelInfo(void);
 
 };

@@ -101,6 +101,79 @@ void	Channel::SetterPassAsString(std::string Value_To_Give)
 {
 	 this->pass_as_stirng = Value_To_Give;
 }
+
+
+void	Channel::handleInvite(int flag)
+{
+	if (flag == 1)
+		this->Invite = true;
+	if (flag == -1)
+		this->Invite = false;
+}
+
+void	Channel::handleTopicPermission(int flag)
+{
+	if (flag == 1)
+		this->Topic = true;
+	if (flag == -1)
+		this->Topic = false;
+}
+
+int		Channel::handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count)
+{
+	if (flag == -1)
+	{
+		// std::cout << "handle password with negative " << std::endl;
+		this->Passwd = false;
+		this->pass_as_stirng = "";
+		return (0);
+	}
+	else
+	{
+		// std::cout << "handle password with positive " << std::endl;
+		if (current > prms_count)
+		{
+			// std::cout << "Not enough params" << std::endl;
+			return (-1);
+		}
+		else
+		{
+			// std::cout << "Succes" << std::endl;
+			this->Passwd = true;
+			this->pass_as_stirng = params[current];
+			current++;
+			return (0);
+		}
+	}	
+}
+
+int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count)
+{
+	if (flag == -1)
+	{
+		this->Limit = 0;
+		return (0);
+	}
+	else
+	{
+		// std::cout << "handle password with positive " << std::endl;
+		if (current > prms_count)
+		{
+			// std::cout << "Not enough params" << std::endl;
+			return (-1);
+		}
+		else
+		{
+			// std::cout << "Succes" << std::endl;
+			this->Limit = atoi(params[current].c_str()); // check if number later 
+			current++;
+			return (0);
+		}
+	}	
+}
+
+
+
 void	Channel::PrintChannelInfo(void)
 {
 	std::cout << "Channel Name: " << this->_Channel_name << std::endl;
