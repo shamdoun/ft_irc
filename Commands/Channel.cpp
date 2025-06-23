@@ -10,6 +10,10 @@ std::string Channel::getChannelName() const
 {return _Channel_name;}
 std::vector<Client>& Channel::getClients()  
 {return _Clients;}
+std::vector<std::string>& Channel::getOpperators()
+{
+	return _Operators;
+}
 int Channel::getClientSize_inChannel() const 
 {	return _Clients.size();}
 
@@ -24,12 +28,34 @@ bool Channel::Is_ClientInChannel(Client &client)
 	return false;
 }
 
+bool Channel::Is_ClientInChannel_2(std::string NickName)  
+{
+	std::vector<Client>::iterator it = _Clients.begin();
+	for (; it != _Clients.end(); it++)
+	{
+		if (it->getNickName() == NickName) 
+			return true;
+	}
+	return false;
+}
+
 bool Channel::Is_OperatorInChannel(Client &client)  
 {
 	std::vector<std::string>::iterator it = _Operators.begin();
 	for (; it != _Operators.end(); it++)
 	{
 		if (*it == client.getNickName()) 
+			return true;
+	}
+	return false;
+}
+
+bool Channel::Is_OperatorInChannel_2(std::string &nickName)  
+{
+	std::vector<std::string>::iterator it = _Operators.begin();
+	for (; it != _Operators.end(); it++)
+	{
+		if (*it == nickName) 
 			return true;
 	}
 	return false;

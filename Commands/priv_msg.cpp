@@ -63,20 +63,20 @@ void Server::priv_msg(std::vector<std::string> &params, Client &c)
 	}
 
 	std::string target_name = params[1];
-	std::string message ;
+	std::string message = get_corr_message(params, 2);
 
-	if (params[2][0] == ':')
-	{
-		for (size_t i = 2; i < params.size(); ++i)
-		{
-			message += params[i];
-			if (i < params.size() - 1)
-				message += " ";
-		}
-		message.erase(0, 1); // Remove the leading ':'
-	}
-	else
-		message = params[2];
+	// if (params[2][0] == ':')
+	// {
+	// 	for (size_t i = 2; i < params.size(); ++i)
+	// 	{
+	// 		message += params[i];
+	// 		if (i < params.size() - 1)
+	// 			message += " ";
+	// 	}
+	// 	message.erase(0, 1); // Remove the leading ':'
+	// }
+	// else
+	// 	message = params[2];
 
 	if (target_name[0] == '#')
 		Server::SendPrivMsg_Channel(target_name, message, c);

@@ -18,9 +18,6 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 
 bool Server::valid_joining_channel(Channel &channel, Client &c, std::string password)
 {
-	// (void)password;
-	// std::cout << "Limit in channel "<< channel.getterLimit() << std::endl;
-	// std::cout << "getClientSize_inChannel "<< channel.getClientSize_inChannel() << std::endl;
 	if (channel.getterLimit() <=  channel.getClientSize_inChannel() && channel.getterLimit())
 	{
 		std::string err_join = ERR_CHANNELISFULL(c.getNickName(), channel.getChannelName());
@@ -35,10 +32,6 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 	}
 	else if (channel.getterPasswd())
 	{
-		// std::cout << "Password provided by client: " << password << std::endl;
-		// if (!channel.getterPassAsString().empty())	
-		// {
-			// std::cout << "Password in channel: " << channel.getterPassAsString() << std::endl;
 			if (!channel.getterPassAsString().empty() && password.empty())
 			{
 				// std::cout << "hnaya taqba" << std::endl;
@@ -82,14 +75,13 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 
 	if (channel.Is_ClientInChannel(c))
 	{
-		std::string err = ERR_USERONCHANNEL(c.getNickName(), c.getNickName(), channelName);
+		std::string err = ERR_USERONCHANNEL(c.getNickName(), "", channelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
 	
 	if (!valid_joining_channel(channel, c, password))
 	{
-		std::cout << "here" << std::endl;
 		return ;
 	}
 	if (isNewChannel)

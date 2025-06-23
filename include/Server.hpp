@@ -76,13 +76,14 @@ public:
 	void join(std::vector<std::string> &params, Client &c);
 	void join_each_channel( std::string &channelName, Client &c, std::string password);
 	Channel &GetOrCreateChannel(const std::string &channelName);
-	// void message_to_Allclients( std::string &channelName, const std::string &message, Client &c);
+	void message_to_Allclients( std::string &channelName, const std::string &message);
 	void message_to_Channel( std::string &channelName, const std::string &message, Client &c);
 	void SendChannelInfos(std::string &channelName, Client &c);
 	
 	bool valid_joining_channel(Channel &channel, Client &c, std::string password);
 
-
+	//kick
+	void kick_from_channel(std::vector<std::string> &params, Client &c);
 
     //======================================================================//
     void Mode(std::vector<std::string> &params, Client &c);
@@ -93,4 +94,5 @@ public:
 int	identifyCommand(std::string cmd);
 std::string extractMessage(std::string m);
 void signalHander(int sig);
+std::string get_corr_message(std::vector<std::string> &params, int index);
 #endif

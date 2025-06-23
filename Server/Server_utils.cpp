@@ -52,13 +52,13 @@ Client &Server::get_client( std::string &nickName)
 }
 
 
-// void Server::message_to_Allclients( std::string &channelName, const std::string &message, Client &c)
-// {
-// 	Channel &channel = get_channel(channelName);
-// 	std::vector<Client>::iterator it = channel.getClients().begin();
-// 	for (; it != channel.getClients().end(); it++)
-// 		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-// }
+void Server::message_to_Allclients( std::string &channelName, const std::string &message)
+{
+	Channel &channel = get_channel(channelName);
+	std::vector<Client>::iterator it = channel.getClients().begin();
+	for (; it != channel.getClients().end(); it++)
+		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+}
 
 
 void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
@@ -93,6 +93,29 @@ void Server::SendChannelInfos(std::string &channelName, Client &c)
 	send(c.getClientSocket().getSocketFd(), members_channel.c_str(), members_channel.size(), 0);
 	std::string end_of_names = RPL_ENDOFNAMES(c.getNickName(), channelName);
 	send(c.getClientSocket().getSocketFd(), end_of_names.c_str(), end_of_names.size(), 0);
+}
+
+std::string get_corr_message(std::vector<std::string> &params, int index)
+{
+	std::string message ;
+	if (index < 0 || index >= static_cast<int>(params.size()))
+	{
+		// std::cerr << "Index out of bounds in get_corr_message" << std::endl;
+		return "";
+	}
+	if (params[index][0] == ':')
+	{
+		for (size_t i = index; i < params.size(); ++i)
+		{
+			message += params[i];
+			if (i < params.size() - 1)
+				message += " ";
+		}
+		message.erase(0, 1); // Remove the leading ':'
+	}
+	else
+		message = params[index];
+	return message;
 }
 // Channel *Server::getChannelByName(const std::string &channelName) // get channel by name from the list of channels
 // {

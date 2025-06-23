@@ -29,6 +29,7 @@
 #define ERR_USERONCHANNEL(nickName, new_user, channelName) ": 443 " + nickName + " " + new_user + " " + channelName + " :is already on channel" + CRLF
 
 
+
 #define RPL_WELCOME(nickName, userName, hostName, ip) ": 001 " + nickName + " :Welcome to the Internet Relay Network " + hostName + ip + CRLF
 #define RPL_NOTOPIC(nickName, hostName, channelName) ": 331 " + nickName + " #" + channelName + " :No topic is set" + CRLF
 #define RPL_TOPIC(nickName, hostName, ip, channelName, topic) ":" + hostName + ip + " " + nickName + " #" + channelName + " :" + topic + CRLF
@@ -39,3 +40,4 @@
 #define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " #" + channelname + " :" + clientslist + CRLF)
 #define RPL_ENDOFNAMES(nickname, channelname) (": 366 " + nickname + " #" + channelname + " :END of /NAMES list" + CRLF)
 #define RPL_INVITING(nickName, new_user, channelName) ": 341 " + nickName + " " + new_user + " " + channelName + CRLF
+// #define RPL_KICKED(nickName, channelName, kickedUser, reason) ": 341 " + nickName + " " + channelName + " " + kickedUser + " :" + reason + CRLF

@@ -22,6 +22,8 @@ void Server::Commands(std::vector<std::string> &params, Client *c)
 		Server::join(params, client);
 	if (params[0] == "MODE" || params[0] == "mode")
 		Server::Mode(params, client);
+	if (params[0] == "KICK" || params[0] == "kick")
+		Server::kick_from_channel(params, client);
 	
 		
 }

@@ -178,6 +178,8 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("MODE") || !cmd.compare("mode"))
 		return (3);
+	if (!cmd.compare("KICK") || !cmd.compare("kick"))
+		return (3);
 	return (-1);
 } 
 

@@ -23,13 +23,20 @@ class Channel
 		Channel(std::string name);
 
 		std::vector<Client>& getClients() ;
+		std::vector<std::string>& getOpperators();
 		int getClientSize_inChannel() const;
 		std::string getChannelName() const;
 		bool Is_ClientInChannel(Client &client);
+		bool Is_ClientInChannel_2(std::string NickName);
 		
 		void addAsOperator(Client &client);
 		void addAsClient(Client &client);
 		bool Is_OperatorInChannel(Client &client);  
+		bool Is_OperatorInChannel_2(std::string &nickName) ;
+		void RemoveOperator(std::string &nickName);
+		void RemoveClient(std::string &nickName); 
+		
+
 		// void addClient(Client *client);
 
 
