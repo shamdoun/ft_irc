@@ -43,6 +43,32 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				return;
 			}
 		}
+		else if(params[0][j] == 'o')
+		{
+			if (current >= (int)params.size()) {
+				std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+				return;
+			}
+			std::string targetNick = params[current++];
+			if (!this->Is_ClientInChannel_2(targetNick)) {
+				std::string err = ERR_USERNOTINCHANNEL(c.getNickName(), targetNick, this->getChannelName());
+				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+				return;
+			}
+			if (Flag == 1) {
+				if (!this->Is_OperatorInChannel_2(targetNick)) {
+					this->_Operators.push_back(targetNick);
+				}
+			} else if (Flag == -1) {
+				for (std::vector<std::string>::iterator it = this->_Operators.begin(); it != this->_Operators.end(); ++it) {
+					if (*it == targetNick) {
+						this->_Operators.erase(it);
+						break;
+					}
+				}
+			}
+		}
 		else
 		{
 			std::string err = ERR_UNKNOWNMODE(c.getNickName(), params[0][j]);
