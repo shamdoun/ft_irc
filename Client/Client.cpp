@@ -5,7 +5,7 @@ Client::Client()
 	_clientSocket = Socket(1);
 }
 
-Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false)
+Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_hostName("localhost"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false)
 {
 	
 }

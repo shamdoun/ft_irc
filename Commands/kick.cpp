@@ -41,7 +41,7 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() < 2)
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "KICK");
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -49,13 +49,13 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	ChannelName = params[1];
 	if (ChannelName[0] != '#' || ChannelName.empty() || !Server::has_theChannel(ChannelName))
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), ChannelName);
+		std::string err = ERR_NOSUCHCHANNEL(ChannelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
 	if (params.size() == 2)
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "KICK");
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -75,14 +75,14 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	// now i assume that the channel exists and the client is in the channel
 	if (!channel.Is_OperatorInChannel(c))
 	{
-		std::string opp_error = ERR_CHANOPRIVSNEEDED(c.getNickName(), ChannelName);
+		std::string opp_error = ERR_CHANOPRIVSNEEDED(ChannelName);
 		send(c.getClientSocket().getSocketFd(), opp_error.c_str(), opp_error.size(), 0);
 		return ;
 	}
 	std::string client_to_kick = params[2];
 	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
 	{
-		std::string err = ERR_NOSUCHNICK(c.getNickName(), client_to_kick);
+		std::string err = ERR_NOSUCHNICK(client_to_kick);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}

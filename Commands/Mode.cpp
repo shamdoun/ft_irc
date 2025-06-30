@@ -13,6 +13,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 	int	Flag = 1;
 	int	j = 0;
 	int current = 1;
+	std::string cmd = "MODE";
 
 	std::cout << "Params_count ===> " << params_count << std::endl;
 	while (params[0][j])
@@ -29,7 +30,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		{
 			if (handle_Password(Flag, params, current, params_count) == -1)
 			{
-				std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+				std::string err = ERR_NEEDMOREPARAMS(cmd);
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}
@@ -38,7 +39,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		{
 			if (handle_Limit(Flag, params, current, params_count) == -1)
 			{
-				std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+				std::string err = ERR_NEEDMOREPARAMS(cmd);
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}
@@ -46,13 +47,13 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		else if(params[0][j] == 'o')
 		{
 			if (current >= (int)params.size()) {
-				std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+				std::string err = ERR_NEEDMOREPARAMS(cmd);
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}
 			std::string targetNick = params[current++];
 			if (!this->Is_ClientInChannel_2(targetNick)) {
-				std::string err = ERR_USERNOTINCHANNEL(c.getNickName(), targetNick, this->getChannelName());
+				std::string err = ERR_USERNOTINCHANNEL(targetNick, this->getChannelName());
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}
@@ -71,7 +72,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		}
 		else
 		{
-			std::string err = ERR_UNKNOWNMODE(c.getNickName(), params[0][j]);
+			std::string err = ERR_UNKNOWNMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 			send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -91,7 +92,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() < 2)  // params
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -99,7 +100,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 	{
 		if (!has_theChannel(params[1]))  //incorrect channel
 		{
-			std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), params[1]);
+			std::string err = ERR_NOSUCHCHANNEL(params[1]);
 			send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -112,7 +113,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 		}
 		if (!channel.Is_OperatorInChannel(c)) // Client is an operator in channel
 		{
-			std::string err = ERR_CHANOPRIVSNEEDED(c.getNickName(), channel.getChannelName());
+			std::string err = ERR_CHANOPRIVSNEEDED(channel.getChannelName());
 			send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -127,7 +128,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 	}
 	else
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), "MODE");   /// CHANGE ERROR !
+		std::string err = ERR_NOSUCHCHANNEL(params[1]);   /// CHANGE ERROR !
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
