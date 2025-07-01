@@ -34,7 +34,6 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 	{
 			if (!channel.getterPassAsString().empty() && password.empty())
 			{
-				// std::cout << "hnaya taqba" << std::endl;
 				std::string err_join = ERR_BADCHANNELKEY(channel.getChannelName());
 				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 				return false;

@@ -43,7 +43,7 @@
 #define RPL_INVITING(nickname, targnick, targchan)  ":: 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
 #define RPL_INVITE(sender, target, channel)"::" + sender + " INVITE " + target + " " + channel + POSTFIX
 #define RPL_INVITING(nickname, targnick, targchan)  ":: 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
-#define RPL_JOINMSG(hostname, ipaddress, channelname)("::" + hostname + "@" + ipaddress + " JOIN " + channelname + POSTFIX)
+#define RPL_JOINMSG(hostname, ipaddress, channelname)("::" + hostname + ipaddress + " JOIN " + channelname + POSTFIX)
 #define RPL_JOIN(sender, channel)"::" + sender + " JOIN :" + channel + POSTFIX
 #define RPL_CHANGEMODE(hostname, channelname, mode)("::" + hostname + " MODE " + channelname + " " + mode + POSTFIX)
 #define RPL_UMODEIS(hostname, channelname, mode, user)"::" + hostname + " MODE " + channelname + " " + mode + " " + user + POSTFIX

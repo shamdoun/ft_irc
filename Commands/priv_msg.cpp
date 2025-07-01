@@ -4,10 +4,14 @@
 
 void Server::SendPrivMsg_User( std::string &target_name, const std::string &message, Client &c)
 {
+	if (c.getNickName() == target_name)
+	{
+
+	}
 	if (Server::has_theClient(target_name))
 	{
 		Client &target_client = Server::get_client(target_name);
-		std::string response = ":" + c.getPrefix() + " PRIVMSG " + target_name + " :" + message + "\r\n";
+		std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_name, message);
 		send(target_client.getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
 	}
 	else
@@ -35,7 +39,7 @@ void Server::SendPrivMsg_Channel( std::string &target_channel, const std::string
 		return;
 	}
 	// Send the message to all clients in the channel except the sender
-	std::string response = ":" + c.getNickName() + " PRIVMSG " + target_channel + " :" + message + "\r\n";
+	std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_channel, message);
 	Server::message_to_Channel(target_channel,response, c );
 	// std::vector<Client>::iterator it = channel.getClients().begin();
 	// for (; it != channel.getClients().end(); it++)
