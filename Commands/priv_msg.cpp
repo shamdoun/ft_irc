@@ -12,7 +12,7 @@ void Server::SendPrivMsg_User( std::string &target_name, const std::string &mess
 	}
 	else
 	{
-		std::string err_ = ERR_NOSUCHNICK(c.getNickName());
+		std::string err_ = ERR_NOSUCHNICK(target_name);
 		send(c.getClientSocket().getSocketFd(), err_.c_str(), err_.size(), 0);
 	}
 }

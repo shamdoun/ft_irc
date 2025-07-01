@@ -61,10 +61,11 @@ void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel
 	}
 }
 
-void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
+void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
 {
 	if (params.size() < 2)
 	{
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
@@ -74,11 +75,13 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	if (ChannelName[0] != '#' || ChannelName.empty() || !Server::has_theChannel(ChannelName))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(ChannelName);
+		std::string err = ERR_NOSUCHCHANNEL(ChannelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
 	if (params.size() == 2)
 	{
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
@@ -102,9 +105,30 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	if (!channel.Is_OperatorInChannel(c))
 	{
 		std::string opp_error = ERR_CHANOPRIVSNEEDED(ChannelName);
+		std::string opp_error = ERR_CHANOPRIVSNEEDED(ChannelName);
 		send(c.getClientSocket().getSocketFd(), opp_error.c_str(), opp_error.size(), 0);
 		return ;
 	}
+	std::string client_to_kick = params[2];
+	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
+	{
+		std::string err = ERR_NOSUCHNICK(client_to_kick);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	if (channel.Is_OperatorInChannel_2(client_to_kick))
+	{
+		std::string reason = get_corr_message(params, 3);
+		std::string kick_message = ":" + c.getNickName() + " KICK " + ChannelName + " " + client_to_kick + " : " + reason + "\r\n";
+		Server::message_to_Allclients(ChannelName, kick_message);
+		channel.RemoveOperator(client_to_kick);
+	}
+	if (channel.Is_ClientInChannel_2(client_to_kick))
+	{
+		std::string reason = get_corr_message(params, 3);
+		std::string kick_message = ":" + c.getNickName() + " KICK " + ChannelName + " " + client_to_kick + " : " + reason + "\r\n";
+		Server::message_to_Allclients(ChannelName, kick_message);
+		channel.RemoveClient(client_to_kick);
 	std::string clients_to_kick = params[2];
 	std::vector<std::string> clients_need_ToKick  = splitBy_delimeter(clients_to_kick, ',');
 	for (size_t i = 0; i < clients_need_ToKick.size(); i++)

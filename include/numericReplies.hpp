@@ -1,3 +1,4 @@
+#pragma once
 
 #define PREFIX "::IRCServer "
 #define POSTFIX "\r\n"

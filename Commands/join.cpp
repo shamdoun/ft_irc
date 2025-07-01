@@ -62,7 +62,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	//(void)password; // password is not used in this implementation, but can be used for future enhancements
 	if (channelName[0] != '#' || channelName.empty() || (channelName[0] == '#' && channelName.length() == 1))
 	{
-		std::string err = ERR_NOSUCHCHANNEL( channelName);
+		std::string err = ERR_NOSUCHCHANNEL(channelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
