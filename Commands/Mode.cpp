@@ -4,9 +4,6 @@
 #include "../include/Channel.hpp"
 
 
-
-
-
 void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 {
 	int	params_count = params.size() -1;
@@ -29,7 +26,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		{
 			if (handle_Password(Flag, params, current, params_count) == -1)
 			{
-				std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "MODE");
+				std::string err = ERR_NEEDMOREPARAMS();
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}

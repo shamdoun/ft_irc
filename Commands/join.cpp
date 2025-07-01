@@ -35,14 +35,14 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 			if (!channel.getterPassAsString().empty() && password.empty())
 			{
 				// std::cout << "hnaya taqba" << std::endl;
-				std::string err_join = ERR_BADCHANNELKEY(c.getNickName(), channel.getChannelName());
+				std::string err_join = ERR_BADCHANNELKEY(channel.getChannelName());
 				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 				return false;
 			}
 			else if (!channel.getterPassAsString().empty() && password != channel.getterPassAsString())
 			{
 				// std::cout << "Password mismatch for channel: "  << std::endl;
-				std::string err_join = ERR_PASSMISMATCH(c.getNickName());
+				std::string err_join = ERR_PASSWDMISMATCH(c.getNickName());
 				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 				return false;
 			}
@@ -60,9 +60,9 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 void Server::join_each_channel(std::string &channelName, Client &c, std::string password)
 {
 	//(void)password; // password is not used in this implementation, but can be used for future enhancements
-	if (channelName[0] != '#' || channelName.empty())
+	if (channelName[0] != '#' || channelName.empty() || (channelName[0] == '#' && channelName.length() == 1))
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), channelName);
+		std::string err = ERR_NOSUCHCHANNEL( channelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -75,7 +75,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 
 	if (channel.Is_ClientInChannel(c))
 	{
-		std::string err = ERR_USERONCHANNEL(c.getNickName(), "", channelName);
+		std::string err = ERR_USERONCHANNEL(channelName, c.getNickName());
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -111,7 +111,7 @@ void Server::join(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() < 2)
 	{
-		std::string err = ERR_NEEDMOREPARAMS(c.getNickName(), "JOIN");
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -122,7 +122,7 @@ void Server::join(std::vector<std::string> &params, Client &c)
 	std::vector<std::string> channels = splitBy_delimeter(channelsNames, ',');
 	std::vector<std::string> passwords = splitBy_delimeter(channelsPasswords, ',');
 
-	for (size_t i = 0; i < channels.size(); ++i) 
+	for (size_t i = 0; i < channels.size(); ++i)
 	{
     	std::string pass = (i < passwords.size()) ? passwords[i] : "";
     	Server::join_each_channel(channels[i], c, pass);

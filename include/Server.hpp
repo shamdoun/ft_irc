@@ -84,6 +84,7 @@ public:
 
 	//kick
 	void kick_from_channel(std::vector<std::string> &params, Client &c);
+	void kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName);
 
     //======================================================================//
     void Mode(std::vector<std::string> &params, Client &c);
@@ -95,4 +96,6 @@ int	identifyCommand(std::string cmd);
 std::string extractMessage(std::string m);
 void signalHander(int sig);
 std::string get_corr_message(std::vector<std::string> &params, int index);
+std::vector <std::string> splitBy_delimeter(const std::string &str, char del);
+
 #endif

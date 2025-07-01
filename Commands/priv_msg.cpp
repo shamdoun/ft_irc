@@ -12,7 +12,7 @@ void Server::SendPrivMsg_User( std::string &target_name, const std::string &mess
 	}
 	else
 	{
-		std::string err_ = ERR_NOSUCHNICK(target_name, c.getNickName());
+		std::string err_ = ERR_NOSUCHNICK(c.getNickName());
 		send(c.getClientSocket().getSocketFd(), err_.c_str(), err_.size(), 0);
 	}
 }
@@ -23,7 +23,7 @@ void Server::SendPrivMsg_Channel( std::string &target_channel, const std::string
 	// (void)message;
 	if (!has_theChannel(target_channel))
 	{
-		std::string err = ERR_NOSUCHCHANNEL(c.getNickName(), target_channel);
+		std::string err = ERR_NOSUCHCHANNEL(target_channel);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
@@ -51,7 +51,7 @@ void Server::priv_msg(std::vector<std::string> &params, Client &c)
 {
 	if (params.size() == 1)
 	{
-		std::string err = ERR_NORECIPIENT(c.getNickName());
+		std::string err = ERR_NORECIPIENT(c.getNickName(), params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
