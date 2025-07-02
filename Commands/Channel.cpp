@@ -132,7 +132,9 @@ void	Channel::SetterPassAsString(std::string Value_To_Give)
 void	Channel::handleInvite(int flag)
 {
 	if (flag == 1)
+	{
 		this->Invite = true;
+	}
 	if (flag == -1)
 		this->Invite = false;
 }
