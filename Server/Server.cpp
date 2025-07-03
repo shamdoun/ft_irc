@@ -26,7 +26,7 @@ void Server::setupServer()
 
 	_serverSocket = Socket();
 	_serverSocket.setSocketAdress(AF_INET, _port, INADDR_ANY);
-	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 	if (ret < 0)
 		throw std::runtime_error("failed to set options for server socket!");
 	ret = bind(_serverSocket.getSocketFd(), (struct sockaddr*)&_serverSocket.getSocketAddress(), sizeof(_serverSocket.getSocketAddress()));
@@ -128,7 +128,6 @@ void Server::acceptConnection()
 	pfd.events = POLL_IN;
 	pfd.revents = 0;
 	_pfds.push_back(pfd);
-	std::cout << "new client is connected on host: "  << c.getIpAddress() << std::endl;
 }
 
 void Server::quitServer()
@@ -138,7 +137,7 @@ void Server::quitServer()
 	{
 		close(p->fd);
 	}
-	exit(-1);
+	exit(0);
 }
 
 void signalHander(int sig)
