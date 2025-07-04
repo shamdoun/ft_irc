@@ -17,6 +17,7 @@ class Channel
 		bool	Passwd;
 		std::string pass_as_stirng;
 		int 	Limit;
+		time_t TimeOfCreatiion;
 
 
 	public:
@@ -59,6 +60,8 @@ class Channel
 		void	PrintChannelInfo(void);
 		void	message_to_channel2(std::string &message, Client &c);
 		std::string getChannelMode(void);
+		time_t	getCreationTime(); 
+
 };
 
 #endif

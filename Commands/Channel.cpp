@@ -3,7 +3,9 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0) {}
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0){
+	TimeOfCreatiion = time(NULL);
+}
 
 // Getters
 std::string Channel::getChannelName() const 
@@ -278,4 +280,9 @@ std::string Channel::getChannelMode(void)
 	}
 	
 	return (mode);
+}
+
+time_t Channel::getCreationTime() 
+{
+	return (TimeOfCreatiion);
 }

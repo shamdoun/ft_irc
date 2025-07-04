@@ -94,7 +94,7 @@
 // #define RPL_NOTOPIC(nickName, hostName, channelName) ": 331 " + nickName + " #" + channelName + " :No topic is set" + CRLF
 // #define RPL_TOPIC(nickName, hostName, ip, channelName, topic) ":" + hostName + ip + " " + nickName + " #" + channelName + " :" + topic + CRLF
 #define RPL_CHANNELMODEIS(nickName, channelName, modes) ": 324 " + nickName + " " + channelName + " " + modes + POSTFIX
-// #define RPL_CREATIONTIME(nickName, channelName, time) ": 329 " + nickName + " #" + channelName + " " + time + CRLF
+#define RPL_CREATIONTIME(nickName, channelName, time) ": 329 " + nickName + " " + channelName + " " + time + POSTFIX
 // #define RPL_TOPICWHOTIME(nickName, channelName, who, time) ": 333 " + nickName + " #" + channelName + " " + who + " " + time + CRLF
 // #define RPL_JOINMSG(hostname, ipaddress, channelname) (":" + hostname + ipaddress + " JOIN " + channelname + CRLF)
 // #define RPL_NAMREPLY(nickname, channelname, clientslist) (": 353 " + nickname + " #" + channelname + " :" + clientslist + CRLF)

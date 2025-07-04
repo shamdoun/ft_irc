@@ -183,10 +183,15 @@ void Server::displayMode(std::vector<std::string> &params, Client &c, Channel ch
 {
 	if (params.size() == 2) // -Wall -Wextra -Werror
 	{}
-	
+	std::ostringstream oss;
+	oss << channel.getCreationTime();
+	std::string timeStr = oss.str();
 	std::string Message;
 	Message = RPL_CHANNELMODEIS(c.getNickName(), channel.getChannelName(), channel.getChannelMode());
 	send(c.getClientSocket().getSocketFd(), Message.c_str(), Message.size(), 0);
+	std::string timeMsg = RPL_CREATIONTIME(c.getNickName(), channel.getChannelName(), timeStr);
+	send(c.getClientSocket().getSocketFd(), timeMsg.c_str(), timeMsg.size(), 0);
+
 }
 
 void Server::Mode(std::vector<std::string> &params, Client &c)
