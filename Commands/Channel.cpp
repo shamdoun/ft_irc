@@ -228,6 +228,25 @@ void	Channel::PrintChannelInfo(void)
 
 
 
+// void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
+// {
+// 	// Send the message to all clients in the channel except the sender
+// 	Channel &channel = get_channel(channelName);
+// 	std::vector<Client>::iterator it = channel.getClients().begin();
+// 	for (; it != channel.getClients().end(); it++)
+// 	{
+// 		if (it->getNickName() != c.getNickName())
+// 			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+// 	}
+// }
 
-
-
+void	Channel::message_to_channel2(std::string &message, Client &c)
+{
+	// Send the message to all clients in the channel except the sender
+	std::vector<Client>::iterator it = _Clients.begin();
+	for (; it != _Clients.end(); it++)
+	{
+		if (it->getNickName() != c.getNickName())
+			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+	}
+}

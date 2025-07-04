@@ -34,7 +34,7 @@ class Channel
 		bool Is_OperatorInChannel(Client &client);  
 		bool Is_OperatorInChannel_2(std::string &nickName) ;
 		void RemoveOperator(std::string &nickName);
-		void RemoveClient(std::string &nickName); 
+		void RemoveClient(std::string &nickName);
 		
 
 		// void addClient(Client *client);
@@ -57,7 +57,9 @@ class Channel
 		int		handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		int		handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		void	PrintChannelInfo(void);
+		void	message_to_channel2(std::string &message, Client &c);
 
 };
 
 #endif
+

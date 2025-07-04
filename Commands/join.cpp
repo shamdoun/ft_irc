@@ -84,7 +84,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 		return ;
 	}
 	if (isNewChannel)
-		channel.addAsOperator(c);
+		channel.addAsOperator(c);	
 	else
 		channel.addAsClient(c);
 	std::string newchannelName = channel.getChannelName();
