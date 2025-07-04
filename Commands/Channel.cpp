@@ -3,7 +3,7 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(true), Passwd(false), pass_as_stirng(""), Limit(0) {}
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0) {}
 
 // Getters
 std::string Channel::getChannelName() const 
@@ -249,4 +249,33 @@ void	Channel::message_to_channel2(std::string &message, Client &c)
 		if (it->getNickName() != c.getNickName())
 			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
 	}
+}
+
+std::string Channel::getChannelMode(void)
+{
+	std::string mode = "";
+	if (this->Invite)
+		mode += "i";
+	if (this->Topic)
+		mode += "t";
+	if (this->Passwd)
+		mode += "k";
+	if (this->Limit > 0)
+		mode += "l";
+	if (this->_Operators.size() > 0)
+	{
+		mode += "o";
+		for (size_t i = 0; i < this->_Operators.size(); i++)
+		{
+			mode += " @" + this->_Operators[i];
+			if (i < this->_Operators.size() - 1)
+				mode += " ";
+		}
+	}
+	if (mode != "")
+	{
+		mode = "+" + mode; // Add '+' at the beginning if there are modes set
+	}
+	
+	return (mode);
 }

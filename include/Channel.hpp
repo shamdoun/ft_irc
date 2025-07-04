@@ -58,7 +58,7 @@ class Channel
 		int		handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		void	PrintChannelInfo(void);
 		void	message_to_channel2(std::string &message, Client &c);
-
+		std::string getChannelMode(void);
 };
 
 #endif
