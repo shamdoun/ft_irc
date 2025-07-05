@@ -286,3 +286,8 @@ time_t Channel::getCreationTime()
 {
 	return (TimeOfCreatiion);
 }
+//update the time of creation
+void Channel::updateCreationTime() 
+{
+  TimeOfCreatiion = time(NULL);
+}

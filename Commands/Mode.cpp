@@ -34,7 +34,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 
 			message_to_channel2(Message, c);
 			this->handleInvite(Flag);
-		}
+      this->updateCreationTime(); 
+  }
 		else if(params[0][j] == 't')
 		{
 			this->handleTopicPermission(Flag); // Set/remove topic protection (+t/-t)
@@ -43,13 +44,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting topic protection for channel: " << this->getChannelName() << std::endl;
-			}
+        this->updateCreationTime(); 
+    }
 			else if (Flag == -1)
 			{
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing topic protection from channel: " << this->getChannelName() << std::endl;
-			}
+        this->updateCreationTime();
+    }
 			
 		}
 		else if(params[0][j] == 'k')
@@ -65,13 +68,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + this->getterPassAsString() + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting password for channel: " << this->getChannelName() << std::endl;
+        this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing password from channel: " << this->getChannelName() << std::endl;
-			}
+        this->updateCreationTime();
+      }
 			
 		}
 		else if(params[0][j] == 'l')
@@ -88,13 +93,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " + " "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting user limit for channel: " << this->getChannelName() << std::endl;
-			}
+        this->updateCreationTime();
+      }
 			else if (Flag == -1)
 			{
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing user limit from channel: " << this->getChannelName() << std::endl;
-			}
+	        this->updateCreationTime();
+      }
 		}
 		else if(params[0][j] == 'o')
 		{
@@ -120,7 +127,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 					std::cout << "Added operator: " << targetNick << " to channel: " << this->getChannelName() << std::endl;
 					std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + targetNick + "\r\n";
 					message_to_channel2(Message, c);
-				}
+          this->updateCreationTime();	
+        }
 				else
 				{
 					std::string err = ERR_USERONCHANNEL(targetNick, this->getChannelName()); // ERR_USERONCHANNEL (RFC 2812 442)
@@ -135,7 +143,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 					if (*it == targetNick)
 					{
 						this->_Operators.erase(it);
-						std::cout << "Removed operator: " << targetNick << " from channel: " << this->getChannelName() << std::endl;
+						this->updateCreationTime();
+            std::cout << "Removed operator: " << targetNick << " from channel: " << this->getChannelName() << std::endl;
 						std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + targetNick + "\r\n";
 						message_to_channel2(Message, c);
 						break;

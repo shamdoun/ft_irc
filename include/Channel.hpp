@@ -60,8 +60,8 @@ class Channel
 		void	PrintChannelInfo(void);
 		void	message_to_channel2(std::string &message, Client &c);
 		std::string getChannelMode(void);
-		time_t	getCreationTime(); 
-
+		time_t    getCreationTime(); 
+    void       updateCreationTime(); 
 };
 
 #endif
