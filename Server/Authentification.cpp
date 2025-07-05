@@ -27,14 +27,15 @@ int isValidNickname(std::string const &nick)
 
 bool isValidUsername(const std::string& username)
 {
+	std::cout << "checking username\n";
     if (username.empty())
         return false;
-    for (size_t i = 0; i < username.length(); i++)
-	{
+    // for (size_t i = 0; i < username.length(); i++)
+	// {
         // if (!(isalnum(username[i]) || username[i] == '-' || username[i] == '_' || username[i] == '.'))
         //     return false;
-    }
-    return true;
+    // }
+    return (true);
 }
 
 int Server::nickNameAlreadyExists(std::string const &nick)
