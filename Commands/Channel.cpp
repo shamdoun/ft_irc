@@ -3,7 +3,8 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0){
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0)
+{
 	TimeOfCreatiion = time(NULL);
 }
 
@@ -290,4 +291,29 @@ time_t Channel::getCreationTime()
 void Channel::updateCreationTime() 
 {
   TimeOfCreatiion = time(NULL);
+}
+
+
+void 	Channel::addAsInvited(std::string &nickName)
+{
+	if (!Is_ClientInChannel_2(nickName))
+	{
+		_Invited.push_back(nickName);
+		std::cout << "Added " << nickName << " to invited list of channel: " << this->getChannelName() << std::endl;
+	}
+	else
+	{
+		std::cout << nickName << " is already in the channel: " << this->getChannelName() << std::endl;
+	}
+}
+
+int Channel::Is_Invited(std::string &nickName)
+{
+	std::vector<std::string>::iterator it = _Invited.begin();
+	for (; it != _Invited.end(); it++)
+	{
+		if (*it == nickName) 
+			return 1;
+	}
+	return 0;
 }

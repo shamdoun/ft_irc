@@ -11,6 +11,7 @@ class Channel
 		std::string _Channel_name;
 		std::vector<Client> _Clients;
 		std::vector<std::string> _Operators; // Operators of the channel
+		std::vector<std::string> _Invited; // Invited to the channel
 		std::string _topic;
 		bool	Invite; //false
 		bool	Topic;
@@ -60,9 +61,12 @@ class Channel
 		void	PrintChannelInfo(void);
 		void	message_to_channel2(std::string &message, Client &c);
 		std::string getChannelMode(void);
-		time_t    getCreationTime(); 
-    void       updateCreationTime(); 
-};
+		time_t	getCreationTime();
+		void	updateCreationTime();
+		// Invite ===================================================================
+		void	addAsInvited(std::string &nickName);
+		int		Is_Invited(std::string &nickName);
+	};
 
 #endif
 
