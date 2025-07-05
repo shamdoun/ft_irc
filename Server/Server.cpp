@@ -185,7 +185,9 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("KICK") || !cmd.compare("kick"))
 		return (3);
-	return (-1);
+	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
+    return (3);
+  return (-1);
 } 
 
 void Server::parseParams(std::vector<std::string> &params, Client *c)
