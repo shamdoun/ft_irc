@@ -22,14 +22,14 @@
 #define ERR_NOTONCHANNEL(target, channel)    PREFIX "442 " + target + " " + channel + " :You're not on that channel" POSTFIX
 #define ERR_USERNOTINCHANNEL(user, channel)     PREFIX "441 " + user + " " + channel + " :They aren't on that channel" POSTFIX
 #define ERR_NONICKNAMEGIVEN(target)               PREFIX "431 " + target + " :No nickname given" POSTFIX
-#define ERR_PASSWDMISMATCH(target)    PREFIX "464 " + target + ":Password incorrect" POSTFIX
-#define ERR_ALREADYREGISTERED(target)PREFIX "462 " + target + ":You may not re register" POSTFIX 
+#define ERR_PASSWDMISMATCH(target)    PREFIX "464 " + target + " :Password incorrect" POSTFIX
+#define ERR_ALREADYREGISTERED(target)PREFIX "462 " + target + " :You may not re register" POSTFIX 
 #define ERR_BADCHANNELKEY(channel)    PREFIX "475 " + channel + " :Cannot join channel (+k)" + POSTFIX
 #define ERR_NOTREGISTERED(nickname)                 PREFIX "451 " + nickname + " :You have not registered!" POSTFIX
 #define ERR_CHANNELISFULL(client, channel)PREFIX " 471 " + client + " " + channel + " :Cannot join channel (+l)" POSTFIX
 #define ERR_INVITEONLYCHAN(client, channel)PREFIX " 473 " + client + " " + channel + " :Cannot join channel (+i)" POSTFIX
-#define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(":: 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
-#define ERR_INVALIDMODEPARM(channelname, mode)(std::string(":: 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
+#define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(" :: 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
+#define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" :: 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
 
 
 //Replays :
@@ -69,7 +69,7 @@
 // #define ERR_PASSMISMATCH(nickName) ": 464 " + nickName + " :Password incorrect" + CRLF
 // #define ERR_NICKNAMEINUSE(nickName) ": 433 " + nickName + " :Nickname is already in use" + CRLF
 // #define ERR_ERRONEUSNICKNAME(nickName) ": 432 " + nickName + " :Erroneous nickname" + CRLF
-// #define ERR_ERRONEUSUSERNAME(userName) ": 432 " + userName + " :Erroneous username" + CRLF
+#define ERR_ERRONEUSUSERNAME(userName) ": 432 " + userName + " :Erroneous username" + POSTFIX
 // #define ERR_NOTONCHANNEL(nickName, channelName) ": 442 " + nickName + " #" + channelName + " :You're not on that channel" + CRLF
 // #define ERR_NOSUCHCHANNEL(nickName, channelName) ": 403 " + nickName + " #" + channelName + " :No such channel" + CRLF
 // #define ERR_NOSUCHNICK(nickName, recipient) ": 401 " + nickName + " " + recipient + " :No such nick" + CRLF

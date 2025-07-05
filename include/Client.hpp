@@ -41,5 +41,6 @@ public:
 	void		setHostName(std::string &value);
 	void 		setIsAuthenticated(bool b);
 	void 		setIsRegistered(bool b);
+	bool		operator==(const Client& other) const;
 };
 #endif

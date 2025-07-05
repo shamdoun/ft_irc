@@ -118,3 +118,10 @@ std::string Client::getPrefix() const
 {
     return (_nickName+ "!" + _username + "@" + _hostName);
 }
+
+bool Client::operator==(const Client& other) const
+{
+	if (this->_nickName == other._nickName)
+		return (true);
+	return (false);
+}

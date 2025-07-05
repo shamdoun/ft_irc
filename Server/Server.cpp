@@ -26,7 +26,7 @@ void Server::setupServer()
 
 	_serverSocket = Socket();
 	_serverSocket.setSocketAdress(AF_INET, _port, INADDR_ANY);
-	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	if (ret < 0)
 		throw std::runtime_error("failed to set options for server socket!");
 	ret = bind(_serverSocket.getSocketFd(), (struct sockaddr*)&_serverSocket.getSocketAddress(), sizeof(_serverSocket.getSocketAddress()));
@@ -83,9 +83,12 @@ void Server::receiveData(int i)
 	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
 	if (!bytes)
 	{
-		std::cout << "client has gracefully closed the connection" << std::endl;
+		std::cout << "client " << c->getNickName() << " has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		_pfds.erase(_pfds.begin() + i);
+		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
+		if (it != _allClients.end())
+			_allClients.erase(it);
 	}
 	if (bytes < 0)
 		throw std::runtime_error("failed to receive a new message!");

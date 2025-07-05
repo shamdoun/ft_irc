@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sstream>
+#include <cctype>
 #define MAX_CONNECTIONS 5
 
 class Channel; // Forward declaration of Channel class
@@ -28,7 +29,7 @@ private:
 	std::vector<Client>					_allClients;
 	static std::vector<struct pollfd>	_pfds;
 	char								_buffer[BUFFER_SIZE];
-	std::vector<Channel>					_channels; // List of channels on the server
+	std::vector<Channel>				_channels; // List of channels on the server
 	
 public:
 	Server();
