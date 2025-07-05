@@ -23,6 +23,10 @@ void Channel::RemoveOperator(std::string &nickname)
 			break;
 		}
 	}
+	if (_Operators.empty() && _Clients.size() > 0)
+	{
+		_Operators.push_back(_Clients[0].getNickName()); 
+	}
 }
 void Channel::RemoveClient(std::string &nickname)
 {
@@ -35,6 +39,7 @@ void Channel::RemoveClient(std::string &nickname)
 			break;
 		}
 	}
+
 }
 
 void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
