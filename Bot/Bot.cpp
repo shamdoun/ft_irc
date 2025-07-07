@@ -1,6 +1,7 @@
 #include "Bot.hpp"
 #include "../include/Authentification.hpp"
 #include "../include/numericReplies.hpp"
+#include <cstdio>
 
 void Server::createBot()
 {
@@ -33,6 +34,11 @@ void Server::createBot()
 
 void Server::handleBotRequest(std::vector<std::string> &params, Client *c)
 {
+    if (!c->getIsAuthenticated())
+    {
+        sendError(ERR_NOTREGISTERED(c->getNickName()), c);
+        return ;
+    }
     Client *bot = getBot();
     if (params.size() < 2)
     {
@@ -47,6 +53,11 @@ void Server::handleBotRequest(std::vector<std::string> &params, Client *c)
     if (params[1] == "help")
     {
         printHelpMessage(this, bot, c);
+        return ;
+    }
+    if (params[1] == "online")
+    {
+        onlineUsers(this, bot, c);
         return ;
     }
     sendError(ERR_UNKNOWNBOTCOMMAND(params[1]), c);
@@ -81,13 +92,17 @@ Client *Server::getBot()
 
 // }
 
-// void onlineUsers(Server *s)
-// {
-//     int onlineUsers;
-//     std::string output("Current online members: ");
-
-//     output += to_string(onlineUsers);
-// }
+void onlineUsers(Server *s, Client *bot, Client *c)
+{
+    int onlineUsers = s->getAllClients().size() - 2;
+    char stringValue[50];
+    std::string nick = c->getNickName();
+    std::string output("Current online members: ");
+    
+    sprintf(stringValue, "%d", onlineUsers);
+    output += std::string(stringValue);
+    s->SendPrivMsg_User(nick, output, (*bot));
+}
 
 // void quote(Server *s, Client *c)
 // {
@@ -108,6 +123,7 @@ void printBotMessage(Server *s, Client *bot, Client *c)
 {
     std::string nick = c->getNickName();
     std::string welcomeMsg("Hello! I'm your friendly bot here to help you get started. enter #help to see possible commands!");
+    
     s->SendPrivMsg_User(nick, welcomeMsg, (*bot));
 }
 

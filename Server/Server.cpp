@@ -107,6 +107,11 @@ Client *Server::getClientByFd(int fd)
 	return NULL;
 }
 
+std::vector<Client> Server::getAllClients()
+{
+	return _allClients;
+}
+
 Socket &Server::getServerSocket()
 {
 	return this->_serverSocket;
