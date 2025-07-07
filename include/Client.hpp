@@ -16,6 +16,7 @@ private:
 	bool		_isRegistered;
 	bool 		_hasNickname;
 	bool 		_hasUsername;
+	bool		_isBot;
 public:
 	Client();
 	Client(Socket _clientSocket);
@@ -32,6 +33,7 @@ public:
 	std::string getAlteredHost() const;
 	std::string getPrefix() const;
 	bool		getHasUser() const;
+	bool		getIsBot() const;
 	void		setNickName(std::string &value);
 	void		setRealName(std::string &value);
 	void		setUserName(std::string &value);
@@ -41,6 +43,7 @@ public:
 	void		setHostName(std::string &value);
 	void 		setIsAuthenticated(bool b);
 	void 		setIsRegistered(bool b);
+	void		setIsBot(bool b);
 	bool		operator==(const Client& other) const;
 };
 #endif

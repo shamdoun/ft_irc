@@ -15,6 +15,7 @@
 #include <signal.h>
 #include <sstream>
 #include <cctype>
+#include <algorithm>
 #define MAX_CONNECTIONS 5
 
 class Channel; // Forward declaration of Channel class
@@ -57,7 +58,10 @@ public:
 	int									nickNameAlreadyExists(std::string const &nick);
 	void 								handleNickNameCommand(std::vector<std::string> &params, Client *c);
 	void 								handleUserCommand(std::vector<std::string> &params, Client *c);
-	
+	void								handleBotRequest(std::vector<std::string> &params, Client *c);
+	void								createBot();
+	Client								*getBot();
+
 	// member functions (Anass)
 	void Commands(std::vector<std::string> &params, Client *c);
 	// void parseMessage(char *buf, Client *c);

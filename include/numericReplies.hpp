@@ -13,6 +13,7 @@
 #define ERR_USERONCHANNEL(channel, target)    PREFIX "443 " + channel + " " + target + " :is already on channel" POSTFIX
 #define ERR_NEEDMOREPARAMS(command)    PREFIX "461 " + command + " :Not enough parameters" POSTFIX  
 #define ERR_UNKNOWNCOMMAND(command)    PREFIX "421 " + command + " :Unknown command" POSTFIX 
+#define ERR_UNKNOWNBOTCOMMAND(command)    PREFIX "421 " + command + " :Unknown bot command" POSTFIX 
 #define ERR_CHANOPRIVSNEEDED(channel)    PREFIX "482 " + channel + " :You're not channel operator" POSTFIX
 #define ERR_ERRONEUSNICKNAME(nick)    PREFIX "432 " + nick + " :Erroneus nickname" POSTFIX
 #define ERR_NOTEXTTOSEND(nick)PREFIX "412 " + nick + " :No text to send" POSTFIX

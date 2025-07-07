@@ -5,7 +5,7 @@ Client::Client()
 	_clientSocket = Socket(1);
 }
 
-Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_hostName("localhost"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false)
+Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_hostName("localhost"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false),_isBot(false)
 {
 	
 }
@@ -70,6 +70,11 @@ void Client::setNickName(std::string &value)
 	_nickName = value;
 }
 
+void Client::setIsBot(bool b)
+{
+	_isBot = b;
+}
+
 void Client::setUserName(std::string &value)
 {
 	_username = value;
@@ -124,4 +129,9 @@ bool Client::operator==(const Client& other) const
 	if (this->_nickName == other._nickName)
 		return (true);
 	return (false);
+}
+
+bool Client::getIsBot() const
+{
+	return _isBot;
 }

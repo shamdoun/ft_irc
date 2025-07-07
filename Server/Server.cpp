@@ -15,6 +15,7 @@ Server::Server(std::string name, std::string password, unsigned short port):_nam
 
 Server::~Server()
 {
+	_allClients.clear();
 }
 
 void Server::setupServer()
@@ -44,6 +45,7 @@ void Server::initServer()
 	int ret;
 
 	setupServer();
+	createBot();
 	while (true)
 	{
 		ret = poll(_pfds.data(), _pfds.size(), -1);
@@ -126,7 +128,6 @@ void Server::acceptConnection()
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
 	Client newClient(c);
 	_allClients.push_back(newClient);
-
 	pfd.fd = fd;
 	pfd.events = POLL_IN;
 	pfd.revents = 0;
@@ -186,7 +187,9 @@ int	identifyCommand(std::string cmd)
 	if (!cmd.compare("KICK") || !cmd.compare("kick"))
 		return (3);
 	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
-    return (3);
+    	return (3);
+	if (!cmd.compare("/bot"))
+		return (4);
   return (-1);
 } 
 
@@ -200,7 +203,8 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 		case 0:
 			handleNickNameCommand(params, c);
 			break;
-		case 1:
+		case 1:	void								exitBot();
+
 			handleUserCommand(params, c);
 			break ;
 		case 2:
@@ -208,6 +212,9 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 			break ;
 		case 3:
 			Server::Commands(params, c);
+			break ;
+		case 4:
+			handleBotRequest(params, c);
 			break ;
 		default:
 			handleUnkownCommand(params[0], c);
