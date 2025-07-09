@@ -60,6 +60,11 @@ void Server::handleBotRequest(std::vector<std::string> &params, Client *c)
         onlineUsers(this, bot, c);
         return ;
     }
+    if (params[1] == "quote")
+    {
+        quote(this, bot, c);
+        return ;
+    }
     sendError(ERR_UNKNOWNBOTCOMMAND(params[1]), c);
     // if (params[1] == "echo")
     // {
@@ -104,20 +109,21 @@ void onlineUsers(Server *s, Client *bot, Client *c)
     s->SendPrivMsg_User(nick, output, (*bot));
 }
 
-// void quote(Server *s, Client *c)
-// {
-//     std::vector<std::string> quotes = {
-//         "“The only way to do great work is to love what you do.” — Steve Jobs",
-//         "“In the middle of difficulty lies opportunity.” — Albert Einstein",
-//         "“The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.” — Ralph Waldo Emerson",
-//         "“Success is not final, failure is not fatal: It is the courage to continue that counts.” — Winston Churchill",
-//         "“It does not matter how slowly you go as long as you do not stop.” — Confucius"
-//     };
-//     int random = rand() % quotes.size();
-    
-//     srand(time(0));
-//     std::string rQuote = quotes[random];
-// }
+void quote(Server *s, Client *bot, Client *c)
+{
+    std::vector<std::string> quotes;
+
+    quotes.push_back("“The only way to do great work is to love what you do.” — Steve Jobs");
+    quotes.push_back("“In the middle of difficulty lies opportunity.” — Albert Einstein");
+    quotes.push_back("“The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.” — Ralph Waldo Emerson");
+    quotes.push_back("“Success is not final, failure is not fatal: It is the courage to continue that counts.” — Winston Churchill");
+    quotes.push_back("“It does not matter how slowly you go as long as you do not stop.” — Confucius");
+    int random = rand() % quotes.size();
+    srand(time(0));
+    std::string rQuote = quotes[random];
+    std::string nick = c->getNickName();
+    s->SendPrivMsg_User(nick, rQuote, (*bot));
+}
 
 void printBotMessage(Server *s, Client *bot, Client *c)
 {
@@ -130,18 +136,13 @@ void printBotMessage(Server *s, Client *bot, Client *c)
 void printHelpMessage(Server *s, Client *bot, Client *c)
 {
     std::string nick = c->getNickName();
-    std::string time("time: ⏰ Get the current time in [your time zone].");
-    std::string echo("echo [message]: 💬 I'll repeat whatever you say! Just type a message after the command.");
-    std::string online("online: See a list of users currently online in the server.");
-    std::string quote("quote: Get a random inspiring or funny quote to brighten your day!");
-    std::string help("help: Display this help message to learn about available commands and how to use them.");   
+    std::string time("\ntime: ⏰ Get the current time in [your time zone].\n");
+    std::string echo("echo [message]: 💬 I'll repeat whatever you say! Just type a message after the command.\n");
+    std::string online("online: See a list of users currently online in the server.\n");
+    std::string quote("quote: Get a random inspiring or funny quote to brighten your day!\n");
+    std::string help("help: Display this help message to learn about available commands and how to use them.\n");   
 
-    s->SendPrivMsg_User(nick, time, (*bot));
-    s->SendPrivMsg_User(nick, echo, (*bot));
-    s->SendPrivMsg_User(nick, online, (*bot));
-    s->SendPrivMsg_User(nick, quote, (*bot));
-    s->SendPrivMsg_User(nick, help, (*bot));
-
+    s->SendPrivMsg_User(nick, time + echo + online + quote + help, (*bot));
 }
 
 // void checkBotCommand(std::string msg)

@@ -41,7 +41,7 @@ std::string Client::getUserName() const
 
 std::string Client::getHostName() const
 {
-	return this->_username;
+	return this->_hostName;
 }
 
 std::string Client::getRealName() const
