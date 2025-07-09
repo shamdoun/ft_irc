@@ -100,6 +100,9 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	if (c->getHasNickname() && c->getHasUser())
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_YOURHOST(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_MYINFO(c->getNickName(), c->getHostName()), c);
 		c->setIsAuthenticated(true);
 	}
 }
@@ -155,6 +158,9 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	if(c->getHasNickname() && c->getHasUser())
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_YOURHOST(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_MYINFO(c->getNickName(), c->getHostName()), c);
 		c->setIsAuthenticated(true);
 	}
 }
