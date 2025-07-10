@@ -1,7 +1,6 @@
 #include "Bot.hpp"
 #include "../include/Authentification.hpp"
 #include "../include/numericReplies.hpp"
-#include <cstdio>
 
 void Server::createBot()
 {
@@ -34,46 +33,40 @@ void Server::createBot()
 
 void Server::handleBotRequest(std::vector<std::string> &params, Client *c)
 {
+    std::string     fullInput;
+    Client          *bot = getBot();
+    size_t          i = 2;
+
+    while (i < params.size())
+    {
+        fullInput += params[i];
+        if (i != (params.size() - 1))
+            fullInput += " ";
+        i++;
+    }
     if (!c->getIsAuthenticated())
-    {
         sendError(ERR_NOTREGISTERED(c->getNickName()), c);
-        return ;
-    }
-    Client *bot = getBot();
-    if (params.size() < 2)
-    {
+    else if (params.size() < 2)
         printBotMessage(this, bot, c);
-        return ;
-    }
-    // if (params.size() > 2 && params[1] != "echo")
-    // {
-        // sendError(ERR_UNKNOWNCOMMAND(params[2] + " " + params[3]))
-        // return ;
-    // }
-    if (params[1] == "help")
-    {
+    else if (params.size() > 2 && params[1] != "echo")
+        sendError(ERR_UNKNOWNBOTCOMMAND(params[1] + " " + fullInput), c);
+    else if (params[1] == "help")
         printHelpMessage(this, bot, c);
-        return ;
-    }
-    if (params[1] == "online")
-    {
+    else if (params[1] == "online")
         onlineUsers(this, bot, c);
-        return ;
-    }
-    if (params[1] == "quote")
-    {
+    else if (params[1] == "quote")
         quote(this, bot, c);
-        return ;
+    else if (params[1] == "time")
+        sendCurrentTime(this, bot, c);
+    else if (params[1] == "echo")
+    {
+        if (params.size() < 3)
+            sendError(ERR_NEEDMOREPARAMS(params[1]), c);
+        else
+            echoMessage(this, c, fullInput, bot);
     }
-    sendError(ERR_UNKNOWNBOTCOMMAND(params[1]), c);
-    // if (params[1] == "echo")
-    // {
-    //     if (params.size() < 3)
-    //         sendError(ERR_NEEDMOREPARAMS(params[1]), c);
-    //     else
-    //         echoMessage(this, c, params[3]);
-    //     return ;
-    // }
+    else
+        sendError(ERR_UNKNOWNBOTCOMMAND(params[1]), c);
 }
 
 static bool ClientIsBot(Client c)
@@ -87,15 +80,24 @@ Client *Server::getBot()
     return (it != _allClients.end() ? &(*it) : NULL);
 }
 
-// void sendCurrentTime(Server *s, Client *c)
-// {
+void sendCurrentTime(Server *s, Client *bot, Client *c)
+{
+    char            buffer[30];
+    std::time_t     now = std::time(0);
+    std::tm         *localtime = std::localtime(&now);
+    std::string     nick = c->getNickName();
 
-// }
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", localtime);
+    s->SendPrivMsg_User(nick, std::string(buffer), (*bot));
 
-// void echoMessage(Server *s, Client *c, std::string message)
-// {
+}
 
-// }
+void echoMessage(Server *s, Client *c, std::string message, Client *bot)
+{
+    std::string     nick = c->getNickName();
+
+    s->SendPrivMsg_User(nick, message, (*bot));
+}
 
 void onlineUsers(Server *s, Client *bot, Client *c)
 {
@@ -111,14 +113,15 @@ void onlineUsers(Server *s, Client *bot, Client *c)
 
 void quote(Server *s, Client *bot, Client *c)
 {
-    std::vector<std::string> quotes;
+    std::vector<std::string>    quotes;
+    int                         random;
 
     quotes.push_back("“The only way to do great work is to love what you do.” — Steve Jobs");
     quotes.push_back("“In the middle of difficulty lies opportunity.” — Albert Einstein");
     quotes.push_back("“The purpose of life is not to be happy. It is to be useful, to be honorable, to be compassionate, to have it make some difference that you have lived and lived well.” — Ralph Waldo Emerson");
     quotes.push_back("“Success is not final, failure is not fatal: It is the courage to continue that counts.” — Winston Churchill");
     quotes.push_back("“It does not matter how slowly you go as long as you do not stop.” — Confucius");
-    int random = rand() % quotes.size();
+    random = rand() % quotes.size();
     srand(time(0));
     std::string rQuote = quotes[random];
     std::string nick = c->getNickName();
@@ -128,7 +131,7 @@ void quote(Server *s, Client *bot, Client *c)
 void printBotMessage(Server *s, Client *bot, Client *c)
 {
     std::string nick = c->getNickName();
-    std::string welcomeMsg("Hello! I'm your friendly bot here to help you get started. enter #help to see possible commands!");
+    std::string welcomeMsg("Hello! I'm your friendly bot here to help you get started. enter help to see possible commands!");
     
     s->SendPrivMsg_User(nick, welcomeMsg, (*bot));
 }
@@ -140,18 +143,7 @@ void printHelpMessage(Server *s, Client *bot, Client *c)
     std::string echo("echo [message]: 💬 I'll repeat whatever you say! Just type a message after the command.\n");
     std::string online("online: See a list of users currently online in the server.\n");
     std::string quote("quote: Get a random inspiring or funny quote to brighten your day!\n");
-    std::string help("help: Display this help message to learn about available commands and how to use them.\n");   
+    std::string help("help: Display this help message to learn about available commands and how to use them.");   
 
     s->SendPrivMsg_User(nick, time + echo + online + quote + help, (*bot));
 }
-
-// void checkBotCommand(std::string msg)
-// {
-//     std::string                 cmd;
-//     std::vector<std::string>    params;
-    
-//     if (msg[0] != '#')
-//     {
-//         std::cerr << "error\n";
-//     }
-// }

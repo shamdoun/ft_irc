@@ -27,14 +27,8 @@ int isValidNickname(std::string const &nick)
 
 bool isValidUsername(const std::string& username)
 {
-	std::cout << "checking username\n";
     if (username.empty())
         return false;
-    // for (size_t i = 0; i < username.length(); i++)
-	// {
-        // if (!(isalnum(username[i]) || username[i] == '-' || username[i] == '_' || username[i] == '.'))
-        //     return false;
-    // }
     return (true);
 }
 
@@ -63,7 +57,7 @@ void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
 	{
         sendError(ERR_NEEDMOREPARAMS(params[0]), c);
 	}
-	else if (params[1] != _password)
+	else if (params.size() != 2 || params[1] != _password)
 	{
         sendError(ERR_PASSWDMISMATCH(c->getNickName()), c);
 	}
@@ -79,7 +73,7 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
         sendError(ERR_NOTREGISTERED(c->getNickName()), c);
 		return ;
 	}
-	else if (params.size() < 2 || (params[1] == ":"))
+	else if (params.size() != 2 || (params[1] == ":"))
 	{
         sendError(ERR_NONICKNAMEGIVEN(c->getNickName()), c);
 		return ;
@@ -125,7 +119,7 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
         sendError(ERR_ALREADYREGISTERED(c->getNickName()), c);
 		return ;
 	}
-	if (params.size() < 5)
+	if (params.size() != 5)
 	{
 		err = ERR_NEEDMOREPARAMS(params[0]);
         sendError(ERR_NEEDMOREPARAMS(params[0]), c);
@@ -135,7 +129,6 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	hostname = params[2];
 	servername = params[3];
 	realname = params[4];
-	//!TODO: need to check if username is valid!!! 
 	if (!isValidUsername(username))
 	{
 		sendError(ERR_ERRONEUSUSERNAME(params[1]), c);
