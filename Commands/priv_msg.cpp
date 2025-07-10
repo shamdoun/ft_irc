@@ -4,10 +4,6 @@
 
 void Server::SendPrivMsg_User( std::string &target_name, const std::string &message, Client &c)
 {
-	// if (c.getNickName() == target_name)
-	// {
-
-	// }
 	if (Server::has_theClient(target_name))
 	{
 		Client &target_client = Server::get_client(target_name);
