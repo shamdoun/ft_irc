@@ -23,7 +23,7 @@ void Channel::RemoveOperator(std::string &nickname)
 			break;
 		}
 	}
-	if (_Operators.empty() && _Clients.size() > 0)
+	if (_Operators.empty() && _Clients.size() > 0) //if there only one operator and i kick him, i switch th op to the next client
 	{
 		_Operators.push_back(_Clients[0].getNickName()); 
 	}

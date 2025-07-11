@@ -2,19 +2,34 @@
 #include "../include/Server.hpp"
 #include "../include/numericReplies.hpp"
 
-void Server::SendPrivMsg_User( std::string &target_name, const std::string &message, Client &c)
+void Server::SendPrivMsg_User(std::string &target_name, const std::string &message, Client &c)
 {
-	if (Server::has_theClient(target_name))
+	std::vector<std::string> clients_to_contact = splitBy_delimeter(target_name, ',');
+	for (size_t i = 0; i < clients_to_contact.size();i++)
 	{
-		Client &target_client = Server::get_client(target_name);
-		std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_name, message);
-		send(target_client.getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
+		if (Server::has_theClient(clients_to_contact[i]))
+		{
+			Client &target_client = Server::get_client(clients_to_contact[i]);
+			std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), clients_to_contact[i], message);
+			send(target_client.getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
+		}
+		else
+		{
+			std::string err_ = ERR_NOSUCHNICK(clients_to_contact[i]);
+			send(c.getClientSocket().getSocketFd(), err_.c_str(), err_.size(), 0);
+		}		
 	}
-	else
-	{
-		std::string err_ = ERR_NOSUCHNICK(target_name);
-		send(c.getClientSocket().getSocketFd(), err_.c_str(), err_.size(), 0);
-	}
+	// if (Server::has_theClient(target_name))
+	// {
+	// 	Client &target_client = Server::get_client(target_name);
+	// 	std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_name, message);
+	// 	send(target_client.getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
+	// }
+	// else
+	// {
+	// 	std::string err_ = ERR_NOSUCHNICK(target_name);
+	// 	send(c.getClientSocket().getSocketFd(), err_.c_str(), err_.size(), 0);
+	// }
 }
 	
 
