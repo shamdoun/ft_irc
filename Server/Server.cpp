@@ -2,7 +2,7 @@
 #include "../include/numericReplies.hpp"
 #include "../include/Server_utils.hpp"
 #include "../include/Authentification.hpp"
-
+#include <algorithm>
 
 std::vector<pollfd> Server::_pfds;
 
@@ -11,6 +11,7 @@ Server::Server():_name("default"),_password("defaut"),_port(8080)
 
 Server::Server(std::string name, std::string password, unsigned short port):_name(name), _password(password), _port(port)
 {
+
 }
 
 Server::~Server()
@@ -24,8 +25,6 @@ void Server::setupServer()
 	int opt = 1;
 	int ret;
 
-
-	_serverSocket = Socket();
 	_serverSocket.setSocketAdress(AF_INET, _port, INADDR_ANY);
 	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	if (ret < 0)
@@ -199,8 +198,10 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
     	return (3);
-	if (!cmd.compare("/bot"))
+	if (!cmd.compare("/bot") || !cmd.compare("BOT"))
 		return (4);
+	if (!cmd.compare("PONG"))
+		return (5);
   return (-1);
 } 
 
@@ -226,6 +227,8 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 		case 4:
 			handleBotRequest(params, c);
 			break ;
+		case 5:
+			return ;
 		default:
 			handleUnkownCommand(params[0], c);
 	}

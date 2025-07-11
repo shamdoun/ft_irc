@@ -66,6 +66,7 @@ public:
 	void								handleBotRequest(std::vector<std::string> &params, Client *c);
 	void								createBot();
 	Client								*getBot();
+	void								closeBot();
 
 	// member functions (Anass)
 	void Commands(std::vector<std::string> &params, Client *c);

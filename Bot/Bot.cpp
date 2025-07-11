@@ -7,12 +7,12 @@ void Server::createBot()
 	int     fd;
 	Socket  c;
 	struct pollfd pfd;
-    Socket  serverSocket;
+    Socket  serverSocket(1);
     std::string nick("~bot~"), user("bot"), host("localhost"), realName("bot");
      
     serverSocket = getServerSocket();
 	socklen_t len = sizeof(serverSocket.getSocketAddress());
-	fd = connect(c.getSocketFd(), (sockaddr *)&serverSocket.getSocketAddress(), len);
+    fd = connect(c.getSocketFd(), (sockaddr *)&serverSocket.getSocketAddress(), len);
 	if (fd < 0)
 		throw std::runtime_error("failed to connect the bot to the server!");
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
@@ -49,7 +49,10 @@ void Server::handleBotRequest(std::vector<std::string> &params, Client *c)
     else if (params.size() < 2)
         printBotMessage(this, bot, c);
     else if (params.size() > 2 && params[1] != "echo")
-        sendError(ERR_UNKNOWNBOTCOMMAND(params[1] + " " + fullInput), c);
+    {
+        std::string fullErr = params[1] + " " + fullInput;
+        sendError(ERR_UNKNOWNBOTCOMMAND(fullErr), c);
+    }
     else if (params[1] == "help")
         printHelpMessage(this, bot, c);
     else if (params[1] == "online")
@@ -139,11 +142,15 @@ void printBotMessage(Server *s, Client *bot, Client *c)
 void printHelpMessage(Server *s, Client *bot, Client *c)
 {
     std::string nick = c->getNickName();
-    std::string time("\ntime: ⏰ Get the current time in [your time zone].\n");
+    std::string time("time: ⏰ Get the current time in [your time zone].\n");
     std::string echo("echo [message]: 💬 I'll repeat whatever you say! Just type a message after the command.\n");
     std::string online("online: See a list of users currently online in the server.\n");
     std::string quote("quote: Get a random inspiring or funny quote to brighten your day!\n");
-    std::string help("help: Display this help message to learn about available commands and how to use them.");   
+    std::string help("help: Display this help message to learn about available commands and how to use them.");
 
-    s->SendPrivMsg_User(nick, time + echo + online + quote + help, (*bot));
+    s->SendPrivMsg_User(nick, time, (*bot));
+    s->SendPrivMsg_User(nick, echo , (*bot));
+    s->SendPrivMsg_User(nick, online, (*bot));
+    s->SendPrivMsg_User(nick, quote , (*bot));
+    s->SendPrivMsg_User(nick, help, (*bot));
 }
