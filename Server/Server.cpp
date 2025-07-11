@@ -72,7 +72,8 @@ void Server::startListening()
 	ret = listen(_serverSocket.getSocketFd(), MAX_CONNECTIONS);
 	if (ret < 0)
 		throw std::runtime_error("failed to listen for connections!");
-	std::cout << "Server is listening on " << _serverSocket.getIpAddress() << ":"  << _port << std::endl;
+	std::cout << INIT ;
+	std::cout << "Server is listening on " << GREEN_P << _serverSocket.getIpAddress() << ":"  << _port << GREEN_S  << std::endl;
 }
 
 void Server::receiveData(int i)
@@ -85,10 +86,10 @@ void Server::receiveData(int i)
 	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
 	if (!bytes)
 	{
-		std::cout << "client " << c->getNickName() << " has gracefully closed the connection" << std::endl;
+		std::cout << "client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
-		_pfds.erase(_pfds.begin() + i);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
+		_pfds.erase(_pfds.begin() + i);
 		if (it != _allClients.end())
 			_allClients.erase(it);
 	}
@@ -132,16 +133,21 @@ void Server::acceptConnection()
 		throw std::runtime_error("failed to make a file non-blocking");
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
 	Client newClient(c);
+	newClient.setId(_allClients.size());
 	_allClients.push_back(newClient);
 	pfd.fd = fd;
 	pfd.events = POLL_IN;
 	pfd.revents = 0;
 	_pfds.push_back(pfd);
+	if (newClient.getId() > 1)
+		std::cout << "Client " << GREEN_P << "<" << newClient.getId() - 1 << "> " << GREEN_S << "is connected\n"; 
+
 }
 
 void Server::quitServer()
 {
-	std::cout << "closing all connections" << std::endl;
+	std::cout << "\n-----------Quiting the Server-------------\n";
+	std::cout << RED_P << "closing all connections...." << RED_S << std::endl;
 	for (std::vector<struct pollfd>::iterator p = _pfds.begin(); p != _pfds.end(); p++)
 	{
 		close(p->fd);
@@ -208,8 +214,7 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 		case 0:
 			handleNickNameCommand(params, c);
 			break;
-		case 1:	void								exitBot();
-
+		case 1:
 			handleUserCommand(params, c);
 			break ;
 		case 2:

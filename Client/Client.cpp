@@ -126,7 +126,7 @@ std::string Client::getPrefix() const
 
 bool Client::operator==(const Client& other) const
 {
-	if (this->_nickName == other._nickName)
+	if (this->_id == other._id)
 		return (true);
 	return (false);
 }
@@ -134,4 +134,14 @@ bool Client::operator==(const Client& other) const
 bool Client::getIsBot() const
 {
 	return _isBot;
+}
+
+size_t Client::getId() const
+{
+	return _id;
+}
+
+void Client::setId(size_t id)
+{
+	_id = id;
 }

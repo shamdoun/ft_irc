@@ -8,6 +8,7 @@ class Client
 {
 private:
 	Socket		_clientSocket;
+	size_t			_id;
 	std::string _nickName;
 	std::string _username;
 	std::string _realName;
@@ -34,6 +35,7 @@ public:
 	std::string getPrefix() const;
 	bool		getHasUser() const;
 	bool		getIsBot() const;
+	size_t			getId() const;
 	void		setNickName(std::string &value);
 	void		setRealName(std::string &value);
 	void		setUserName(std::string &value);
@@ -44,6 +46,7 @@ public:
 	void 		setIsAuthenticated(bool b);
 	void 		setIsRegistered(bool b);
 	void		setIsBot(bool b);
+	void		setId(size_t id);
 	bool		operator==(const Client& other) const;
 };
 #endif

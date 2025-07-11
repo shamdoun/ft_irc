@@ -62,7 +62,10 @@ void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
         sendError(ERR_PASSWDMISMATCH(c->getNickName()), c);
 	}
 	else
+	{
 		c->setIsRegistered(true);
+		std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> is authenticated!\n";  
+	}
 }
 
 void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
@@ -91,6 +94,7 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	if (!c->getHasNickname())
 		c->setHasNickname();
 	c->setNickName(params[1]);
+	std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> set nickname: " << GREEN_P << params[1] << GREEN_S << std::endl;  
 	if (c->getHasNickname() && c->getHasUser())
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
@@ -98,6 +102,7 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
         sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c);
         sendError(RPL_MYINFO(c->getNickName(), c->getHostName()), c);
 		c->setIsAuthenticated(true);
+		std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> is registered!\n";  
 	}
 }
 
@@ -119,7 +124,7 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
         sendError(ERR_ALREADYREGISTERED(c->getNickName()), c);
 		return ;
 	}
-	if (params.size() != 5)
+	if (params.size() < 5 || (params.size() > 5 && params[4][0] != ':'))
 	{
 		err = ERR_NEEDMOREPARAMS(params[0]);
         sendError(ERR_NEEDMOREPARAMS(params[0]), c);
@@ -148,6 +153,10 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	c->setRealName(realname);
 	c->setHostName(hostname);
 	c->setHasUserame();
+	std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> set username: " << GREEN_P << username << GREEN_S << std::endl;  
+	std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> set hostname: " << GREEN_P << hostname << GREEN_S << std::endl;  
+	std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> set servername: " << GREEN_P << servername << GREEN_S << std::endl;  
+	std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> set realname: " << GREEN_P << realname << GREEN_S << std::endl;  
 	if(c->getHasNickname() && c->getHasUser())
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
@@ -155,5 +164,6 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
         sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c);
         sendError(RPL_MYINFO(c->getNickName(), c->getHostName()), c);
 		c->setIsAuthenticated(true);
+		std::cout << "Client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> is registered!\n";
 	}
 }

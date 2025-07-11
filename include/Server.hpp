@@ -17,6 +17,11 @@
 #include <cctype>
 #include <algorithm>
 #define MAX_CONNECTIONS 5
+#define GREEN_P "\033[1;32m"
+#define GREEN_S "\033[0m"
+#define RED_P "\033[1;31m"
+#define RED_S "\033[0m"
+#define INIT "-----------Server initialisation----------\n"
 
 class Channel; // Forward declaration of Channel class
 
