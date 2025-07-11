@@ -6,6 +6,7 @@
 Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0)
 {
 	TimeOfCreatiion = time(NULL);
+	Topic_Update_Time = time(NULL);
 }
 
 // Getters
@@ -293,6 +294,15 @@ void Channel::updateCreationTime()
   TimeOfCreatiion = time(NULL);
 }
 
+void Channel::TopicUpdateTime()
+{
+	Topic_Update_Time = time(NULL);
+}
+
+time_t Channel::getTopicUpdateTime() 
+{
+	return (Topic_Update_Time);
+}
 
 void 	Channel::addAsInvited(std::string &nickName)
 {

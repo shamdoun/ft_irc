@@ -19,6 +19,7 @@ class Channel
 		std::string pass_as_stirng;
 		int 	Limit;
 		time_t TimeOfCreatiion;
+		time_t Topic_Update_Time;
 
 
 	public:
@@ -64,7 +65,9 @@ class Channel
 		void	message_to_channel2(std::string &message, Client &c);
 		std::string getChannelMode(void);
 		time_t	getCreationTime();
+		time_t	getTopicUpdateTime();
 		void	updateCreationTime();
+		void	TopicUpdateTime();
 		// Invite ===================================================================
 		void	addAsInvited(std::string &nickName);
 		int		Is_Invited(std::string &nickName);

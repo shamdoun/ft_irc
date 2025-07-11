@@ -37,8 +37,16 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 	}
 	else
 	{
+		std::ostringstream oss;
+		oss << channel.getTopicUpdateTime();
+		std::string timeStr = oss.str();
 		std::string reply = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());
+		std::string nickname = c.getNickName();
+		std::string channelName = channel.getChannelName();
+
+		std::string timeReply = RPL_TOPICWHOTIME(nickname, channelName,	nickname, timeStr); //  i need to change second name with the one who did the topic
 		send(c.getClientSocket().getSocketFd(), reply.c_str(), reply.size(), 0);
+		send(c.getClientSocket().getSocketFd(), timeReply.c_str(), timeReply.size(), 0);
 		return;
 	}
   }
@@ -47,6 +55,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 	if (channel.Is_OperatorInChannel(c) || !channel.getterTopic()) // Client is an operator in the channel
 	{
 		channel.SetterTopicAsString(params[2]);
+		channel.TopicUpdateTime();
 		std::string Message = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());
 		std::string Channel_Name = channel.getChannelName();
 		message_to_Channel(Channel_Name, Message, c);
