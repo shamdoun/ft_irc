@@ -317,3 +317,13 @@ int Channel::Is_Invited(std::string &nickName)
 	}
 	return 0;
 }
+
+std::string Channel::getTopic(void) const
+{
+	return (this->_topic);
+}
+
+void	Channel::SetterTopicAsString(std::string Value_To_Give)
+{
+	this->_topic = Value_To_Give;
+}

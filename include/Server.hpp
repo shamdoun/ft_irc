@@ -103,6 +103,7 @@ public:
 	int		initialParsingMode(std::vector<std::string> &params, Client &c);
 	void	displayMode(std::vector<std::string> &params, Client &c, Channel channel);
     //======================================================================//
+	void	Topic_Handler(std::vector<std::string> &params, Client &c);
 
 };
 

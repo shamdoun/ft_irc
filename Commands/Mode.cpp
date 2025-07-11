@@ -206,15 +206,15 @@ void Server::displayMode(std::vector<std::string> &params, Client &c, Channel ch
 void Server::Mode(std::vector<std::string> &params, Client &c)
 {
 
-	///////////// = DEBUGING = //////////////
-	std::cout << params.size() << " << Params size" << std::endl;
-	std::vector<std::string>::iterator itest = params.begin();
-	for (; itest != params.end(); itest++)
-	{
-		std::cout << *itest << " ";
-	}
-	std::cout << std::endl;
-	////////////////////////////////////////
+	// ///////////// = DEBUGING = //////////////
+	// std::cout << params.size() << " << Params size" << std::endl;
+	// std::vector<std::string>::iterator itest = params.begin();
+	// for (; itest != params.end(); itest++)
+	// {
+	// 	std::cout << *itest << " ";
+	// }
+	// std::cout << std::endl;
+	// ////////////////////////////////////////
 
 
 	if (params.size() < 2)

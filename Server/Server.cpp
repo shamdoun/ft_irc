@@ -202,6 +202,8 @@ int	identifyCommand(std::string cmd)
 		return (4);
 	if (!cmd.compare("PONG"))
 		return (5);
+	if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
+		return (3);
   return (-1);
 } 
 

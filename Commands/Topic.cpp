@@ -1,0 +1,63 @@
+#include "../include/Client.hpp"
+#include "../include/Server.hpp"
+#include "../include/numericReplies.hpp"
+#include "../include/Channel.hpp"
+
+
+void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
+{
+	Channel &channel = get_channel(params[1]);
+	
+	if (params.size() < 2)
+	{
+		std::string err = ERR_NEEDMOREPARAMS(params[0]);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+  	}
+
+	if (!has_theChannel(params[1]))  //incorrect channel
+	{
+		std::string err = ERR_NOSUCHCHANNEL(params[1]);
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	if (!channel.Is_ClientInChannel(c)) // Client is not in channel
+	{
+		std::string err = ERR_NOTONCHANNEL(c.getNickName(), channel.getChannelName());
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;	
+	}
+  if(params.size() == 2) // No topic is given, just display the current topic
+  {
+	if (channel.getTopic() == "")
+	{
+		std::string err = RPL_NOTOPIC(c.getNickName(), channel.getChannelName());
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+	else
+	{
+		std::string reply = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());
+		send(c.getClientSocket().getSocketFd(), reply.c_str(), reply.size(), 0);
+		return;
+	}
+  }
+  else
+  {
+	if (channel.Is_OperatorInChannel(c) || !channel.getterTopic()) // Client is an operator in the channel
+	{
+		channel.SetterTopicAsString(params[2]);
+		std::string Message = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());
+		std::string Channel_Name = channel.getChannelName();
+		message_to_Channel(Channel_Name, Message, c);
+	}
+	else
+	{
+
+		std::string err = ERR_CHANOPRIVSNEEDED(channel.getChannelName());
+		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+		return;
+	}
+  }
+}
+	

@@ -54,6 +54,8 @@ class Channel
 		void	SetterPasswd(bool Value_To_Give);
 		void	SetterLimit(int Value_To_Give);
 		void	SetterPassAsString(std::string Value_To_Give);
+		std::string getTopic(void) const;
+		void	SetterTopicAsString(std::string Value_To_Give);
 		void	handleInvite(int flag);
 		void	handleTopicPermission(int flag);
 		int		handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count);
