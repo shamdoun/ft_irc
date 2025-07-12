@@ -64,9 +64,6 @@ public:
 	void 								handleNickNameCommand(std::vector<std::string> &params, Client *c);
 	void 								handleUserCommand(std::vector<std::string> &params, Client *c);
 	void								handleBotRequest(std::vector<std::string> &params, Client *c);
-	void								createBot();
-	Client								*getBot();
-	void								closeBot();
 
 	// member functions (Anass)
 	void Commands(std::vector<std::string> &params, Client *c);
@@ -107,10 +104,10 @@ public:
 
 };
 
-int	identifyCommand(std::string cmd);
-std::string extractMessage(std::string m);
-void signalHander(int sig);
-std::string get_corr_message(std::vector<std::string> &params, int index);
-std::vector <std::string> splitBy_delimeter(const std::string &str, char del);
+int							identifyCommand(std::string cmd);
+std::string					extractMessage(std::string m);
+void						signalHander(int sig);
+std::string					get_corr_message(std::vector<std::string> &params, int index);
+std::vector<std::string>	splitBy_delimeter(const std::string &str, char del);
 
 #endif

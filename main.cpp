@@ -12,7 +12,7 @@ int isValidPort(char *p)
 		i++;
 	}
 	v = std::atof(p);
-	if (v > 65535)
+	if (v < 1024 || v > 65535)
 		return (0);
 	return (1);
 }
@@ -34,7 +34,7 @@ int pasrseArgs(char *pass, char *port)
 {
 	if (!isValidPort(port))
 	{
-		std::cerr << "a valid range for the port is 0 - 65535\n";
+		std::cerr << "a valid range for the port is 1024 - 65535\n";
 		return (1);
 	}
 	if (!isValidPassword(pass))

@@ -44,7 +44,6 @@ void Server::initServer()
 	int ret;
 
 	setupServer();
-	createBot();
 	while (true)
 	{
 		ret = poll(_pfds.data(), _pfds.size(), -1);
@@ -85,7 +84,7 @@ void Server::receiveData(int i)
 	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
 	if (!bytes)
 	{
-		std::cout << "client <" << GREEN_P << c->getId() - 1 << GREEN_S << "> has gracefully closed the connection" << std::endl;
+		std::cout << "client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
 		_pfds.erase(_pfds.begin() + i);
@@ -127,19 +126,24 @@ void Server::acceptConnection()
 	fd = accept(_serverSocket.getSocketFd(), (sockaddr *)&c.getSocketAddress(), &len);
 	if (fd < 0)
 		throw std::runtime_error("failed to accept a new connection!");
+	if (MAX_CONNECTIONS == _allClients.size() - 2)
+	{
+		std::cerr << "reached maximum connections!\n";
+		close(fd);
+		return ;
+	}
 	c.setSocketFd(fd);
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		throw std::runtime_error("failed to make a file non-blocking");
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
 	Client newClient(c);
-	newClient.setId(_allClients.size());
+	newClient.setId(_allClients.size() + 1);
 	_allClients.push_back(newClient);
 	pfd.fd = fd;
 	pfd.events = POLL_IN;
 	pfd.revents = 0;
 	_pfds.push_back(pfd);
-	if (newClient.getId() > 1)
-		std::cout << "Client " << GREEN_P << "<" << newClient.getId() - 1 << "> " << GREEN_S << "is connected\n"; 
+	std::cout << "Client " << GREEN_P << "<" << newClient.getId() << "> " << GREEN_S << "is connected\n"; 
 
 }
 
@@ -198,10 +202,8 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
     	return (3);
-	if (!cmd.compare("/bot") || !cmd.compare("BOT"))
-		return (4);
 	if (!cmd.compare("PONG"))
-		return (5);
+		return (4);
 	if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
 		return (3);
   return (-1);
@@ -227,9 +229,6 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 			Server::Commands(params, c);
 			break ;
 		case 4:
-			handleBotRequest(params, c);
-			break ;
-		case 5:
 			return ;
 		default:
 			handleUnkownCommand(params[0], c);
