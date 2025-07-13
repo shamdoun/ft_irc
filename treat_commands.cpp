@@ -4,7 +4,7 @@
 
 void Server::Commands(std::vector<std::string> &params, Client *c)
 {	
-	std::string err;   
+	std::string err;
 	if (!c->getIsAuthenticated())  
 	{   
 		err = ERR_NOTREGISTERED(c->getNickName());

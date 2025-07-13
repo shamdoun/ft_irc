@@ -84,7 +84,7 @@ void Server::receiveData(int i)
 	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
 	if (!bytes)
 	{
-		std::cout << "client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
+		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
 		_pfds.erase(_pfds.begin() + i);

@@ -40,7 +40,13 @@ Bot &Bot::operator=(const Bot &other)
 void Bot::createBot()
 {
     int     fd;
+    struct timeval timeout;
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
     Socket serverSocket(1);
+    
+    if (setsockopt(_clientSocket.getSocketFd(), SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) < 0)
+        throw std::runtime_error("setsocketopt failed!");
     serverSocket.setSocketAdress(AF_INET, _port, inet_addr(_ip.c_str()));
     socklen_t len = sizeof(serverSocket.getSocketAddress());
     _clientSocket.setIpAddress(inet_ntoa(_clientSocket.getSocketAddress().sin_addr));
