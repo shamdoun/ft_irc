@@ -156,7 +156,7 @@ void Bot::handleBotRequest(std::string buf)
     receiver = params[0].substr(1, pos - 1);
     if (params[3] != ":echo" && params.size() > 4)
     {
-        sendMessage("incorrect input, check ´help'for available commands!!", receiver) ;
+        sendMessage("incorrect input, check `help` for available commands!!", receiver) ;
     }
     else if (params[3] == ":time")
     {
@@ -178,6 +178,10 @@ void Bot::handleBotRequest(std::string buf)
     {
         help(receiver);
     }
+    else
+    {
+        sendMessage("incorrect input, check `help` for available commands!!", receiver) ;
+    }
 }
 
 void Bot::echo(std::string receiver, std::vector<std::string> args)
@@ -189,7 +193,6 @@ void Bot::echo(std::string receiver, std::vector<std::string> args)
     }
     else
     {
-        std::cout << args[5] << std::endl;
         for (size_t i = 4; i < args.size(); i++)
         {
             msg += args[i];
@@ -202,7 +205,7 @@ void Bot::echo(std::string receiver, std::vector<std::string> args)
 
 void Bot::quote(std::string &receiver)
 {
-        std::vector<std::string>    quotes;
+    std::vector<std::string>    quotes;
     int                         random;
 
     quotes.push_back("“The only way to do great work is to love what you do.” — Steve Jobs");
@@ -231,5 +234,12 @@ void Bot::help(std::string &receiver)
     std::string hello("hello: Display welcome message!");
 
     sendMessage(time + echo + quote + help + hello, receiver);
-
+    usleep(100);
+    sendMessage(echo, receiver);
+    usleep(100);
+    sendMessage(quote, receiver);
+    usleep(100);
+    sendMessage(help, receiver);
+    usleep(100);
+    sendMessage(hello, receiver);
 }

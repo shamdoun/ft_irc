@@ -17,13 +17,13 @@
 class Bot
 {
     private:
-		static Socket		_clientSocket;
-        std::string	_ip;
-        unsigned short			_port;
-        std::string	_password;
-		std::string _nick;
-		std::string _user;
-		char		_buffer[1024];
+		static Socket	_clientSocket;
+        std::string		_ip;
+        unsigned short	_port;
+        std::string		_password;
+		std::string 	_nick;
+		std::string 	_user;
+		char			_buffer[1024];
     public:
         Bot();
         ~Bot();
