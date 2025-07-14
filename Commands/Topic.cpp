@@ -27,7 +27,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;	
 	}
-  if(params.size() == 2) // No topic is given, just display the current topic
+  if (params.size() == 2) // No topic is given, just display the current topic
   {
 	if (channel.getTopic() == "")
 	{
@@ -44,7 +44,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 		std::string nickname = c.getNickName();
 		std::string channelName = channel.getChannelName();
 
-		std::string timeReply = RPL_TOPICWHOTIME(nickname, channelName,	nickname, timeStr); //  i need to change second name with the one who did the topic
+		std::string timeReply = RPL_TOPICWHOTIME(nickname, channelName,	channel.WhoUpdatedGetter(), timeStr); //  i need to change second name with the one who did the topic
 		send(c.getClientSocket().getSocketFd(), reply.c_str(), reply.size(), 0);
 		send(c.getClientSocket().getSocketFd(), timeReply.c_str(), timeReply.size(), 0);
 		return;
@@ -56,6 +56,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 	{
 		channel.SetterTopicAsString(params[2]);
 		channel.TopicUpdateTime();
+		channel.WhoUpdatedSetter(c.getNickName());
 		std::string Message = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());
 		std::string Channel_Name = channel.getChannelName();
 		message_to_Channel(Channel_Name, Message, c);

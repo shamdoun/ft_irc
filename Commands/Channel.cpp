@@ -3,7 +3,7 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0)
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0), Client_who_updated("")
 {
 	TimeOfCreatiion = time(NULL);
 	Topic_Update_Time = time(NULL);
@@ -336,4 +336,14 @@ std::string Channel::getTopic(void) const
 void	Channel::SetterTopicAsString(std::string Value_To_Give)
 {
 	this->_topic = Value_To_Give;
+}
+
+std::string Channel::WhoUpdatedGetter(void)
+{
+	return Client_who_updated;
+}
+
+void Channel::WhoUpdatedSetter(std::string WhoChandedstr)
+{
+	this->Client_who_updated = WhoChandedstr;
 }

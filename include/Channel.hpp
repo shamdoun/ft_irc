@@ -20,7 +20,7 @@ class Channel
 		int 	Limit;
 		time_t TimeOfCreatiion;
 		time_t Topic_Update_Time;
-
+		std::string Client_who_updated;
 
 	public:
 		Channel(std::string name);
@@ -71,6 +71,9 @@ class Channel
 		// Invite ===================================================================
 		void	addAsInvited(std::string &nickName);
 		int		Is_Invited(std::string &nickName);
+		std::string WhoUpdatedGetter(void);
+		void WhoUpdatedSetter(std::string WhoChandedstr);
+		
 	};
 
 #endif
