@@ -6,9 +6,14 @@
 
 void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 {
-	Channel &channel = get_channel(params[1]);
-	
-	if (params.size() < 2)
+	std::cout << params.size() <<  "PARAM SIZE \n";
+	// if (params.size() <= 2 )
+	// {
+	// 	std::string err = ERR_NEEDMOREPARAMS(params[0]);
+	// 	send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+	// 	return;
+  	// }
+	if (params.size() < 2 || (params.size() <= 2 && params[1] == ":"))
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
@@ -21,6 +26,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
+	Channel &channel = get_channel(params[1]);
 	if (!channel.Is_ClientInChannel(c)) // Client is not in channel
 	{
 		std::string err = ERR_NOTONCHANNEL(c.getNickName(), channel.getChannelName());

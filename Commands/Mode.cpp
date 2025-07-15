@@ -44,8 +44,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting topic protection for channel: " << this->getChannelName() << std::endl;
-        this->updateCreationTime(); 
-    }
+       			 this->updateCreationTime(); 
+			}
 			else if (Flag == -1)
 			{
 				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
@@ -124,11 +124,10 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				if (!this->Is_OperatorInChannel_2(targetNick))
 				{
 					this->_Operators.push_back(targetNick);
-					std::cout << "Added operator: " << targetNick << " to channel: " << this->getChannelName() << std::endl;
-					std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + targetNick + "\r\n";
+					std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), params[0][j], targetNick);
 					message_to_channel2(Message, c);
-          this->updateCreationTime();	
-        }
+          			this->updateCreationTime();	
+				 }
 				else
 				{
 					std::string err = ERR_USERONCHANNEL(targetNick, this->getChannelName()); // ERR_USERONCHANNEL (RFC 2812 442)
@@ -144,8 +143,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 					{
 						this->_Operators.erase(it);
 						this->updateCreationTime();
-            std::cout << "Removed operator: " << targetNick << " from channel: " << this->getChannelName() << std::endl;
-						std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + targetNick + "\r\n";
+						std::string Message = RPL_UMODEISMINUS(c.getNickName(), this->getChannelName(), params[0][j], targetNick);
 						message_to_channel2(Message, c);
 						break;
 					}

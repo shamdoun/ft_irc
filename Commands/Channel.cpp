@@ -247,10 +247,11 @@ void	Channel::PrintChannelInfo(void)
 void	Channel::message_to_channel2(std::string &message, Client &c)
 {
 	// Send the message to all clients in the channel except the sender
+	(void)c;
 	std::vector<Client>::iterator it = _Clients.begin();
 	for (; it != _Clients.end(); it++)
 	{
-		if (it->getNickName() != c.getNickName())
+		// if (it->getNickName() != c.getNickName())
 			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
 	}
 }

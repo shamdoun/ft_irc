@@ -12,7 +12,7 @@ class Channel
 		std::vector<Client> _Clients;
 		std::vector<std::string> _Operators; // Operators of the channel
 		std::vector<std::string> _Invited; // Invited to the channel
-		std::string _topic;
+		std::string _topic; 
 		bool	Invite; //false
 		bool	Topic;
 		bool	Passwd;

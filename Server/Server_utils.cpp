@@ -91,6 +91,11 @@ void Server::SendChannelInfos(std::string &channelName, Client &c)
 	}
 	std::string members_channel = RPL_NAMREPLY(c.getNickName(), channelName, listOfClients);
 	send(c.getClientSocket().getSocketFd(), members_channel.c_str(), members_channel.size(), 0);
+	if (channel.getTopic() != "")
+	{
+		std::string TopicMessage = RPL_TOPIC(c.getNickName(), channelName, channel.getTopic());
+		send(c.getClientSocket().getSocketFd(), TopicMessage.c_str(), TopicMessage.size(), 0);
+	}
 	std::string end_of_names = RPL_ENDOFNAMES(c.getNickName(), channelName);
 	send(c.getClientSocket().getSocketFd(), end_of_names.c_str(), end_of_names.size(), 0);
 }
