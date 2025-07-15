@@ -111,7 +111,9 @@ std::string get_corr_message(std::vector<std::string> &params, int index)
 			if (i < params.size() - 1)
 				message += " ";
 		}
-		message.erase(0, 1); // Remove the leading ':'
+		// message.erase(message.begin()); // Remove the leading ':
+		message.erase(0, message.find_first_not_of(':'));
+		// message = message.substr(1, message.length());
 	}
 	else
 		message = params[index];

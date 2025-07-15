@@ -46,7 +46,7 @@ void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel
 {
 	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
 	{
-		std::string err = ERR_NOSUCHNICK(client_to_kick);
+		std::string err = ERR_NOSUCHNICK(c.getNickName() ,client_to_kick);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}

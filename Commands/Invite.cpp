@@ -36,7 +36,7 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 	}
 	if (!has_theClient(nickName))
 	{
-		std::string err = ERR_NOSUCHNICK(nickName);
+		std::string err = ERR_NOSUCHNICK( c.getNickName(), nickName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}

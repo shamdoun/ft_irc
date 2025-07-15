@@ -1,6 +1,9 @@
 #pragma once
 
-#define PREFIX "::IRCServer "
+
+#define SERVER_NAME "IRCServer"
+#define PREFIX ":" SERVER_NAME " "
+
 #define POSTFIX "\r\n"
 
 #define RPL_WELCOME(nick, hostname)  std::string("\r\n:") + std::string(hostname) + std::string(" 001 ") + std::string(nick) + std::string(" :Welcome to the Internet Relay Chat Network ") + std::string(nick) + "!~" + std::string(nick) + "@" + std::string(hostname) + "\r\n"
@@ -17,9 +20,11 @@
 #define ERR_CHANOPRIVSNEEDED(channel)    PREFIX "482 " + channel + " :You're not channel operator" POSTFIX
 #define ERR_ERRONEUSNICKNAME(nick)    PREFIX "432 " + nick + " :Erroneus nickname" POSTFIX
 #define ERR_NOTEXTTOSEND(nick)PREFIX "412 " + nick + " :No text to send" POSTFIX
-#define ERR_NORECIPIENT(nick, command)              PREFIX "411 " + nick + " :No recipient given (" + command + ")" POSTFIX
+// #define ERR_NORECIPIENT(nick, command)              PREFIX "411 " + nick + " :No recipient given (" + command + ")" POSTFIX
 #define ERR_NOSUCHCHANNEL(channel)    PREFIX "403 " + channel + " :No such channel" POSTFIX 
-#define ERR_NOSUCHNICK(nick)    PREFIX "401 " + nick + " :No such nick" POSTFIX
+// #define ERR_NOSUCHNICK(nick)    PREFIX "401 " + nick + " :No such nick" POSTFIX
+#define ERR_NOSUCHNICK(nick, target) PREFIX "401 " + nick + " " + target + " :No such nick/channel" POSTFIX
+
 #define ERR_NOTONCHANNEL(target, channel)    PREFIX "442 " + target + " " + channel + " :You're not on that channel" POSTFIX
 #define ERR_USERNOTINCHANNEL(user, channel)     PREFIX "441 " + user + " " + channel + " :They aren't on that channel" POSTFIX
 #define ERR_NONICKNAMEGIVEN(target)               PREFIX "431 " + target + " :No nickname given" POSTFIX
@@ -29,27 +34,27 @@
 #define ERR_NOTREGISTERED(nickname)                 PREFIX "451 " + nickname + " :You have not registered!" POSTFIX
 #define ERR_CHANNELISFULL(client, channel)PREFIX " 471 " + client + " " + channel + " :Cannot join channel (+l)" POSTFIX
 #define ERR_INVITEONLYCHAN(client, channel)PREFIX " 473 " + client + " " + channel + " :Cannot join channel (+i)" POSTFIX
-#define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(" :: 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
-#define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" :: 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
+#define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(" : 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
+#define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" : 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
 
 
 //Replays :
-#define RPL_KICK(kikker, target, channel, reason)    "::" +  kikker +" KICK " + channel + " " + target + " :" + reason + POSTFIX
+#define RPL_KICK(kikker, target, channel, reason)    ":" +  kikker +" KICK " + channel + " " + target + " :" + reason + POSTFIX
 #define RPL_NAMREPLY(sender, channel, users)    PREFIX "353 " + sender + " = " + channel + " :" + users + POSTFIX
 #define RPL_ENDOFNAMES(sender, channel)        PREFIX "366 " + sender + " " + channel + " :End of /NAMES list." POSTFIX
 #define RPL_TOPIC(sender, channel, topic)PREFIX " 332 " + sender + " " + channel + " :" + topic + POSTFIX
 #define RPL_PRIVMSG(sender, username, ip, target, msg)":" + sender + "!" + username + "@" + ip + " PRIVMSG " + target + " :" + msg + POSTFIX 
-#define RPL_NICK(sender, nick)"::" + sender + " NICK " + nick + POSTFIX
+#define RPL_NICK(sender, nick)":" + sender + " NICK " + nick + POSTFIX
 #define RPL_NOTOPIC(sender, channel)PREFIX " 331 " + sender + " " + channel + " :No topic is set" + POSTFIX
-#define RPL_INVITING(nickname, targnick, targchan)  ":: 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
-#define RPL_INVITE(sender, target, channel)"::" + sender + " INVITE " + target + " " + channel + POSTFIX
-#define RPL_INVITING(nickname, targnick, targchan)  ":: 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
-#define RPL_JOINMSG(hostname, ipaddress, channelname)("::" + hostname + ipaddress + " JOIN " + channelname + POSTFIX)
-#define RPL_JOIN(sender, channel)"::" + sender + " JOIN :" + channel + POSTFIX
-#define RPL_CHANGEMODE(hostname, channelname, mode)("::" + hostname + " MODE " + channelname + " " + mode + POSTFIX)
-#define RPL_UMODEIS(hostname, channelname, mode, user)"::" + hostname + " MODE " + channelname + " " + mode + " " + user + POSTFIX
-#define RPL_PART(sender, channel, reason)    "::" + sender + " PART " + channel + " :" + reason + POSTFIX
-#define RPL_QUIT(sender, reason)                        "::" + sender + " QUIT :Quit: " + reason + POSTFIX
+#define RPL_INVITING(nickname, targnick, targchan)  ": 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
+#define RPL_INVITE(sender, target, channel)":" + sender + " INVITE " + target + " " + channel + POSTFIX
+#define RPL_INVITING(nickname, targnick, targchan)  ": 341 " + nickname + " " + targnick + " " + targchan + POSTFIX
+#define RPL_JOINMSG(hostname, ipaddress, channelname)(":" + hostname + ipaddress + " JOIN " + channelname + POSTFIX)
+#define RPL_JOIN(sender, channel)":" + sender + " JOIN :" + channel + POSTFIX
+#define RPL_CHANGEMODE(hostname, channelname, mode)(":" + hostname + " MODE " + channelname + " " + mode + POSTFIX)
+#define RPL_UMODEIS(hostname, channelname, mode, user)":" + hostname + " MODE " + channelname + " " + mode + " " + user + POSTFIX
+#define RPL_PART(sender, channel, reason)    ":" + sender + " PART " + channel + " :" + reason + POSTFIX
+#define RPL_QUIT(sender, reason)                        ":" + sender + " QUIT :Quit: " + reason + POSTFIX
 #define RPL_HELPSTART(nick, subject, txt)               PREFIX "704 " + nick + " " + subject + " :" + txt + POSTFIX
 #define RPL_HELPTXT(nick, subject, txt)               PREFIX "705 " + nick + " " + subject + " :" + txt + POSTFIX
 #define RPL_ENDOFHELP(nick, subject)               PREFIX "706 " + nick + " " + subject + " :" + "End of /HELP." + POSTFIX
@@ -74,7 +79,7 @@
 // #define ERR_NOTONCHANNEL(nickName, channelName) ": 442 " + nickName + " #" + channelName + " :You're not on that channel" + CRLF
 // #define ERR_NOSUCHCHANNEL(nickName, channelName) ": 403 " + nickName + " #" + channelName + " :No such channel" + CRLF
 // #define ERR_NOSUCHNICK(nickName, recipient) ": 401 " + nickName + " " + recipient + " :No such nick" + CRLF
-// #define ERR_NORECIPIENT(nickName) ": 411 " + nickName + " :No recipient given (PRIVMSG)" + CRLF
+#define ERR_NORECIPIENT(nickName) PREFIX ": 411 " + nickName + " :No recipient given (PRIVMSG)" + POSTFIX
 // #define ERR_NOTEXTTOSEND(nickName) ": 412 " + nickName + " :No text to send" + CRLF
 // #define ERR_INVITEONLYCHAN(nickName, channelName) ": 473 " + nickName + " #" + channelName + " :Cannot join channel (+i)" + CRLF
 // #define ERR_CHANOPRIVSNEEDED(nickName, channelName) ": 482 " + nickName + " #" + channelName + " :You're not channel operator" + CRLF
