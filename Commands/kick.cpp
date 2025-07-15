@@ -2,6 +2,7 @@
 #include "../include/Server.hpp"
 #include "../include/numericReplies.hpp"
 #include "../include/Channel.hpp"
+#include <ostream>
 
 void Channel::RemoveOperator(std::string &nickname)
 {
@@ -70,7 +71,13 @@ void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel
 
 void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 {
-	if (params.size() < 2)
+	// std::cout << "||" << params[1] << "||" << std::endl;
+	std::cout << "size is " << params.size()<< std::endl;
+	for (size_t i = 0; i < params.size();i++)
+	{
+		std::cout << "||" << params[i] << "||" << std::endl;
+	}
+	if (params.size() < 2 || (params.size() <= 2 && params[1] == "" ))
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
