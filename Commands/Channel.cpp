@@ -1,5 +1,6 @@
 
 #include "../include/Channel.hpp"
+#include <_ctype.h>
 
 
 	
@@ -179,6 +180,17 @@ int		Channel::handle_Password(int flag, std::vector<std::string> &params, int	&c
 	}	
 }
 
+int ft_IsAllnum(char *str)
+{
+	for (int i = 0; str[i]; i++) {
+		if (str[i] < '0' || str[i] > '9')
+		{
+			return (-1);
+		}
+	}
+	return (0);
+}
+
 int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count)
 {
 	if (flag == -1)
@@ -191,13 +203,11 @@ int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&curr
 		// std::cout << "handle password with positive " << std::endl;
 		if (current > prms_count)
 		{
-			// std::cout << "Not enough params" << std::endl;
 			return (-1);
 		}
 		else
 		{
-			// std::cout << "Succes" << std::endl;
-			this->Limit = atoi(params[current].c_str()); // check if number later 
+			this->Limit = atoi(params[current].c_str());
 			current++;
 			return (0);
 		}
