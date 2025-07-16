@@ -163,6 +163,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 
 int	Server::initialParsingMode(std::vector<std::string> &params, Client &c)
 {
+
 	if (!has_theChannel(params[1]))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(params[1]);
@@ -176,7 +177,7 @@ int	Server::initialParsingMode(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return (1);
 	}
-	if (!channel.Is_OperatorInChannel(c)) // Client is an operator in channel
+	if (!channel.Is_OperatorInChannel(c) && params.size() != 2 ) // Client is an operator in channel
 	{
 		std::string err = ERR_CHANOPRIVSNEEDED(channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
@@ -212,8 +213,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 	// 	std::cout << *itest << " ";
 	// }
 	// std::cout << std::endl;
-	// ////////////////////////////////////////
-
+	///////////////////////////////////////
 
 	if (params.size() < 2)
 	{
@@ -221,7 +221,9 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);   //// parsing error ==>  sent to only one client
 		return ;
 	}
-	
+	if (params.size() > 2 &&params[2] == "+sn") {
+		return;
+	}
 	if (params[1][0] == '#')
 	{
 		if (initialParsingMode(params, c) == 1) // if the channel is not found or the client is not in the channel
