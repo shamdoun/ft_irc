@@ -134,6 +134,12 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	hostname = params[2];
 	servername = params[3];
 	realname = params[4];
+	if (hostname == "" || servername == "" || realname == "")
+	{
+		err = ERR_NEEDMOREPARAMS(params[0]);
+        sendError(ERR_NEEDMOREPARAMS(params[0]), c);
+		return ;
+	} 
 	if (!isValidUsername(username))
 	{
 		sendError(ERR_ERRONEUSUSERNAME(params[1]), c);

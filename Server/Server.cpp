@@ -172,7 +172,7 @@ void Server::parseMessage(char *buf, Client *c)
 	size_t end;
 
 	parse = extractMessage(parse);
-	while ((end = parse.find(" ", start)) != std::string::npos)
+	while ((end = parse.find(' ', start)) != std::string::npos)
 	{
 		params.push_back(parse.substr(start, end - start));
 		start = end + 1;
