@@ -23,35 +23,39 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			std::string Message;
 			if (Flag == 1)
 			{
-				Message = c.getNickName() + " MODE " +  this->getChannelName() + " +" + std::string(1, params[0][j]) + "\r\n";
+				// #define RPL_UMODEIS(hostname, channelname, mode, user)":" + hostname + " MODE " + channelname + " +" + mode + " " + user + POSTFIX
+				Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				// Message = c.getNickName() + " MODE " +  this->getChannelName() + " +" + std::string(1, params[0][j]) + "\r\n";
 				std::cout << "Setting invite-only mode for channel: " << this->getChannelName() << std::endl;
 			}
 			else if (Flag == -1)
 			{
-				Message = c.getNickName() + " MODE "  + this->getChannelName() + " -" + std::string(1, params[0][j]) +  "\r\n";
+				Message = RPL_CHANGEMODEMINUS(c.getNickName(),this->getChannelName(), params[0][j]);
 				std::cout << "Removing invite-only mode from channel: " << this->getChannelName() << std::endl;
 			}
 
 			message_to_channel2(Message, c);
 			this->handleInvite(Flag);
-      this->updateCreationTime(); 
+			this->updateCreationTime(); 
   }
 		else if(params[0][j] == 't')
 		{
 			this->handleTopicPermission(Flag); // Set/remove topic protection (+t/-t)
 			if (Flag == 1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + "\r\n";
+				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting topic protection for channel: " << this->getChannelName() << std::endl;
        			 this->updateCreationTime(); 
 			}
 			else if (Flag == -1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
+				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing topic protection from channel: " << this->getChannelName() << std::endl;
-        this->updateCreationTime();
+				this->updateCreationTime();
     }
 			
 		}
@@ -65,14 +69,16 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + this->getterPassAsString() + "\r\n";
+				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " +" + this->getterPassAsString() + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Setting password for channel: " << this->getChannelName() << std::endl;
         this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
+				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing password from channel: " << this->getChannelName() << std::endl;
         this->updateCreationTime();
@@ -90,14 +96,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " + " "\r\n";
+				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
 				std::cout << "Setting user limit for channel: " << this->getChannelName() << std::endl;
         this->updateCreationTime();
       }
 			else if (Flag == -1)
 			{
-				std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
+				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = c.getNickName() + " MODE " + std::string(1, params[0][j]) + " " + this->getChannelName() + " -" + "\r\n";
 				message_to_channel2(Message, c);
 				std::cout << "Removing user limit from channel: " << this->getChannelName() << std::endl;
 	        this->updateCreationTime();
