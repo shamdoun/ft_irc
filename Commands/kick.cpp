@@ -3,6 +3,7 @@
 #include "../include/numericReplies.hpp"
 #include "../include/Channel.hpp"
 #include <ostream>
+#include <sys/socket.h>
 
 void Channel::RemoveOperator(std::string &nickname)
 {
