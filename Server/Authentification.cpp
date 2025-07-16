@@ -167,7 +167,7 @@ void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
         sendError(RPL_YOURHOST(c->getNickName(), c->getHostName()), c);
-        sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c);
+        sendError(RPL_CREATED(c->getNickName(), c->getHostName()), c); 
         sendError(RPL_MYINFO(c->getNickName(), c->getHostName()), c);
 		c->setIsAuthenticated(true);
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> is registered!\n";

@@ -13,7 +13,7 @@ static void parseArgs(std::string &ip, std::string port)
     int p = std::atoi(port.c_str());
     if (ip == "localhost" || ip == "LOCALHOST")
     {
-        ip = "127.0.0.0";
+        ip = "0.0.0.0";
     }
     if ((port.find_first_not_of("0123456789") != std::string::npos) || p < 1024 || p > 65535)
     {
