@@ -34,7 +34,8 @@
 #define ERR_NOTREGISTERED(nickname)                 PREFIX "451 " + nickname + " :You have not registered!" POSTFIX
 #define ERR_CHANNELISFULL(client, channel)PREFIX " 471 " + client + " " + channel + " :Cannot join channel (+l)" POSTFIX
 #define ERR_INVITEONLYCHAN(client, channel)PREFIX " 473 " + client + " " + channel + " :Cannot join channel (+i)" POSTFIX
-#define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(" : 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
+// #define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(": 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
+#define ERR_UNKNOWNMODE( nickname, chName, mode )	   ( ": 472 " + nickname + " " + chName + " " + mode + " :is not a recognised channel mode" + POSTFIX )
 #define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" : 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
 
 
@@ -93,7 +94,7 @@
 // #define ERR_BADCHANNELKEY(nickName, channelName) ": 475 " + nickName + " #" + channelName + " :Cannot join channel (+k)" + CRLF
 // #define ERR_BADCHANMASK(channelName) ": 476 " + channelName + " :Bad Channel Mask" + CRLF
 // #define ERR_USERNOTINCHANNEL(nickName, new_user, channelName) ": 441 " + nickName + " " + new_user + " #" + channelName + " :They aren't on that channel" + CRLF
-// #define ERR_UNKNOWNMODE(nickName, mode) ": 472 " + nickName + " " + mode + " :is unknown mode char to me" + CRLF
+// #define ERR_UNKNOWNMODE(nickName, mode) ": 472 " + nickName + " " + mode + " :is unknown mode char to me" + POSTFIX
 // #define ERR_USERONCHANNEL(nickName, new_user, channelName) ": 443 " + nickName + " " + new_user + " " + channelName + " :is already on channel" + CRLF
 
 

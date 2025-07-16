@@ -152,7 +152,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		}
 		else
 		{
-			std::string err = ERR_UNKNOWNMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+			// std::cout << "HERE " << std::endl;
+			std::string err = ERR_UNKNOWNMODE(c.getNickName(),this->getChannelName(),  params[0][j]);
 			send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 			return;
 		}
