@@ -98,7 +98,7 @@ public:
     void	Mode(std::vector<std::string> &params, Client &c);
     void	Invite_Command(std::vector<std::string> &params, Client &c);
 	int		initialParsingMode(std::vector<std::string> &params, Client &c);
-	void	displayMode(std::vector<std::string> &params, Client &c, Channel channel);
+	void	displayMode(Client &c, Channel channel);
     //======================================================================//
 	void	Topic_Handler(std::vector<std::string> &params, Client &c);
 
