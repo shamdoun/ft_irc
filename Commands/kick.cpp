@@ -5,7 +5,7 @@
 #include <ostream>
 #include <sys/socket.h>
 
-void Channel::RemoveOperator(std::string &nickname, Client &c)
+void Channel::RemoveOperator(std::string &nickname, Client &c, bool stop_kick)
 {
 	std::vector<std::string>::iterator it_opp = _Operators.begin();
 	for (; it_opp != _Operators.end(); it_opp++)
@@ -30,6 +30,7 @@ void Channel::RemoveOperator(std::string &nickname, Client &c)
 		_Operators.push_back(_Clients[0].getNickName());
 		std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), "o", _Clients[0].getNickName());
 		message_to_channel2(Message, c);
+		stop_kick = true;
 	}
 }
 void Channel::RemoveClient(std::string &nickname)
@@ -46,7 +47,7 @@ void Channel::RemoveClient(std::string &nickname)
 
 }
 
-void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
+void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName, bool stop_kick)
 {
 	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
 	{
@@ -60,7 +61,7 @@ void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel
 		// std::string kick_message = ":" + c.getNickName() + " KICK " + ChannelName + " " + client_to_kick + " : " + reason + "\r\n";
 		std::string kick_message = RPL_KICK(c.getNickName(), client_to_kick, ChannelName, reason);
 		Server::message_to_Allclients(ChannelName, kick_message);
-		channel.RemoveOperator(client_to_kick, c);
+		channel.RemoveOperator(client_to_kick, c, stop_kick);
 	}
 	if (channel.Is_ClientInChannel_2(client_to_kick))
 	{
@@ -126,8 +127,14 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	}
 	std::string clients_to_kick = params[2];
 	std::vector<std::string> clients_need_ToKick  = splitBy_delimeter(clients_to_kick, ',');
+	bool stop_kick = false;
 	for (size_t i = 0; i < clients_need_ToKick.size(); i++)
 	{
-		Server::kick_by_one(clients_need_ToKick[i], c, channel, params, ChannelName);
+		Server::kick_by_one(clients_need_ToKick[i], c, channel, params, ChannelName, stop_kick);
+		if (stop_kick)
+		{
+			std::cout << "here" << std::endl;
+			return ;
+		}
 	}
 }

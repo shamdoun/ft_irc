@@ -355,6 +355,21 @@ int Channel::Is_Invited(std::string &nickName)
 	return 0;
 }
 
+void Channel::RemoveFromInvite(std::string &nickName)
+{
+	std::vector<std::string>::iterator it_cl = this->_Invited.begin();
+	for (; it_cl != this->_Invited.end(); it_cl++)
+	{
+		if (*it_cl == nickName)
+		{
+			this->_Invited.erase(it_cl);
+			break;
+		}
+	}
+}
+
+
+
 std::string Channel::getTopic(void) const
 {
 	return (this->_topic);

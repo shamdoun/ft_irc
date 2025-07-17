@@ -58,7 +58,7 @@ void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 	{
 		if (channel.Is_OperatorInChannel(c) || !channel.getterTopic())
 		{
-			channel.SetterTopicAsString(params[2]);
+			channel.SetterTopicAsString(get_corr_message(params, 2));
 			channel.TopicUpdateTime();
 			channel.WhoUpdatedSetter(c.getNickName());
 			std::string Message = RPL_TOPIC(c.getNickName(), channel.getChannelName(), channel.getTopic());

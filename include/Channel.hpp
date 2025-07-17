@@ -21,6 +21,7 @@ class Channel
 		time_t TimeOfCreatiion;
 		time_t Topic_Update_Time;
 		std::string Client_who_updated;
+		bool stop_kick;
 
 	public:
 		Channel(std::string name);
@@ -36,7 +37,7 @@ class Channel
 		void addAsClient(Client &client);
 		bool Is_OperatorInChannel(Client &client);  
 		bool Is_OperatorInChannel_2(std::string &nickName) ;
-		void RemoveOperator(std::string &nickName, Client &c);
+		void RemoveOperator(std::string &nickName, Client &c, bool stop_kick);
 		void RemoveClient(std::string &nickName);
 		
 
@@ -46,10 +47,13 @@ class Channel
 		// MODE ===================================================================
 		void	handleModeCommand(std::vector<std::string> &params, Client &c);
 		bool	getterInvite(void);
+		bool	getterKickFlag(void);
 		bool	getterTopic(void);
 		bool	getterPasswd(void);
 		int		getterLimit(void);
 		std::string &getterPassAsString(void);
+
+		void	SetterKickFlag(bool Value_To_Give);
 		void	SetterInvite(bool Value_To_Give);
 		void	SetterTopic(bool Value_To_Give);
 		void	SetterPasswd(bool Value_To_Give);
@@ -73,6 +77,7 @@ class Channel
 		int		Is_Invited(std::string &nickName);
 		std::string WhoUpdatedGetter(void);
 		void WhoUpdatedSetter(std::string WhoChandedstr);
+		void RemoveFromInvite(std::string &nickName);
 		
 	};
 

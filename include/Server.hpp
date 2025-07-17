@@ -92,7 +92,7 @@ public:
 
 	//kick
 	void kick_from_channel(std::vector<std::string> &params, Client &c);
-	void kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName);
+	void kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName, bool stop_kick);
 
     //======================================================================//
     void	Mode(std::vector<std::string> &params, Client &c);

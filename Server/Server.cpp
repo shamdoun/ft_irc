@@ -126,12 +126,12 @@ void Server::acceptConnection()
 	fd = accept(_serverSocket.getSocketFd(), (sockaddr *)&c.getSocketAddress(), &len);
 	if (fd < 0)
 		throw std::runtime_error("failed to accept a new connection!");
-	if (MAX_CONNECTIONS == _allClients.size() - 2)
-	{
-		std::cerr << "reached maximum connections!\n";
-		close(fd);
-		return ;
-	}
+	// if (MAX_CONNECTIONS == _allClients.size() - 2)
+	// {
+	// 	std::cerr << "reached maximum connections!\n";
+	// 	close(fd);
+	// 	return ;
+	// }
 	c.setSocketFd(fd);
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		throw std::runtime_error("failed to make a file non-blocking");

@@ -91,7 +91,8 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	std::string newchannelName = channel.getChannelName();
 	std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), newchannelName);
 	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client who has joined
-
+	std::string nickname = c.getNickName();
+	channel.RemoveFromInvite(nickname);
 	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except teh one who has joined
 	Server::SendChannelInfos(newchannelName, c);
 }
