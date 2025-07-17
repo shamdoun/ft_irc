@@ -19,7 +19,7 @@
 #define ERR_UNKNOWNBOTCOMMAND(command)    PREFIX "421 " + command + " :Unknown bot command" POSTFIX 
 #define ERR_CHANOPRIVSNEEDED(channel)    PREFIX "482 " + channel + " :You're not channel operator" POSTFIX
 #define ERR_ERRONEUSNICKNAME(nick)    PREFIX "432 " + nick + " :Erroneus nickname" POSTFIX
-#define ERR_NOTEXTTOSEND(nick)PREFIX "412 " + nick + " :No text to send" POSTFIX
+#define ERR_NOTEXTTOSEND(nick)PREFIX " 412 " + nick + " :No text to send" POSTFIX
 // #define ERR_NORECIPIENT(nick, command)              PREFIX "411 " + nick + " :No recipient given (" + command + ")" POSTFIX
 #define ERR_NOSUCHCHANNEL(channel)    PREFIX "403 " + channel + " :No such channel" POSTFIX 
 // #define ERR_NOSUCHNICK(nick)    PREFIX "401 " + nick + " :No such nick" POSTFIX

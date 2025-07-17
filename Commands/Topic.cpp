@@ -6,7 +6,7 @@
 
 void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 {
-	std::cout << params.size() <<  "PARAM SIZE \n";
+	// std::cout << params.size() <<  "PARAM SIZE \n";
 	// if (params.size() <= 2 )
 	// {
 	// 	std::string err = ERR_NEEDMOREPARAMS(params[0]);

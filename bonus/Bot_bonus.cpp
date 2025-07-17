@@ -41,7 +41,7 @@ void Bot::createBot()
 {
     int     fd;
     struct timeval timeout;
-    timeout.tv_sec = 5;
+    timeout.tv_sec = 1;
     timeout.tv_usec = 0;
     Socket serverSocket(1);
     

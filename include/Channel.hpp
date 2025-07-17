@@ -36,7 +36,7 @@ class Channel
 		void addAsClient(Client &client);
 		bool Is_OperatorInChannel(Client &client);  
 		bool Is_OperatorInChannel_2(std::string &nickName) ;
-		void RemoveOperator(std::string &nickName);
+		void RemoveOperator(std::string &nickName, Client &c);
 		void RemoveClient(std::string &nickName);
 		
 

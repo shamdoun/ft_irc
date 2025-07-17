@@ -109,7 +109,7 @@ std::vector <std::string> splitBy_delimeter(const std::string &str, char del)
 
 void Server::join(std::vector<std::string> &params, Client &c)
 {
-	if (params.size() < 2)
+	if (params.size() < 2 ) //|| (params.size() == 2 && params[1] == "#") 
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);

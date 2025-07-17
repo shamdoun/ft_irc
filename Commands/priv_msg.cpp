@@ -35,7 +35,6 @@ void Server::SendPrivMsg_User(std::string &target_name, const std::string &messa
 
 void Server::SendPrivMsg_Channel( std::string &target_channel, const std::string &message, Client &c)
 {
-	// (void)message;
 	if (!has_theChannel(target_channel))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(target_channel);
@@ -52,14 +51,6 @@ void Server::SendPrivMsg_Channel( std::string &target_channel, const std::string
 	// Send the message to all clients in the channel except the sender
 	std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_channel, message);
 	Server::message_to_Channel(target_channel,response, c );
-	// std::vector<Client>::iterator it = channel.getClients().begin();
-	// for (; it != channel.getClients().end(); it++)
-	// {
-	// 	if (it->getNickName() != c.getNickName())
-	// 	{
-	// 		send(c.getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
-	// 	}
-	// }
 }
 
 void Server::priv_msg(std::vector<std::string> &params, Client &c)
@@ -79,20 +70,6 @@ void Server::priv_msg(std::vector<std::string> &params, Client &c)
 
 	std::string target_name = params[1];
 	std::string message = get_corr_message(params, 2);
-	// std::cout << "Corrected message =>" << message << std::endl;
-	// if (params[2][0] == ':')
-	// {
-	// 	for (size_t i = 2; i < params.size(); ++i)
-	// 	{
-	// 		message += params[i];
-	// 		if (i < params.size() - 1)
-	// 			message += " ";
-	// 	}
-	// 	message.erase(0, 1); // Remove the leading ':'
-	// }
-	// else
-	// 	message = params[2];
-
 	if (target_name[0] == '#')
 		Server::SendPrivMsg_Channel(target_name, message, c);
 	else
