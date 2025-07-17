@@ -35,14 +35,12 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			{
 				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Setting topic protection for channel: " << this->getChannelName() << std::endl;
 	   			 this->updateCreationTime(); 
 			}
 			else if (Flag == -1)
 			{
 				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Removing topic protection from channel: " << this->getChannelName() << std::endl;
 				this->updateCreationTime();
 			}
 		}
@@ -58,14 +56,12 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			{
 				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Setting password for channel: " << this->getChannelName() << std::endl;
 				this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
 				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Removing password from channel: " << this->getChannelName() << std::endl;
 				this->updateCreationTime();
 			}
 		}
@@ -88,14 +84,12 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			{
 				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Setting user limit for channel: " << this->getChannelName() << std::endl;
 				this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
 				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
-				std::cout << "Removing user limit from channel: " << this->getChannelName() << std::endl;
 				this->updateCreationTime();
 			}
 		}
@@ -123,12 +117,12 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 					message_to_channel2(Message, c);
 		  			this->updateCreationTime();	
 				}
-				else
-				{
-					std::string err = ERR_USERONCHANNEL(targetNick, this->getChannelName());
-					send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
-					return;
-				}
+				// else
+				// {
+				// 	std::string err = ERR_USERONCHANNEL(targetNick, this->getChannelName());
+				// 	send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+				// 	return;
+				// }
 			}
 			else if (Flag == -1)
 			{
