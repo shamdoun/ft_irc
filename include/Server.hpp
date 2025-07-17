@@ -59,7 +59,7 @@ public:
 	Client								*getClientByFd(int fd);
 	void								handlePassCommand(std::vector<std::string> &params, Client *c);
 	void 								parseParams(std::vector<std::string> &params, Client *c);
-	void 								parseMessage(char *buf, Client *c);
+	void 								parseMessage(std::string &parse, Client *c);
 	int									nickNameAlreadyExists(std::string const &nick);
 	void 								handleNickNameCommand(std::vector<std::string> &params, Client *c);
 	void 								handleUserCommand(std::vector<std::string> &params, Client *c);

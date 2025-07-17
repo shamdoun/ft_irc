@@ -78,10 +78,18 @@ void Server::receiveData(int i)
 {
 	ssize_t bytes;
 	Client *c;
+	std::string	message;
 
 	c = getClientByFd(_pfds[i].fd);
 	std::memset(_buffer, 0, sizeof(_buffer));
-	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
+	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
+	{
+		_buffer[bytes] = '\0';
+		message += _buffer;
+		std::memset(_buffer, 0, sizeof(_buffer));
+		if (message.find('\n') != std::string::npos)
+			break ;
+	}
 	if (!bytes)
 	{
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
@@ -91,9 +99,12 @@ void Server::receiveData(int i)
 		if (it != _allClients.end())
 			_allClients.erase(it);
 	}
-	if (bytes < 0)
-		throw std::runtime_error("failed to receive a new message!");
-	parseMessage(_buffer, c);
+	else if (bytes < 0)
+		std::cerr << "recv: " << strerror(errno) << std::endl;
+	else
+	{
+		parseMessage(message, c);
+	}
 }
 
 Client *Server::getClientByFd(int fd)
@@ -126,12 +137,6 @@ void Server::acceptConnection()
 	fd = accept(_serverSocket.getSocketFd(), (sockaddr *)&c.getSocketAddress(), &len);
 	if (fd < 0)
 		throw std::runtime_error("failed to accept a new connection!");
-	// if (MAX_CONNECTIONS == _allClients.size() - 2)
-	// {
-	// 	std::cerr << "reached maximum connections!\n";
-	// 	close(fd);
-	// 	return ;
-	// }
 	c.setSocketFd(fd);
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		throw std::runtime_error("failed to make a file non-blocking");
@@ -149,7 +154,7 @@ void Server::acceptConnection()
 
 void Server::quitServer()
 {
-	std::cout << "\n-----------Quiting the Server-------------\n";
+	std::cout << "-----------Quiting the Server-------------\n";
 	std::cout << RED_P << "closing all connections...." << RED_S << std::endl;
 	for (std::vector<struct pollfd>::iterator p = _pfds.begin(); p != _pfds.end(); p++)
 	{
@@ -160,13 +165,12 @@ void Server::quitServer()
 
 void signalHander(int sig)
 {
-	(void)sig;
+	std::cout << "\n" << sig << ": Signal received!\n";
 	Server::quitServer();
 }
 
-void Server::parseMessage(char *buf, Client *c)
+void Server::parseMessage(std::string &parse, Client *c)
 {
-	std::string parse(buf);
 	std::vector<std::string> params;
 	size_t start = 0;
 	size_t end;
