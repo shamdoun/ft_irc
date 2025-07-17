@@ -83,9 +83,16 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		}
 		else if(params[0][j] == 'l')
 		{
-			if (handle_Limit(Flag, params, current, params_count) == -1)
+			int Ret = handle_Limit(Flag, params, current, params_count);
+			if (Ret == -1)
 			{
 				std::string err = ERR_NEEDMOREPARAMS(cmd); // ERR_NEEDMOREPARAMS (RFC 2812 461)
+				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+				return;
+			}
+			if (Ret == -2)
+			{
+				std::string err = ERR_INVALIDMODEPARM(c.getUserName(), this->getChannelName(), getChannelMode(), params[0][j]);
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}

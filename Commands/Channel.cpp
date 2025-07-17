@@ -191,6 +191,18 @@ int ft_IsAllnum(char *str)
 	return (0);
 }
 
+bool isAllDigits(const std::string& str)
+{
+	size_t i = 0;
+	while (str[i])
+	{
+		if (!isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count)
 {
 	if (flag == -1)
@@ -204,6 +216,10 @@ int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&curr
 		if (current > prms_count)
 		{
 			return (-1);
+		}
+		else if (!isAllDigits(params[current]))
+		{
+			return (-2);
 		}
 		else
 		{

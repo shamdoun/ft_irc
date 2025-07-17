@@ -36,7 +36,11 @@
 #define ERR_INVITEONLYCHAN(client, channel)PREFIX " 473 " + client + " " + channel + " :Cannot join channel (+i)" POSTFIX
 // #define ERR_UNKNOWNMODE(nickname, channelname, mode)(std::string(": 472 ") + nickname + " " + channelname + " " + mode + " :is not a recognised channel mode" + POSTFIX)
 #define ERR_UNKNOWNMODE( nickname, chName, mode )	   ( ": 472 " + nickname + " " + chName + " " + mode + " :is not a recognised channel mode" + POSTFIX )
-#define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" : 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
+// #define ERR_INVALIDMODEPARM(channelname, mode)(std::string(" : 696 ") + channelname + " Invalid mode parameter. " + mode + POSTFIX)
+// #define ERR_INVALIDMODEPARM( chName, mode )			   ( ": 696 " + chName + " Invalid mode parameter " + mode + POSTFIX )
+#define ERR_INVALIDMODEPARM(nick, channel, mode, param) (": 696 " + nick + " " + channel + " " + mode + " " + param + " :Invalid parameter for mode" + POSTFIX)
+
+
 
 
 //Replays :
