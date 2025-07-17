@@ -5,7 +5,7 @@
 #include <ostream>
 #include <sys/socket.h>
 
-void Channel::RemoveOperator(std::string &nickname, Client &c, bool stop_kick)
+void Channel::RemoveOperator(std::string &nickname, Client &c)
 {
 	std::vector<std::string>::iterator it_opp = _Operators.begin();
 	for (; it_opp != _Operators.end(); it_opp++)
@@ -27,10 +27,11 @@ void Channel::RemoveOperator(std::string &nickname, Client &c, bool stop_kick)
 	}
 	if (_Operators.empty() && _Clients.size() > 0) //if there only one operator and i kick him, i switch th op to the next client
 	{
+		// std::cout << "There is no operator in the channel, so i will switch the first client to operator" << std::endl;
+		Channel::SetterKickFlag(true); // i set the kick flag to false, so that i can kick again
 		_Operators.push_back(_Clients[0].getNickName());
 		std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), "o", _Clients[0].getNickName());
 		message_to_channel2(Message, c);
-		stop_kick = true;
 	}
 }
 void Channel::RemoveClient(std::string &nickname)
@@ -44,10 +45,9 @@ void Channel::RemoveClient(std::string &nickname)
 			break;
 		}
 	}
-
 }
 
-void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName, bool stop_kick)
+void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
 {
 	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
 	{
@@ -61,7 +61,7 @@ void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel
 		// std::string kick_message = ":" + c.getNickName() + " KICK " + ChannelName + " " + client_to_kick + " : " + reason + "\r\n";
 		std::string kick_message = RPL_KICK(c.getNickName(), client_to_kick, ChannelName, reason);
 		Server::message_to_Allclients(ChannelName, kick_message);
-		channel.RemoveOperator(client_to_kick, c, stop_kick);
+		channel.RemoveOperator(client_to_kick, c);
 	}
 	if (channel.Is_ClientInChannel_2(client_to_kick))
 	{
@@ -127,14 +127,14 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	}
 	std::string clients_to_kick = params[2];
 	std::vector<std::string> clients_need_ToKick  = splitBy_delimeter(clients_to_kick, ',');
-	bool stop_kick = false;
 	for (size_t i = 0; i < clients_need_ToKick.size(); i++)
 	{
-		Server::kick_by_one(clients_need_ToKick[i], c, channel, params, ChannelName, stop_kick);
-		if (stop_kick)
+		Server::kick_by_one(clients_need_ToKick[i], c, channel, params, ChannelName);
+		if (channel.getterKickFlag() == true)
 		{
-			std::cout << "here" << std::endl;
-			return ;
+			// std::cout << "The kick flag is true, so i will stop the loop" << std::endl;
+			channel.SetterKickFlag(false); // i set the kick flag to false, so that i can kick again
+			break; // if the kick flag is true, i stop the loop, so that i can kick again
 		}
 	}
 }

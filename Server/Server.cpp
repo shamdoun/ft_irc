@@ -3,6 +3,7 @@
 #include "../include/Server_utils.hpp"
 #include "../include/Authentification.hpp"
 #include <algorithm>
+#include <vector>
 
 std::vector<pollfd> Server::_pfds;
 
@@ -92,6 +93,18 @@ void Server::receiveData(int i)
 	}
 	if (!bytes)
 	{
+		std::string Nickname = c->getNickName();
+		std::vector<Channel> channels = this->getChannels();
+		std::vector<Channel>::iterator it_Chan;
+		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		{
+			if (it_Chan->Is_ClientInChannel(*c))
+			{
+				it_Chan->RemoveClient(Nickname);
+				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+				it_Chan->message_to_channel2(message, *c);
+			}
+		}
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));

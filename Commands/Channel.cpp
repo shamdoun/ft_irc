@@ -4,7 +4,7 @@
 
 
 	
-Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0), Client_who_updated("")
+Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(false), Passwd(false), pass_as_stirng(""), Limit(0), Client_who_updated(""), stop_kick(false)
 {
 	TimeOfCreatiion = time(NULL);
 	Topic_Update_Time = time(NULL);
@@ -92,6 +92,11 @@ bool	Channel::getterInvite(void)
 {
 	return(this->Invite);
 }
+
+bool Channel::getterKickFlag()
+{
+	return(this->stop_kick);
+}
 bool	Channel::getterTopic(void)
 {
 	return(this->Topic);
@@ -109,6 +114,10 @@ std::string &Channel::getterPassAsString(void)
 int		Channel::getterLimit(void)
 {
 	return(this->Limit);
+}
+void	Channel::SetterKickFlag(bool Value_To_Give)
+{
+	this->stop_kick = Value_To_Give;
 }
 
 void	Channel::SetterInvite(bool Value_To_Give)

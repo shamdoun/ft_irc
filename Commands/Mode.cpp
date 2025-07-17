@@ -54,6 +54,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
+				std::cout << "WE ARE HERE !!! " << std::endl;
 				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
 				this->updateCreationTime();
