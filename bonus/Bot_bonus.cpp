@@ -233,7 +233,7 @@ void Bot::help(std::string &receiver)
     std::string help("help: Display this help message to learn about available commands and how to use them.\n");
     std::string hello("hello: Display welcome message!");
 
-    sendMessage(time + echo + quote + help + hello, receiver);
+    sendMessage(time, receiver);
     usleep(100);
     sendMessage(echo, receiver);
     usleep(100);

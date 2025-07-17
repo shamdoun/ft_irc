@@ -5,7 +5,6 @@
 
 void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 {
-
 	if (params.size() < 3)
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
@@ -14,7 +13,6 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 	}
 	std::string channelName = params[1];
 	std::string nickName = params[2];
-	//if channel does not exist check 
 	if (!has_theChannel(channelName))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(channelName);
@@ -53,5 +51,4 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 	send(targetClient.getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
 	std::string inviteMessage = RPL_INVITE(c.getNickName(), channel.getChannelName(), Target_NickName);
 	send(c.getClientSocket().getSocketFd(), inviteMessage.c_str(), inviteMessage.size(), 0);
-	std::cout << "Client " << c.getNickName() << " invited " << Target_NickName << " to channel " << channel.getChannelName() << std::endl;
 }

@@ -172,7 +172,7 @@ void Server::parseMessage(char *buf, Client *c)
 	size_t end;
 
 	parse = extractMessage(parse);
-	while ((end = parse.find(" ", start)) != std::string::npos)
+	while ((end = parse.find(' ', start)) != std::string::npos)
 	{
 		params.push_back(parse.substr(start, end - start));
 		start = end + 1;
@@ -202,7 +202,7 @@ int	identifyCommand(std::string cmd)
 		return (3);
 	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
     	return (3);
-	if (!cmd.compare("PONG"))
+	if (!cmd.compare("PONG") || !cmd.compare("QUIT"))
 		return (4);
 	if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
 		return (3);
