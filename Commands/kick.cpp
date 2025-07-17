@@ -45,7 +45,6 @@ void Channel::RemoveClient(std::string &nickname)
 			break;
 		}
 	}
-
 }
 
 void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
