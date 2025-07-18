@@ -147,12 +147,22 @@ std::string extractMessage(std::string m)
 {
     size_t end;
     size_t end_w;
+	size_t end_r;
     end = m.find("\r\n");
     if (end != std::string::npos)
-            return (m.substr(0, end));
+	{
+        return (m.substr(0, end));
+	}
     end_w = m.find("\n");
     if (end_w != std::string::npos)
+	{
 		return (m.substr(0, end_w));
+	}
+	end_r = m.find("\r");
+	if (end_r != std::string::npos)
+	{
+		return (m.substr(0, end_r));
+	}
 	return m;
 }
 

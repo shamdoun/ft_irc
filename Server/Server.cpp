@@ -103,18 +103,17 @@ void Server::receiveData(int i)
 			if (channel.Is_OperatorInChannel(*c))
 			{
 				channel.RemoveOperator(Nickname, *c);
-				std::cout << channel.getChannelName() << std::endl;
 				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}
-			if (channel.Is_ClientInChannel(*c))
+			else if (channel.Is_ClientInChannel(*c))
 			{
 				channel.RemoveClient(Nickname);
 				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}
-			else
-				return; // If the client is not in any channel, just return
+			// else
+			// 	break; // If the client is not in any channel, just return
 		}
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
@@ -127,7 +126,15 @@ void Server::receiveData(int i)
 		std::cerr << "recv: " << strerror(errno) << std::endl;
 	else
 	{
-		parseMessage(message, c);
+		size_t pos;
+		while (pos = message.find('\n'), pos != std::string::npos)
+		{
+			std::string line = message.substr(0, pos);
+			message.erase(0, pos + 1);
+			if (line.empty())
+				continue;
+			parseMessage(line, c);
+		}
 	}
 }
 
