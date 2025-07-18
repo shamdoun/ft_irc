@@ -2,5 +2,5 @@
 #include <string>
 class Client;
 
-std::string extractMessage(std::string m);
-void handleUnkownCommand(std::string cmd, Client *c);
+std::string	extractMessage(std::string m);
+void		handleUnkownCommand(std::string cmd, Client *c);

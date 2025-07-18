@@ -8,11 +8,11 @@ class Client
 {
 private:
 	Socket		_clientSocket;
-	size_t			_id;
-	std::string _nickName;
-	std::string _username;
-	std::string _realName;
-	std::string _hostName;
+	size_t		_id;
+	std::string	_nickName;
+	std::string	_username;
+	std::string	_realName;
+	std::string	_hostName;
 	bool		_isAuthenticated;
 	bool		_isRegistered;
 	bool 		_hasNickname;
@@ -24,10 +24,10 @@ public:
 	~Client();
 	void		disconnectFromServer();
 	Socket		&getClientSocket();
-	std::string getNickName() const;
-	std::string getUserName() const;
-	std::string getRealName() const;
-	std::string getHostName() const;
+	std::string	getNickName() const;
+	std::string	getUserName() const;
+	std::string	getRealName() const;
+	std::string	getHostName() const;
 	bool		getIsAuthenticated() const;
 	bool		getIsRegistered() const;
 	bool		getHasNickname() const;
@@ -35,7 +35,7 @@ public:
 	std::string getPrefix() const;
 	bool		getHasUser() const;
 	bool		getIsBot() const;
-	size_t			getId() const;
+	size_t		getId() const;
 	void		setNickName(std::string &value);
 	void		setRealName(std::string &value);
 	void		setUserName(std::string &value);

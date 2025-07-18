@@ -6,13 +6,6 @@
 
 void	Server::Topic_Handler(std::vector<std::string> &params, Client &c)
 {
-	// std::cout << params.size() <<  "PARAM SIZE \n";
-	// if (params.size() <= 2 )
-	// {
-	// 	std::string err = ERR_NEEDMOREPARAMS(params[0]);
-	// 	send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
-	// 	return;
-  	// }
 	if (params.size() < 2 || (params.size() <= 2 && params[1] == ":"))
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
