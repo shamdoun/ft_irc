@@ -94,16 +94,27 @@ void Server::receiveData(int i)
 	if (!bytes)
 	{
 		std::string Nickname = c->getNickName();
-		std::vector<Channel> channels = this->getChannels();
+
+		std::vector<Channel> &channels = getChannels();
 		std::vector<Channel>::iterator it_Chan;
 		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
 		{
-			if (it_Chan->Is_ClientInChannel(*c))
+			Channel &channel = *it_Chan;
+			if (channel.Is_OperatorInChannel(*c))
 			{
-				it_Chan->RemoveClient(Nickname);
+				channel.RemoveOperator(Nickname, *c);
+				std::cout << channel.getChannelName() << std::endl;
 				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
-				it_Chan->message_to_channel2(message, *c);
+				channel.message_to_channel2(message, *c);
 			}
+			if (channel.Is_ClientInChannel(*c))
+			{
+				channel.RemoveClient(Nickname);
+				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+				channel.message_to_channel2(message, *c);
+			}
+			else
+				return; // If the client is not in any channel, just return
 		}
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);

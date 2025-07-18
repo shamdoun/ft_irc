@@ -72,7 +72,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	bool isNewChannel = false;
 	if (channel.getClientSize_inChannel() == 0) // if the channel is empty then it is a new channel
 		isNewChannel = true;
-	if (channel.Is_ClientInChannel(c))
+	if (channel.Is_ClientInChannel(c)) // check if the client is already in the channel
 	{
 		std::string err = ERR_USERONCHANNEL(channelName, c.getNickName());
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);

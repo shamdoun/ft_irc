@@ -21,9 +21,17 @@ void Channel::RemoveOperator(std::string &nickname, Client &c)
 	{
 		if (it_cl->getNickName() == nickname)
 		{
+			// std::cout << "the client " << it_cl->getNickName() << " has been removed from the channel: " << this->getChannelName() << std::endl;
 			_Clients.erase(it_cl);
 			break;
 		}
+	}
+
+	std::vector<Client>::iterator it_cle = _Clients.begin();
+	for (; it_cle != _Clients.end(); it_cle++)
+	{
+		// i wanna print the client that still in the channel
+		std::cout <<	 "Client in the channel: " << it_cle->getNickName() << std::endl;
 	}
 	if (_Operators.empty() && _Clients.size() > 0) //if there only one operator and i kick him, i switch th op to the next client
 	{

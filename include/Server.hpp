@@ -71,7 +71,7 @@ public:
 	// void parseParams(std::vector<std::string> &params, Client *c);
 	// Client *getClientByNickName(std::string nickName);
 	void priv_msg(std::vector<std::string> &params, Client &c);
-	std::vector<Channel> getChannels() const { return _channels; }
+	std::vector<Channel>  &getChannels()  { return _channels; }
 	// Channel *getChannelByName(const std::string &channelName);
 	Channel &get_channel( std::string &channel_name);
 	Client &get_client( std::string &nickName);
