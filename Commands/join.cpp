@@ -18,7 +18,7 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 
 bool Server::valid_joining_channel(Channel &channel, Client &c, std::string password)
 {
-	std::string Client_NickName = c.getNickName(); // wzdt hadi
+	std::string Client_NickName = c.getNickName();
 	if (channel.getterLimit() <=  channel.getClientSize_inChannel() && channel.getterLimit())
 	{
 		std::string err_join = ERR_CHANNELISFULL(c.getNickName(), channel.getChannelName());
@@ -41,14 +41,12 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 			}
 			else if (!channel.getterPassAsString().empty() && password != channel.getterPassAsString())
 			{
-				// std::cout << "Password mismatch for channel: "  << std::endl;
 				std::string err_join = ERR_PASSWDMISMATCH(c.getNickName());
 				send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 				return false;
 			}
 			else
 				return true;
-		// }
 	}
 	else
 		return true;
@@ -59,7 +57,6 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 
 void Server::join_each_channel(std::string &channelName, Client &c, std::string password)
 {
-	//(void)password; // password is not used in this implementation, but can be used for future enhancements
 	if (channelName[0] != '#' || channelName.empty() || (channelName[0] == '#' && channelName.length() == 1))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(channelName);
@@ -68,7 +65,6 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	}
 	//create or get the channel
 	Channel &channel = GetOrCreateChannel(channelName);
-	std::string Pass_check;
 	bool isNewChannel = false;
 	if (channel.getClientSize_inChannel() == 0) // if the channel is empty then it is a new channel
 		isNewChannel = true;
@@ -80,9 +76,8 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	}
 	
 	if (!valid_joining_channel(channel, c, password))
-	{
 		return ;
-	}
+	
 	if (isNewChannel)
 		channel.addAsOperator(c);	
 	else
@@ -92,7 +87,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0); // send join message to the client who has joined
 	std::string nickname = c.getNickName();
 	channel.RemoveFromInvite(nickname);
-	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except teh one who has joined
+	Server::message_to_Channel(newchannelName, joinMsg, c); // send join message to all clients in the channel except the one who has joined
 	Server::SendChannelInfos(newchannelName, c);
 }
 
@@ -109,7 +104,7 @@ std::vector <std::string> splitBy_delimeter(const std::string &str, char del)
 
 void Server::join(std::vector<std::string> &params, Client &c)
 {
-	if (params.size() < 2 ) //|| (params.size() == 2 && params[1] == "#") 
+	if (params.size() < 2 )
 	{
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
