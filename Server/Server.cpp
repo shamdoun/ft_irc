@@ -3,6 +3,8 @@
 #include "../include/Server_utils.hpp"
 #include "../include/Authentification.hpp"
 #include <algorithm>
+#include <cstring>
+#include <iterator>
 #include <vector>
 
 std::vector<pollfd> Server::_pfds;
@@ -85,6 +87,12 @@ void Server::receiveData(int i)
 	std::memset(_buffer, 0, sizeof(_buffer));
 	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
 	{
+		if (bytes >= static_cast<ssize_t>(sizeof(_buffer)))
+		{
+			std::cout << "Buffer overflow detected, message too long!" << std::endl;
+			memset(_buffer, 0, sizeof(_buffer));
+			continue;
+		}
 		_buffer[bytes] = '\0';
 		message += _buffer;
 		std::memset(_buffer, 0, sizeof(_buffer));
