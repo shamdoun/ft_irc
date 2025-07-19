@@ -16,7 +16,7 @@
 #include <sstream>
 #include <cctype>
 #include <algorithm>
-#define MAX_CONNECTIONS 5
+#define MAX_CONNECTIONS 10
 #define GREEN_P "\033[1;32m"
 #define GREEN_S "\033[0m"
 #define RED_P "\033[1;31m"

@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	signal(SIGTSTP, signalHander);
 	signal(SIGHUP, signalHander);
 	signal(SIGPIPE, SIG_IGN);
-	Server s("test", password, port);
+	Server s("Server", password, port);
 	try
 	{
 		s.initServer();

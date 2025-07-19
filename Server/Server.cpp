@@ -91,7 +91,7 @@ void Server::receiveData(int i)
 		{
 			std::cout << "Buffer overflow detected, message too long!" << std::endl;
 			memset(_buffer, 0, sizeof(_buffer));
-			continue;
+			break;
 		}
 		_buffer[bytes] = '\0';
 		message += _buffer;
