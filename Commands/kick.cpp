@@ -25,9 +25,9 @@ void Channel::RemoveOperator(std::string &nickname, Client &c)
 			break;
 		}
 	}
-	if (_Operators.empty() && _Clients.size() > 0) //if there only one operator and i kick him, i switch th op to the next client
+	if (_Operators.empty() && _Clients.size() > 0)
 	{
-		Channel::SetterKickFlag(true); // i set the kick flag to false, so that i can kick again
+		Channel::SetterKickFlag(true);
 		_Operators.push_back(_Clients[0].getNickName());
 		std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), "o", _Clients[0].getNickName());
 		message_to_channel2(Message, c);
@@ -48,7 +48,7 @@ void Channel::RemoveClient(std::string &nickname)
 
 void Server::kick_by_one(std::string client_to_kick, Client &c, Channel &channel, std::vector<std::string> &params, std::string &ChannelName)
 {
-	if (!channel.Is_ClientInChannel_2(client_to_kick)) // check if the client that i wanna kick is in the channel
+	if (!channel.Is_ClientInChannel_2(client_to_kick))
 	{
 		std::string err = ERR_NOSUCHNICK(c.getNickName() ,client_to_kick);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
@@ -94,7 +94,7 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 	}
 
 	Channel &channel = get_channel(ChannelName);
-	if (!channel.Is_ClientInChannel(c)) // check if the client is in the channel
+	if (!channel.Is_ClientInChannel(c))
 	{
 		std::string err = ERR_NOTONCHANNEL(c.getNickName(), ChannelName);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);

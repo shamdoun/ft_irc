@@ -120,8 +120,6 @@ void Server::receiveData(int i)
 				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}
-			// else
-				// break; // If the client is not in any channel, just return
 		}
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);

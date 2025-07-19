@@ -5,7 +5,7 @@
 
 
 
-bool Server::has_theClient( std::string &nickName) // check if the client exists in the list of clients
+bool Server::has_theClient( std::string &nickName)
 {
 	std::vector<Client>::iterator it = _allClients.begin();
 	for ( ;it != _allClients.end(); it++)
@@ -16,7 +16,7 @@ bool Server::has_theClient( std::string &nickName) // check if the client exists
 	return false;
 }
 
-bool Server::has_theChannel(std::string channelName) // check if the channel exists in the list of channels
+bool Server::has_theChannel(std::string channelName)
 {
 	std::vector<Channel>::iterator it = _channels.begin();
 	for ( ;it != _channels.end(); it++)
@@ -63,7 +63,6 @@ void Server::message_to_Allclients( std::string &channelName, const std::string 
 
 void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
 {
-	// Send the message to all clients in the channel except the sender
 	Channel &channel = get_channel(channelName);
 	std::vector<Client>::iterator it = channel.getClients().begin();
 	for (; it != channel.getClients().end(); it++)
@@ -86,8 +85,6 @@ void Server::SendChannelInfos(std::string &channelName, Client &c)
 			listOfClients += clients[i].getNickName();
 		if (i < clients.size() - 1)
 			listOfClients += " ";
-		// else
-		// 	listOfClients += "\r\n"; // end of the list		
 	}
 	std::string members_channel = RPL_NAMREPLY(c.getNickName(), channelName, listOfClients);
 	send(c.getClientSocket().getSocketFd(), members_channel.c_str(), members_channel.size(), 0);
@@ -114,7 +111,6 @@ std::string get_corr_message(std::vector<std::string> &params, int index)
 	std::string message ;
 	if (index < 0 || index >= static_cast<int>(params.size()))
 	{
-		// std::cerr << "Index out of bounds in get_corr_message" << std::endl;
 		return "";
 	}
 	if (params[index][0] == ':')
@@ -125,9 +121,7 @@ std::string get_corr_message(std::vector<std::string> &params, int index)
 			if (i < params.size() - 1)
 				message += " ";
 		}
-		// message.erase(message.begin()); // Remove the leading ':
 		message.erase(0, message.find_first_not_of(':'));
-		// message = message.substr(1, message.length());
 	}
 	else
 		message = params[index];
@@ -165,26 +159,3 @@ std::string extractMessage(std::string m)
 	}
 	return m;
 }
-
-// Channel *Server::getChannelByName(const std::string &channelName) // get channel by name from the list of channels
-// {
-// 	std::vector<Channel>::iterator it = _channels.begin();
-// 	for ( ;it != _channels.end(); it++)
-// 	{
-// 		if (it->getChannelName() == channelName)
-// 			return &(*it);
-// 	}
-// 	return NULL;
-// }
-
-// Client *Server::getClientByNickName(std::string nickName) 
-// {
-// 	std::vector<Client>::iterator it = _allClients.begin();
-// 	for (; it != _allClients.end(); it++)
-// 	{
-// 		if (it->getNickName() == nickName)
-// 			return (&(*it));
-// 	}
-// 	return NULL;
-// }
-

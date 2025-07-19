@@ -14,7 +14,7 @@ void Server::Commands(std::vector<std::string> &params, Client *c)
 		}   return ;
 	} 
 	if (c == NULL)
-		return; // Handle case where client pointer is null
+		return;
 	Client &client = *c;
 	if (params[0] == "PRIVMSG"|| params[0] == "privmsg")
 		Server::priv_msg(params, client);

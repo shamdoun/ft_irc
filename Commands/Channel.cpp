@@ -10,7 +10,6 @@ Channel::Channel(std::string name) : _Channel_name(name), Invite(false), Topic(f
 	Topic_Update_Time = time(NULL);
 }
 
-// Getters
 std::string Channel::getChannelName() const 
 {return _Channel_name;}
 std::vector<Client>& Channel::getClients()  
@@ -84,9 +83,6 @@ void Channel::addAsClient(Client &client)
 	}
 }
 
-
-
-// FLAGS SETTER AND GETTERS ==================================
 
 bool	Channel::getterInvite(void)
 {
@@ -254,7 +250,7 @@ std::string Channel::getChannelMode(void)
 	}
 	if (mode != "")
 	{
-		mode = "+" + mode; // Add '+' at the beginning if there are modes set
+		mode = "+" + mode;
 	}
 	
 	return (mode);
@@ -264,7 +260,7 @@ time_t Channel::getCreationTime()
 {
 	return (TimeOfCreatiion);
 }
-//update the time of creation
+
 void Channel::updateCreationTime() 
 {
   TimeOfCreatiion = time(NULL);

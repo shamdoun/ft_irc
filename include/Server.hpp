@@ -57,7 +57,7 @@ public:
 	void 								handleUserCommand(std::vector<std::string> &params, Client *c);
 	void								Commands(std::vector<std::string> &params, Client *c);
 	void								priv_msg(std::vector<std::string> &params, Client &c);
-	std::vector<Channel> 				&getChannels(); // I THINK NOT LEGAL
+	std::vector<Channel> 				&getChannels();
 	Channel								&get_channel( std::string &channel_name);
 	Client								&get_client( std::string &nickName);
 	bool 								has_theChannel( std::string channelName);

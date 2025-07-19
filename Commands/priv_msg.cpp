@@ -27,13 +27,12 @@ void Server::SendPrivMsg_Channel( std::string &target_channel, const std::string
 		return;
 	}
 	Channel &channel = Server::get_channel(target_channel);
-	if (!channel.Is_ClientInChannel(c)) // check if the client is in the channel 
+	if (!channel.Is_ClientInChannel(c))
 	{
 		std::string err = ERR_NOTONCHANNEL(c.getNickName(), channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	// Send the message to all clients in the channel except the sender
 	std::string response = RPL_PRIVMSG(c.getNickName(), c.getUserName(), c.getClientSocket().getIpAddress(), target_channel, message);
 	Server::message_to_Channel(target_channel,response, c );
 }

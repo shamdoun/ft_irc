@@ -117,12 +117,6 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 					message_to_channel2(Message, c);
 		  			this->updateCreationTime();	
 				}
-				// else
-				// {
-				// 	std::string err = ERR_USERONCHANNEL(targetNick, this->getChannelName());
-				// 	send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
-				// 	return;
-				// }
 			}
 			else if (Flag == -1)
 			{
