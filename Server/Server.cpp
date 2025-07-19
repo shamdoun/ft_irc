@@ -278,3 +278,9 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 			handleUnkownCommand(params[0], c);
 	}
 }
+
+
+std::vector<Channel>	&Server::getChannels()
+{
+	return _channels;
+}

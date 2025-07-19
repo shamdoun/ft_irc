@@ -53,7 +53,6 @@ int pasrseArgs(char *pass, char *port)
 	return (0);
 }
 
-
 int main(int argc, char **argv)
 {
 	unsigned short port;
