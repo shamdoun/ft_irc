@@ -39,3 +39,5 @@ fclean_bonus : clean_bonus
 re: fclean all
 
 re_bonus: fclean_bonus bonus
+
+fcleanALL: fclean fclean_bonus

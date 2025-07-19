@@ -1,5 +1,6 @@
 #include "include/Client.hpp"
 #include "include/Server.hpp"
+#include <cstring>
 
 int isValidPort(char *p)
 {
@@ -20,11 +21,17 @@ int isValidPort(char *p)
 int isValidPassword(char *pass)
 {
 	int i = 0;
-	if (std::strlen(pass) < 3)
+	if (std::strlen(pass) <= 3)   //* i added an equal here to forbid 3 numbers 
 		return (0);
+	// while (pass[i])
+	// {
+	// 	if (!isalnum(pass[i])) // ^ this is not Working was replaced by the check bellow
+	// 		return (0);
+	// 	i++;
+	// }
 	while (pass[i])
 	{
-		if (!isalnum(pass[i]) && (pass[i] != '_'))
+		if ((pass[i] < '0' || pass[i] > '9') && pass[i] != '_')
 			return (0);
 		i++;
 	}
@@ -38,7 +45,7 @@ int pasrseArgs(char *pass, char *port)
 		std::cerr << "a valid range for the port is 1024 - 65535\n";
 		return (1);
 	}
-	if (!isValidPassword(pass))
+	if (!isValidPassword(pass)) //^ this is not Working
 	{
 		std::cerr << "the password must be at least of length 3 and it can only contain alphanumeric values and underscores!\n";
 		return (1);
@@ -52,7 +59,7 @@ int main(int argc, char **argv)
 	unsigned short port;
 	if (argc != 3)
 	{
-		std::cerr << "insuficiant number of args" << std::endl;
+		std::cerr << "Usage: /ircserv Port Password" << std::endl;
 		return (1);
 	}
 	if (pasrseArgs(argv[2], argv[1]))
