@@ -223,25 +223,26 @@ int	identifyCommand(std::string cmd)
 {
 	if (!cmd.compare("NICK") || !cmd.compare("nick"))
 		return (0);
-	if (!cmd.compare("USER")|| !cmd.compare("user"))
+	else if (!cmd.compare("USER")|| !cmd.compare("user"))
 		return (1);
-	if (!cmd.compare("PASS") || !cmd.compare("pass"))
+	else if (!cmd.compare("PASS") || !cmd.compare("pass"))
 		return (2);
-	if (!cmd.compare("PRIVMSG") || !cmd.compare("privmsg"))
+	else if (!cmd.compare("PRIVMSG") || !cmd.compare("privmsg"))
 		return (3);
-	if (!cmd.compare("JOIN") || !cmd.compare("join"))
+	else if (!cmd.compare("JOIN") || !cmd.compare("join"))
 		return (3);
-	if (!cmd.compare("MODE") || !cmd.compare("mode"))
+	else if (!cmd.compare("MODE") || !cmd.compare("mode"))
 		return (3);
-	if (!cmd.compare("KICK") || !cmd.compare("kick"))
+	else if (!cmd.compare("KICK") || !cmd.compare("kick"))
 		return (3);
-	if (!cmd.compare("INVITE") || !cmd.compare("invite"))
+	else if (!cmd.compare("INVITE") || !cmd.compare("invite"))
     	return (3);
-	if (!cmd.compare("PONG") || !cmd.compare("QUIT"))
+	else if (!cmd.compare("PONG") || !cmd.compare("QUIT"))
 		return (4);
-	if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
+	else if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
 		return (3);
-  return (-1);
+	else
+		return (-1);
 } 
 
 void Server::parseParams(std::vector<std::string> &params, Client *c)

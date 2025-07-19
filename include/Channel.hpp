@@ -56,7 +56,6 @@ class Channel
 		void						handleTopicPermission(int flag);
 		int							handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		int							handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count);
-		void						PrintChannelInfo(void);
 		void						message_to_channel2(std::string &message, Client &c);
 		std::string					getChannelMode(void);
 		time_t						getCreationTime();
@@ -68,6 +67,7 @@ class Channel
 		std::string 				WhoUpdatedGetter(void);
 		void						WhoUpdatedSetter(std::string WhoChandedstr);
 		void						RemoveFromInvite(std::string &nickName);
+		bool						isAllDigits(const std::string& str);
 	};
 
 #endif

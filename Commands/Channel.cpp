@@ -189,18 +189,7 @@ int		Channel::handle_Password(int flag, std::vector<std::string> &params, int	&c
 	}	
 }
 
-int ft_IsAllnum(char *str)
-{
-	for (int i = 0; str[i]; i++) {
-		if (str[i] < '0' || str[i] > '9')
-		{
-			return (-1);
-		}
-	}
-	return (0);
-}
-
-bool isAllDigits(const std::string& str)
+bool Channel::isAllDigits(const std::string& str)
 {
 	size_t i = 0;
 	while (str[i])
@@ -221,12 +210,11 @@ int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&curr
 	}
 	else
 	{
-		// std::cout << "handle password with positive " << std::endl;
 		if (current > prms_count)
 		{
 			return (-1);
 		}
-		else if (!isAllDigits(params[current]))
+		else if (!this->isAllDigits(params[current]))
 		{
 			return (-2);
 		}
@@ -239,56 +227,12 @@ int		Channel::handle_Limit(int flag, std::vector<std::string> &params, int	&curr
 	}	
 }
 
-
-
-void	Channel::PrintChannelInfo(void)
-{
-	std::cout << "Channel Name: " << this->_Channel_name << std::endl;
-	std::cout << "Invite: " << (this->Invite ? "true" : "false") << std::endl;
-	std::cout << "Topic: " << (this->Topic ? "true" : "false") << std::endl;
-	std::cout << "Password: " << (this->Passwd ? "true" : "false") << std::endl;
-	std::cout << "Password as string " << this->pass_as_stirng << std::endl;
-	std::cout << "Limit: " << this->Limit << std::endl;
-	std::cout << "Number of Clients in Channel: " << this->getClientSize_inChannel() << std::endl;
-	for (size_t i = 0; i < _Clients.size(); i++)
-	{
-		std::cout << "Client " << i + 1 << ": " << _Clients[i].getNickName() << std::endl;
-	}
-	std::cout << "Operators: ";
-	for (size_t i = 0; i < _Operators.size(); i++)
-	{
-		std::cout << _Operators[i];
-		if (i < _Operators.size() - 1)
-			std::cout << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "------------------------" << std::endl;
-}
-
-
-
-// void Server::message_to_Channel(std::string &channelName, const std::string &message, Client &c)
-// {
-// 	// Send the message to all clients in the channel except the sender
-// 	Channel &channel = get_channel(channelName);
-// 	std::vector<Client>::iterator it = channel.getClients().begin();
-// 	for (; it != channel.getClients().end(); it++)
-// 	{
-// 		if (it->getNickName() != c.getNickName())
-// 			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-// 	}
-// }
-
 void	Channel::message_to_channel2(std::string &message, Client &c)
 {
-	// Send the message to all clients in the channel except the sender
 	(void)c;
 	std::vector<Client>::iterator it = _Clients.begin();
 	for (; it != _Clients.end(); it++)
-	{
-		// if (it->getNickName() != c.getNickName())
-			send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-	}
+		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
 }
 
 std::string Channel::getChannelMode(void)
