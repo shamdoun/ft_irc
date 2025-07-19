@@ -21,17 +21,11 @@ int isValidPort(char *p)
 int isValidPassword(char *pass)
 {
 	int i = 0;
-	if (std::strlen(pass) <= 3)   //* i added an equal here to forbid 3 numbers 
+	if (std::strlen(pass) < 3)
 		return (0);
-	// while (pass[i])
-	// {
-	// 	if (!isalnum(pass[i])) // ^ this is not Working was replaced by the check bellow
-	// 		return (0);
-	// 	i++;
-	// }
 	while (pass[i])
 	{
-		if ((pass[i] < '0' || pass[i] > '9') && pass[i] != '_')
+		if (!isalnum(pass[i]) && pass[i] != '_')
 			return (0);
 		i++;
 	}
@@ -45,7 +39,7 @@ int pasrseArgs(char *pass, char *port)
 		std::cerr << "a valid range for the port is 1024 - 65535\n";
 		return (1);
 	}
-	if (!isValidPassword(pass)) //^ this is not Working
+	if (!isValidPassword(pass))
 	{
 		std::cerr << "the password must be at least of length 3 and it can only contain alphanumeric values and underscores!\n";
 		return (1);
