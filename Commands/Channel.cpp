@@ -165,22 +165,18 @@ int		Channel::handle_Password(int flag, std::vector<std::string> &params, int	&c
 {
 	if (flag == -1)
 	{
-		// std::cout << "handle password with negative " << std::endl;
 		this->Passwd = false;
 		this->pass_as_stirng = "";
 		return (0);
 	}
 	else
 	{
-		// std::cout << "handle password with positive " << std::endl;
 		if (current > prms_count)
 		{
-			// std::cout << "Not enough params" << std::endl;
 			return (-1);
 		}
 		else
 		{
-			// std::cout << "Succes" << std::endl;
 			this->Passwd = true;
 			this->pass_as_stirng = params[current];
 			current++;
