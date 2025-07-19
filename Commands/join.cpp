@@ -24,6 +24,7 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 		return false;
 	}
 	else if (channel.getterInvite() && !channel.Is_Invited(Client_NickName))
+	{
 		std::string err_join = ERR_INVITEONLYCHAN(c.getNickName(), channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 		return false;
