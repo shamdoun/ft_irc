@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     parseArgs(ip, std::string(argv[2]));
     signal(SIGINT, sigHandler);
     signal(SIGTSTP, sigHandler);
-    signal(SIGHUP, signalHander);
+    signal(SIGHUP, sigHandler);
 	signal(SIGPIPE, SIG_IGN);
     unsigned short  port = std::atoi(argv[2]);
     std::string password(argv[3]);
