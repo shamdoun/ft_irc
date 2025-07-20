@@ -20,6 +20,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 		else if(params[0][j] == 'i')
 		{
 			std::string Message;
+			std::string Message2;
 			if (Flag == 1)
 				Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 			else if (Flag == -1)
@@ -54,13 +55,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
-				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				// std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), params[0][j], params[current - 1]);
 				message_to_channel2(Message, c);
 				this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
-				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
+				std::string Message = RPL_UMODEISMINUS(c.getNickName(), this->getChannelName(), params[0][j], params[current - 1]);
+				// std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
 				this->updateCreationTime();
 			}
@@ -82,13 +85,15 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
-				std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
+				std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), params[0][j], params[current - 1]);
+				// std::string Message = RPL_CHANGEMODE(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
 				this->updateCreationTime();
 			}
 			else if (Flag == -1)
 			{
-				std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
+				std::string Message = RPL_UMODEISMINUS(c.getNickName(), this->getChannelName(), params[0][j], params[current - 1]);
+				// std::string Message = RPL_CHANGEMODEMINUS(c.getNickName(), this->getChannelName(), params[0][j]);
 				message_to_channel2(Message, c);
 				this->updateCreationTime();
 			}
