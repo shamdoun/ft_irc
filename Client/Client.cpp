@@ -5,7 +5,7 @@ Client::Client()
 	_clientSocket = Socket(1);
 }
 
-Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false)
+Client::Client(Socket socket):_clientSocket(socket),_nickName("*"),_hostName("localhost"),_isAuthenticated(false),_isRegistered(false),_hasNickname(false),_hasUsername(false),_isBot(false)
 {
 	
 }
@@ -41,7 +41,7 @@ std::string Client::getUserName() const
 
 std::string Client::getHostName() const
 {
-	return this->_username;
+	return this->_hostName;
 }
 
 std::string Client::getRealName() const
@@ -68,6 +68,11 @@ bool Client::getIsRegistered() const
 void Client::setNickName(std::string &value)
 {
 	_nickName = value;
+}
+
+void Client::setIsBot(bool b)
+{
+	_isBot = b;
 }
 
 void Client::setUserName(std::string &value)
@@ -112,4 +117,31 @@ bool Client::getHasUser() const
 std::string Client::getAlteredHost() const
 {
 	return (_nickName+ "!" + _username + "@");
+}
+
+std::string Client::getPrefix() const 
+{
+    return (_nickName+ "!" + _username + "@" + _hostName);
+}
+
+bool Client::operator==(const Client& other) const
+{
+	if (this->_id == other._id)
+		return (true);
+	return (false);
+}
+
+bool Client::getIsBot() const
+{
+	return _isBot;
+}
+
+size_t Client::getId() const
+{
+	return _id;
+}
+
+void Client::setId(size_t id)
+{
+	_id = id;
 }

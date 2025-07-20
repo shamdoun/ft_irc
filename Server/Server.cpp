@@ -1,5 +1,11 @@
 #include "../include/Server.hpp"
 #include "../include/numericReplies.hpp"
+#include "../include/Server_utils.hpp"
+#include "../include/Authentification.hpp"
+#include <algorithm>
+#include <cstring>
+#include <iterator>
+#include <vector>
 
 std::vector<pollfd> Server::_pfds;
 
@@ -8,10 +14,12 @@ Server::Server():_name("default"),_password("defaut"),_port(8080)
 
 Server::Server(std::string name, std::string password, unsigned short port):_name(name), _password(password), _port(port)
 {
+
 }
 
 Server::~Server()
 {
+	_allClients.clear();
 }
 
 void Server::setupServer()
@@ -20,8 +28,6 @@ void Server::setupServer()
 	int opt = 1;
 	int ret;
 
-
-	_serverSocket = Socket();
 	_serverSocket.setSocketAdress(AF_INET, _port, INADDR_ANY);
 	ret = setsockopt(_serverSocket.getSocketFd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	if (ret < 0)
@@ -67,26 +73,77 @@ void Server::startListening()
 	ret = listen(_serverSocket.getSocketFd(), MAX_CONNECTIONS);
 	if (ret < 0)
 		throw std::runtime_error("failed to listen for connections!");
-	std::cout << "Server is listening on " << _serverSocket.getIpAddress() << ":"  << _port << std::endl;
+	std::cout << INIT ;
+	std::cout << "Server is listening on " << GREEN_P << _serverSocket.getIpAddress() << ":"  << _port << GREEN_S  << std::endl;
 }
 
 void Server::receiveData(int i)
 {
 	ssize_t bytes;
 	Client *c;
+	std::string	message;
 
 	c = getClientByFd(_pfds[i].fd);
 	std::memset(_buffer, 0, sizeof(_buffer));
-	bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0);
+	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
+	{
+		if (bytes >= static_cast<ssize_t>(sizeof(_buffer)))
+		{
+			std::cout << "Buffer overflow detected, message too long!" << std::endl;
+			memset(_buffer, 0, sizeof(_buffer));
+			break;
+		}
+		_buffer[bytes] = '\0';
+		message += _buffer;
+		std::memset(_buffer, 0, sizeof(_buffer));
+		if (message.find("\n") != std::string::npos)
+		{
+			break ;
+		}
+	}
 	if (!bytes)
 	{
-		std::cout << "client has gracefully closed the connection" << std::endl;
+		std::string Nickname = c->getNickName();
+
+		std::vector<Channel> &channels = getChannels();
+		std::vector<Channel>::iterator it_Chan;
+		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		{
+			Channel &channel = *it_Chan;
+			if (channel.Is_OperatorInChannel(*c))
+			{
+				channel.RemoveOperator(Nickname, *c);
+				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+				channel.message_to_channel2(message, *c);
+			}
+			else if (channel.Is_ClientInChannel(*c))
+			{
+				channel.RemoveClient(Nickname);
+				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+				channel.message_to_channel2(message, *c);
+			}
+		}
+		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
+		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
 		_pfds.erase(_pfds.begin() + i);
+		if (it != _allClients.end())
+			_allClients.erase(it);
 	}
-	if (bytes < 0)
-		throw std::runtime_error("failed to receive a new message!");
-	parseMessage(_buffer, c);
+	else if (bytes < 0)
+		std::cerr << "recv: " << strerror(errno) << std::endl;
+	else
+	{
+		size_t pos;
+		while (pos = message.find('\n'), pos != std::string::npos)
+		{
+			std::string line = message.substr(0, pos);
+			message.erase(0, pos + 1);
+			if (line.empty())
+				continue;
+			parseMessage(line, c);
+		}
+	}
 }
 
 Client *Server::getClientByFd(int fd)
@@ -97,6 +154,11 @@ Client *Server::getClientByFd(int fd)
 			return (&(*it));
 	}
 	return NULL;
+}
+
+std::vector<Client> Server::getAllClients()
+{
+	return _allClients;
 }
 
 Socket &Server::getServerSocket()
@@ -119,40 +181,41 @@ void Server::acceptConnection()
 		throw std::runtime_error("failed to make a file non-blocking");
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
 	Client newClient(c);
+	newClient.setId(_allClients.size() + 1);
 	_allClients.push_back(newClient);
-
 	pfd.fd = fd;
 	pfd.events = POLL_IN;
 	pfd.revents = 0;
 	_pfds.push_back(pfd);
-	std::cout << "new client is connected on host: "  << c.getIpAddress() << std::endl;
+	std::cout << "Client " << GREEN_P << "<" << newClient.getId() << "> " << GREEN_S << "is connected\n"; 
+
 }
 
 void Server::quitServer()
 {
-	std::cout << "closing all connections" << std::endl;
+	std::cout << "-----------Quiting the Server-------------\n";
+	std::cout << RED_P << "closing all connections...." << RED_S << std::endl;
 	for (std::vector<struct pollfd>::iterator p = _pfds.begin(); p != _pfds.end(); p++)
 	{
 		close(p->fd);
 	}
-	exit(-1);
+	exit(0);
 }
 
 void signalHander(int sig)
 {
-	(void)sig;
+	std::cout << "\n" << sig << ": Signal received!\n";
 	Server::quitServer();
 }
 
-void Server::parseMessage(char *buf, Client *c)
+void Server::parseMessage(std::string &parse, Client *c)
 {
-	std::string parse(buf);
 	std::vector<std::string> params;
 	size_t start = 0;
 	size_t end;
 
 	parse = extractMessage(parse);
-	while ((end = parse.find(" ", start)) != std::string::npos)
+	while ((end = parse.find(' ', start)) != std::string::npos)
 	{
 		params.push_back(parse.substr(start, end - start));
 		start = end + 1;
@@ -166,25 +229,29 @@ void Server::parseMessage(char *buf, Client *c)
 
 int	identifyCommand(std::string cmd)
 {
-	if (!cmd.compare("NICK"))
+	if (!cmd.compare("NICK") || !cmd.compare("nick"))
 		return (0);
-	if (!cmd.compare("USER"))
+	else if (!cmd.compare("USER")|| !cmd.compare("user"))
 		return (1);
-	if (!cmd.compare("PASS"))
+	else if (!cmd.compare("PASS") || !cmd.compare("pass"))
 		return (2);
-	if (!cmd.compare("PRIVMSG"))
+	else if (!cmd.compare("PRIVMSG") || !cmd.compare("privmsg"))
 		return (3);
-	return (-1);
+	else if (!cmd.compare("JOIN") || !cmd.compare("join"))
+		return (3);
+	else if (!cmd.compare("MODE") || !cmd.compare("mode"))
+		return (3);
+	else if (!cmd.compare("KICK") || !cmd.compare("kick"))
+		return (3);
+	else if (!cmd.compare("INVITE") || !cmd.compare("invite"))
+    	return (3);
+	else if (!cmd.compare("PONG") || !cmd.compare("QUIT"))
+		return (4);
+	else if (!cmd.compare("TOPIC") || !cmd.compare("topic"))
+		return (3);
+	else
+		return (-1);
 } 
-
-void handleUnkownCommand(std::string cmd, Client *c)
-{
-        std::string err = ERR_UNKNOWNCOMMAND(c->getNickName(), cmd);
-        if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-        {
-                std::cerr << "failed to send " << err << std::endl;
-        }
-}
 
 void Server::parseParams(std::vector<std::string> &params, Client *c)
 {
@@ -205,235 +272,15 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 		case 3:
 			Server::Commands(params, c);
 			break ;
+		case 4:
+			return ;
 		default:
 			handleUnkownCommand(params[0], c);
 	}
 }
 
-void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
+
+std::vector<Channel>	&Server::getChannels()
 {
-	//handle errors
-	std::string err;
-	if (c->getIsRegistered())
-	{
-		err = ERR_ALREADYREGISTERED(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-	}
-	else if (params.size() < 2)
-	{
-		err = ERR_NEEDMOREPARAMS(c->getNickName(), "PASS");
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-	}
-	else if (params[1] != _password)
-	{
-		err = ERR_PASSMISMATCH(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-	}
-	else
-		c->setIsRegistered(true);
-}
-
-int isValidNickname(std::string const &nick)
-{
-	size_t i = 0;
-	std::string specialChars("[]\\`_^{|}");
-	if (nick.length() > 9)
-		return (0);
-	if (!std::isalpha(nick[0]) && (specialChars.find(nick[0]) == std::string::npos))
-		return (0);
-	i++;
-	while (i < nick.length())
-	{
-		if (!std::isalnum(nick[i]) && (specialChars.find(nick[i]) == std::string::npos))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-int Server::nickNameAlreadyExists(std::string const &nick)
-{
-	std::vector<Client>::iterator it;
-
-	it = _allClients.begin();
-	while (it != _allClients.end())
-	{
-		if(it->getNickName() == nick)
-			return (1);
-		++it;
-	}
-	return (0);
-}
-
-void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
-{
-	//handle errors
-	std::string err;
-	if (!c->getIsRegistered())
-	{
-		err = ERR_NOTREGISTERED(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	else if (params.size() < 2 || (params[1] == ":"))
-	{
-		err = ERR_NONICKNAMEGIVEN(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	else if (!isValidNickname(params[1]))
-	{
-		err = ERR_ERRONEUSNICKNAME(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	else if (nickNameAlreadyExists(params[1]))
-	{
-		err = ERR_NICKNAMEINUSE(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	if (!c->getHasNickname())
-		c->setHasNickname();
-	c->setNickName(params[1]);
-	if (c->getHasNickname() && c->getHasUser())
-	{
-		err = RPL_WELCOME(c->getNickName(),c->getUserName(), c->getAlteredHost(), c->getClientSocket().getIpAddress());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		c->setIsAuthenticated(true);
-	}
-}
-
-bool isValidUsername(const std::string& username)
-{
-    if (username.empty() || username.size() > 9)
-        return false;
-    for (size_t i = 0; i < username.length(); i++)
-	{
-        if (!(isalnum(username[i]) || username[i] == '-' || username[i] == '_' || username[i] == '.'))
-            return false;
-    }
-    return true;
-}
-
-void Server::handleUserCommand(std::vector<std::string> &params, Client *c)
-{
-	//handle errors
-	//handle long real name
-	std::string err;
-	std::string username;
-	std::string hostname;
-	std::string servername;
-	std::string realname;
-
-	if (!c->getIsRegistered())
-	{
-		err = ERR_NOTREGISTERED(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	if (c->getIsAuthenticated())
-	{
-		err = ERR_ALREADYREGISTERED(c->getNickName());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	if (params.size() < 5)
-	{
-		err = ERR_NEEDMOREPARAMS(c->getNickName(), "USER");
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	username = params[1];
-	hostname = params[2];
-	servername = params[3];
-	realname = params[4];
-	if (!isValidUsername(username))
-	{
-		err = ERR_ERRONEUSUSERNAME(username);
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	if (servername != this->_name)
-	{
-		err = ERR_NOSUCHSERVER(c->getNickName(), servername);
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		return ;
-	}
-	if (realname.find(':') != std::string::npos)
-	{
-		realname = realname.substr(1) + " ";
-		for (size_t i = 5; i < params.size(); i++)
-		{
-			realname += params[i];
-			if (i != (params.size() - 1))
-				realname += " ";
-		}
-		std::cout << "realname is " << realname << std::endl;
-	}
-	c->setUserName(username);
-	c->setRealName(realname);
-	c->setHostName(hostname);
-	c->setHasUserame();
-	if(c->getHasNickname() && c->getHasUser())
-	{
-		err = RPL_WELCOME(c->getNickName(),c->getUserName(), c->getAlteredHost(), c->getClientSocket().getIpAddress());
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
-		c->setIsAuthenticated(true);
-	}
-}
-
-std::string extractMessage(std::string m)
-{
-    size_t end;
-    size_t end_w;
-    end = m.find("\r\n");
-    if (end != std::string::npos)
-		return (m.substr(0, end));
-    end_w = m.find("\n");
-    if (end_w != std::string::npos)
-		return (m.substr(0, end_w));
-	return (m);
+	return _channels;
 }
