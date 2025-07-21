@@ -20,12 +20,12 @@ void Server::Commands(std::vector<std::string> &params, Client *c)
 		Server::priv_msg(params, client);
 	if (params[0] == "JOIN" || params[0] == "join")
 		Server::join(params, client);
-	if (params[0] == "MODE" || params[0] == "mode")
-		Server::Mode(params, client);
+	// if (params[0] == "MODE" || params[0] == "mode")
+	// 	Server::Mode(params, client);
 	if (params[0] == "KICK" || params[0] == "kick")
 		Server::kick_from_channel(params, client);
-	if (params[0] == "INVITE" || params[0] == "invite")
-	    Server::Invite_Command(params, client);
+	// if (params[0] == "INVITE" || params[0] == "invite")
+	//     Server::Invite_Command(params, client);
 	if (params[0] == "TOPIC" || params[0] == "topic")
 	    Server::Topic_Handler(params, client);
 		

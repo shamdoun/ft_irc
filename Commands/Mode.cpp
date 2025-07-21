@@ -112,7 +112,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			{
 				if (!this->Is_OperatorInChannel_2(targetNick))
 				{
-					this->_Operators.push_back(targetNick);
+					this->_Operators.push_back(c);
 					std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), params[0][j], targetNick);
 					message_to_channel2(Message, c);
 		  			this->updateCreationTime();	
@@ -120,9 +120,9 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			else if (Flag == -1)
 			{
-				for (std::vector<std::string>::iterator it = this->_Operators.begin(); it != this->_Operators.end(); ++it)
+				for (std::vector<Client>::iterator it = this->_Operators.begin(); it != this->_Operators.end(); ++it)
 				{
-					if (*it == targetNick)
+					if (it->getId() == targetNick)
 					{
 						this->_Operators.erase(it);
 						this->updateCreationTime();

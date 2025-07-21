@@ -9,8 +9,8 @@ class Channel
 {
 	private:
 		std::string					_Channel_name;
-		std::vector<Client>			_Clients;
-		std::vector<std::string>	_Operators;
+		std::vector<Client>	_Clients;
+		std::vector<Client>			_Operators;
 		std::vector<std::string>	_Invited;
 		std::string					_topic;
 		bool						Invite;
@@ -26,17 +26,17 @@ class Channel
 	public:
 		Channel(std::string name);
 		std::vector<Client>			&getClients() ;
-		std::vector<std::string>	&getOpperators();
+		std::vector<Client>	&getOpperators();
 		int							getClientSize_inChannel() const;
 		std::string					getChannelName() const;
 		bool 						Is_ClientInChannel(Client &client);
-		bool						Is_ClientInChannel_2(std::string NickName);
+		bool						Is_ClientInChannel_2(size_t id);
 		void						addAsOperator(Client &client);
 		void						addAsClient(Client &client);
 		bool						Is_OperatorInChannel(Client &client);  
-		bool						Is_OperatorInChannel_2(std::string &nickName) ;
-		void						RemoveOperator(std::string &nickName, Client &c);
-		void						RemoveClient(std::string &nickName);
+		bool						Is_OperatorInChannel_2(size_t id) ;
+		void						RemoveOperator(size_t id, Client &c);
+		void						RemoveClient(size_t id);
 		void						handleModeCommand(std::vector<std::string> &params, Client &c);
 		bool						getterInvite(void);
 		bool						getterKickFlag(void);

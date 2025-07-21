@@ -103,26 +103,26 @@ void Server::receiveData(int i)
 	}
 	if (!bytes)
 	{
-		std::string Nickname = c->getNickName();
+		// std::string Nickname = c->getNickName();
 
-		std::vector<Channel> &channels = getChannels();
-		std::vector<Channel>::iterator it_Chan;
-		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
-		{
-			Channel &channel = *it_Chan;
-			if (channel.Is_OperatorInChannel(*c))
-			{
-				channel.RemoveOperator(Nickname, *c);
-				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
-				channel.message_to_channel2(message, *c);
-			}
-			else if (channel.Is_ClientInChannel(*c))
-			{
-				channel.RemoveClient(Nickname);
-				std::string message = RPL_QUIT(Nickname, "Client has disconnected");
-				channel.message_to_channel2(message, *c);
-			}
-		}
+		// std::vector<Channel> &channels = getChannels();
+		// std::vector<Channel>::iterator it_Chan;
+		// for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		// {
+		// 	Channel &channel = *it_Chan;
+		// 	if (channel.Is_OperatorInChannel(*c))
+		// 	{
+		// 		channel.RemoveOperator(Nickname, *c);
+		// 		std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+		// 		channel.message_to_channel2(message, *c);
+		// 	}
+		// 	else if (channel.Is_ClientInChannel(*c))
+		// 	{
+		// 		channel.RemoveClient(Nickname);
+		// 		std::string message = RPL_QUIT(Nickname, "Client has disconnected");
+		// 		channel.message_to_channel2(message, *c);
+		// 	}
+		// }
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
@@ -279,6 +279,25 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 	}
 }
 
+std::string							Server::getNickNameById(size_t id)
+{
+	for (std::vector<Client>::iterator it = _allClients.begin(); it != _allClients.end(); it++)
+	{
+		if (it->getId() == id)
+			return it->getNickName();
+	}
+	return "";
+}
+
+size_t 								Server::getIdByName(std::string &nickName) const
+{
+	for (std::vector<Client>::const_iterator it = _allClients.begin(); it != _allClients.end(); it++)
+	{
+		if (it->getNickName() == nickName)
+			return it->getId();
+	}
+	return 0;
+}
 
 std::vector<Channel>	&Server::getChannels()
 {

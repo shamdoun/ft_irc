@@ -14,7 +14,7 @@ std::string Channel::getChannelName() const
 {return _Channel_name;}
 std::vector<Client>& Channel::getClients()  
 {return _Clients;}
-std::vector<std::string>& Channel::getOpperators()
+std::vector<Client>& Channel::getOpperators()
 {
 	return _Operators;
 }
@@ -26,44 +26,44 @@ bool Channel::Is_ClientInChannel(Client &client)
 	std::vector<Client>::iterator it = _Clients.begin();
 	for (; it != _Clients.end(); it++)
 	{
-		if (it->getNickName() == client.getNickName()) 
+		if (it->getId() == client.getId()) 
 			return true;
 	}
 	return false;
 }
 
-bool Channel::Is_ClientInChannel_2(std::string NickName)  
+bool Channel::Is_ClientInChannel_2(size_t id)  
 {
 	std::vector<Client>::iterator it = _Clients.begin();
 	for (; it != _Clients.end(); it++)
 	{
-		if (it->getNickName() == NickName) 
+		if (it->getId() == id) 
 			return true;
 	}
 	return false;
 }
-
 bool Channel::Is_OperatorInChannel(Client &client)  
 {
-	std::vector<std::string>::iterator it = _Operators.begin();
+	std::vector<Client>::iterator it = _Operators.begin();
 	for (; it != _Operators.end(); it++)
 	{
-		if (*it == client.getNickName()) 
+		if (it->getId() == client.getId()) 
 			return true;
 	}
 	return false;
 }
 
-bool Channel::Is_OperatorInChannel_2(std::string &nickName)  
+bool Channel::Is_OperatorInChannel_2(size_t id)  
 {
-	std::vector<std::string>::iterator it = _Operators.begin();
+	std::vector<Client>::iterator it = _Operators.begin();
 	for (; it != _Operators.end(); it++)
 	{
-		if (*it == nickName) 
+		if (it->getId() == id) 
 			return true;
 	}
 	return false;
 }
+
 
 
 void Channel::addAsOperator(Client &client) 
@@ -71,7 +71,7 @@ void Channel::addAsOperator(Client &client)
 	if (!Is_ClientInChannel(client))
 	{
 		_Clients.push_back(client);
-		_Operators.push_back(client.getNickName());
+		_Operators.push_back(client);
 	}	
 }
 
@@ -243,7 +243,7 @@ std::string Channel::getChannelMode(void)
 		mode += "o";
 		for (size_t i = 0; i < this->_Operators.size(); i++)
 		{
-			mode += " @" + this->_Operators[i];
+			mode += " @" + this->_Operators[i].getNickName();
 			if (i < this->_Operators.size() - 1)
 				mode += " ";
 		}
@@ -276,18 +276,18 @@ time_t Channel::getTopicUpdateTime()
 	return (Topic_Update_Time);
 }
 
-void 	Channel::addAsInvited(std::string &nickName)
-{
-	if (!Is_ClientInChannel_2(nickName))
-	{
-		_Invited.push_back(nickName);
-		std::cout << "Added " << nickName << " to invited list of channel: " << this->getChannelName() << std::endl;
-	}
-	else
-	{
-		std::cout << nickName << " is already in the channel: " << this->getChannelName() << std::endl;
-	}
-}
+// void 	Channel::addAsInvited(std::string &nickName)
+// {
+// 	if (!Is_ClientInChannel_2(nickName))
+// 	{
+// 		_Invited.push_back(nickName);
+// 		std::cout << "Added " << nickName << " to invited list of channel: " << this->getChannelName() << std::endl;
+// 	}
+// 	else
+// 	{
+// 		std::cout << nickName << " is already in the channel: " << this->getChannelName() << std::endl;
+// 	}
+// }
 
 int Channel::Is_Invited(std::string &nickName)
 {
