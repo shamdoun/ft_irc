@@ -24,7 +24,7 @@ bool Server::valid_joining_channel(Channel &channel, Client &c, std::string pass
 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 		return false;
 	}
-	else if (channel.getterInvite() && !channel.Is_Invited(Client_NickName))
+	else if (channel.getterInvite() && !channel.Is_Invited(c)) //? i changed from client nickname to c 
 	{
 		std::string err_join = ERR_INVITEONLYCHAN(c.getNickName(), channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
@@ -85,7 +85,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0);
 	std::string nickname = c.getNickName();
 	std::cout << "nickname is : " << nickname << std::endl;
-	channel.RemoveFromInvite(nickname);
+	channel.RemoveFromInvite(c);  //? i changed from nickname to c
 	Server::message_to_Channel(newchannelName, joinMsg, c);
 	Server::SendChannelInfos(newchannelName, c);
 }

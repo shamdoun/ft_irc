@@ -39,16 +39,16 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 		return;
 	}
 	Client &targetClient = get_client(nickName);
-	if (channel.Is_ClientInChannel(targetClient))
+	if (channel.Is_ClientInChannel(targetClient)) //? Maybe we should check it with id instead of nick
 	{
 		std::string err = ERR_USERONCHANNEL(channel.getChannelName(), targetClient.getNickName());
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	std::string Target_NickName = targetClient.getNickName();
-	channel.addAsInvited(Target_NickName);
-	std::string message = RPL_INVITING(c.getNickName(), channel.getChannelName(), Target_NickName);
+	// std::string Target_NickName = targetClient.getNickName();
+	channel.addAsInvited(targetClient);
+	std::string message = RPL_INVITING(c.getNickName(), channel.getChannelName(), targetClient.getNickName());
 	send(targetClient.getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
-	std::string inviteMessage = RPL_INVITE(c.getNickName(), channel.getChannelName(), Target_NickName);
-	send(c.getClientSocket().getSocketFd(), inviteMessage.c_str(), inviteMessage.size(), 0);
+	// std::string inviteMessage = RPL_INVITE(c.getNickName(), channel.getChannelName(), Target_NickName);
+	// send(c.getClientSocket().getSocketFd(), inviteMessage.c_str(), inviteMessage.size(), 0);
 }

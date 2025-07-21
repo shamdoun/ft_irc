@@ -276,36 +276,34 @@ time_t Channel::getTopicUpdateTime()
 	return (Topic_Update_Time);
 }
 
-// void 	Channel::addAsInvited(std::string &nickName)
-// {
-// 	if (!Is_ClientInChannel_2(nickName))
-// 	{
-// 		_Invited.push_back(nickName);
-// 		std::cout << "Added " << nickName << " to invited list of channel: " << this->getChannelName() << std::endl;
-// 	}
-// 	else
-// 	{
-// 		std::cout << nickName << " is already in the channel: " << this->getChannelName() << std::endl;
-// 	}
-// }
-
-int Channel::Is_Invited(std::string &nickName)
+int	Channel::addAsInvited(Client &client) 
 {
-	std::vector<std::string>::iterator it = _Invited.begin();
+	if (!Is_ClientInChannel(client) && !Is_Invited(client))
+	{
+		_Invited.push_back(client);
+		return (1);
+	}
+	return (-1);
+}
+
+int Channel::Is_Invited(Client &client) 
+{
+	std::vector<Client>::iterator it = _Invited.begin();
 	for (; it != _Invited.end(); it++)
 	{
-		if (*it == nickName) 
+		if (it->getId() == client.getId()) 
 			return 1;
 	}
 	return 0;
 }
 
-void Channel::RemoveFromInvite(std::string &nickName)
+
+void Channel::RemoveFromInvite(Client &client)
 {
-	std::vector<std::string>::iterator it_cl = this->_Invited.begin();
+	std::vector<Client>::iterator it_cl = this->_Invited.begin();
 	for (; it_cl != this->_Invited.end(); it_cl++)
 	{
-		if (*it_cl == nickName)
+		if (it_cl->getId() == client.getId())
 		{
 			this->_Invited.erase(it_cl);
 			break;

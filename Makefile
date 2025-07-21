@@ -1,6 +1,6 @@
 srcs = main.cpp Server/Server.cpp Client/Client.cpp Socket.cpp treat_commands.cpp Server/Server_utils.cpp \
 		Commands/priv_msg.cpp Commands/Channel.cpp Commands/join.cpp Commands/kick.cpp Server/Authentification.cpp \
-		Commands/Topic.cpp
+		Commands/Topic.cpp  Commands/Mode.cpp Commands/Invite.cpp
 srcs_bonus = bonus/Bot_bonus.cpp bonus/main_bonus.cpp Socket.cpp
 objs = $(srcs:.cpp=.o)
 objs_bonus = $(srcs_bonus:.cpp=.o)

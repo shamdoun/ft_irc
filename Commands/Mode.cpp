@@ -3,7 +3,7 @@
 #include "../include/numericReplies.hpp"
 #include "../include/Channel.hpp"
 
-void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
+void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c, Server &server)
 {
 	int	params_count = params.size() -1;
 	int	Flag = 1;
@@ -102,7 +102,8 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 				return;
 			}
 			std::string targetNick = params[current++];
-			if (!this->Is_ClientInChannel_2(targetNick))
+			size_t TargetId = server.get_client(targetNick).getId();
+			if (!this->Is_ClientInChannel_2(TargetId))
 			{
 				std::string err = ERR_USERNOTINCHANNEL(targetNick, this->getChannelName());
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
@@ -110,9 +111,9 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			}
 			if (Flag == 1)
 			{
-				if (!this->Is_OperatorInChannel_2(targetNick))
+				if (!this->Is_OperatorInChannel_2(TargetId))
 				{
-					this->_Operators.push_back(c);
+					this->_Operators.push_back(server.get_client(targetNick));
 					std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), params[0][j], targetNick);
 					message_to_channel2(Message, c);
 		  			this->updateCreationTime();	
@@ -122,7 +123,16 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c)
 			{
 				for (std::vector<Client>::iterator it = this->_Operators.begin(); it != this->_Operators.end(); ++it)
 				{
-					if (it->getId() == targetNick)
+					if (it->getId() == TargetId)
+					{
+						if (it->getId() == c.getId())
+						{
+							std::string err = ERR_CHANOPRIVSNEEDED(this->getChannelName());
+							send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+							return;
+						}
+					}
+					else
 					{
 						this->_Operators.erase(it);
 						this->updateCreationTime();
@@ -201,7 +211,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 		}
 		params.erase(params.begin());
 		params.erase(params.begin());
-		channel.handleModeCommand(params, c);
+		channel.handleModeCommand(params, c, *this);
 	}
 	else
 	{

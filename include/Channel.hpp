@@ -4,14 +4,14 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include <vector>
-
+class Server;
 class Channel
 {
 	private:
 		std::string					_Channel_name;
-		std::vector<Client>	_Clients;
+		std::vector<Client>			_Clients;
 		std::vector<Client>			_Operators;
-		std::vector<std::string>	_Invited;
+		std::vector<Client>			_Invited;
 		std::string					_topic;
 		bool						Invite;
 		bool						Topic;
@@ -37,7 +37,7 @@ class Channel
 		bool						Is_OperatorInChannel_2(size_t id) ;
 		void						RemoveOperator(size_t id, Client &c);
 		void						RemoveClient(size_t id);
-		void						handleModeCommand(std::vector<std::string> &params, Client &c);
+		void						handleModeCommand(std::vector<std::string> &params, Client &c, Server &server);
 		bool						getterInvite(void);
 		bool						getterKickFlag(void);
 		bool						getterTopic(void);
@@ -62,11 +62,11 @@ class Channel
 		time_t						getTopicUpdateTime();
 		void						updateCreationTime();
 		void						TopicUpdateTime();
-		void						addAsInvited(std::string &nickName);
-		int							Is_Invited(std::string &nickName);
+		int							addAsInvited(Client &client);
+		int							Is_Invited(Client &client);
 		std::string 				WhoUpdatedGetter(void);
-		void						WhoUpdatedSetter(std::string WhoChandedstr);
-		void						RemoveFromInvite(std::string &nickName);
+		void						WhoUpdatedSetter(std::string WhoChandedstr); //^ i should change it to saving the id or the client class not the nickname
+		void						RemoveFromInvite(Client &client);
 		bool						isAllDigits(const std::string& str);
 	};
 
