@@ -77,6 +77,15 @@ void Server::startListening()
 	std::cout << "Server is listening on " << GREEN_P << _serverSocket.getIpAddress() << ":"  << _port << GREEN_S  << std::endl;
 }
 
+bool hasTrailingCFLF(const std::string &message)
+{
+	if (message.empty() || message.size() < 2)
+		return false;
+	if (message[message.size() - 1] == '\n' && message[message.size() - 2] == '\r')
+		return true;
+	return false;
+}
+
 void Server::receiveData(int i)
 {
 	ssize_t bytes;
@@ -87,8 +96,14 @@ void Server::receiveData(int i)
 	std::memset(_buffer, 0, sizeof(_buffer));
 	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
 	{
-		if (bytes >= static_cast<ssize_t>(sizeof(_buffer)))
+		if (bytes == BUFFER_SIZE && !hasTrailingCFLF(message))
 		{
+			message[message.size() - 1] = '\n';
+			message[message.size() - 2] = '\r';
+		}
+		if (bytes > BUFFER_SIZE)
+		{
+			sendError(ERR_INPUTTOOLONG(c->getNickName()), c);
 			std::cout << "Buffer overflow detected, message too long!" << std::endl;
 			memset(_buffer, 0, sizeof(_buffer));
 			break;
@@ -96,10 +111,9 @@ void Server::receiveData(int i)
 		_buffer[bytes] = '\0';
 		message += _buffer;
 		std::memset(_buffer, 0, sizeof(_buffer));
-		if (message.find("\n") != std::string::npos)
-		{
+		// if (message.find("\n") != std::string::npos)
+		if (hasTrailingCFLF(message))
 			break ;
-		}
 	}
 	if (!bytes)
 	{

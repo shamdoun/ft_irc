@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include <exception>
 #include <arpa/inet.h>
-#define BUFFER_SIZE  1024
+#define BUFFER_SIZE  512
 
 class Socket
 {

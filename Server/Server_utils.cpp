@@ -147,5 +147,5 @@ std::string extractMessage(std::string m)
 	{
 		return (m.substr(0, end_w));
 	}
-	return m;
+	return (m);
 }

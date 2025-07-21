@@ -120,8 +120,8 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	if (!c->getHasNickname())
 		c->setHasNickname();
 	std::string oldNick = c->getNickName();
-	c->setNickName(params[1]);
 	std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> set nickname: " << GREEN_P << params[1] << GREEN_S << std::endl;  
+	c->setNickName(params[1]);
 	if (!c->getIsAuthenticated() && c->getHasNickname() && c->getHasUser())
 	{
         sendError(RPL_WELCOME(c->getNickName(), c->getHostName()), c);
@@ -133,12 +133,12 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	}
 	else if (c->getIsAuthenticated())
 	{
-		std::string msg = "[SYSTEM] " + oldNick + " changed his nickname to " + c->getNickName();
-		broadCastMessage(msg, *c);
+		std::string msg = "[SYSTEM] " + oldNick + " changed his nickname to " + params[1];
+		broadCastMessage(msg, oldNick, *c);
 	}
 }
 
-void Server::broadCastMessage(std::string &message, Client &c)
+void Server::broadCastMessage(std::string &message, std::string old, Client &c)
 {
 	std::vector<Client>::iterator it = _allClients.begin();
 	std::string target;
@@ -147,7 +147,8 @@ void Server::broadCastMessage(std::string &message, Client &c)
 		if (it->getId() != c.getId())
 		{
 			target = it->getNickName();
-			SendPrivMsg_User(target, message, c);	
+			std::string response = RPL_PRIVMSG(old, c.getUserName(), c.getClientSocket().getIpAddress(), target, message);
+			send(it->getClientSocket().getSocketFd(), response.c_str(), response.size(), 0);
 		}
 		++it;
 	}
