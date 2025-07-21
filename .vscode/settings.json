@@ -1,8 +1,0 @@
-{
-	"files.associations": {
-		"__threading_support": "cpp",
-		"iosfwd": "cpp",
-		"vector": "cpp"
-	},
-	"makefile.configureOnOpen": false
-}

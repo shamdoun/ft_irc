@@ -27,7 +27,7 @@ class Bot
     public:
         Bot();
         ~Bot();
-        Bot(std::string _ip, unsigned short port, std::string _password);
+        Bot(std::string _ip, unsigned short port, std::string _password, std::string _nick);
 		Bot(const Bot &other);
 		Bot 		&operator=(const Bot &other);
 		void		run();

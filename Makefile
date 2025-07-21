@@ -5,11 +5,11 @@ srcs_bonus = bonus/Bot_bonus.cpp bonus/main_bonus.cpp Socket.cpp
 objs = $(srcs:.cpp=.o)
 objs_bonus = $(srcs_bonus:.cpp=.o)
 cc = c++
-flags = -Werror -Wall -Wextra -std=c++98
+flags = -Werror -Wall -Wextra -std=c++98 -fsanitize=address -g3
 headers = include/Server.hpp include/Client.hpp include/Socket.hpp include/Channel.hpp include/Authentification.hpp include/Server_utils.hpp include/numericReplies.hpp
 headers_bonus = bonus/Bot_bonus.hpp include/numericReplies.hpp include/Socket.hpp
 name = ircserv
-name_bonus = irc_bot
+name_bonus = ircserv_bot
 
 %.o : %.cpp
 	${cc} $(flags) -c $< -o $@

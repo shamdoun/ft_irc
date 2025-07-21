@@ -79,7 +79,8 @@ public:
 	void								displayMode(Client &c, Channel channel);
 	void								Topic_Handler(std::vector<std::string> &params, Client &c);
 	std::string							getNickNameById(size_t id);
-	size_t 								getIdByName(std::string &nickName) const;	
+	size_t 								getIdByName(std::string &nickName) const;
+	void								broadCastMessage(std::string &message, Client &c);
 };
 
 int							identifyCommand(std::string cmd);

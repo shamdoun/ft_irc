@@ -24,11 +24,12 @@ static void parseArgs(std::string &ip, std::string port)
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc != 5)
     {
         std::cerr << "Insuficent number of args!\n";
         return (1);
     }
+    std::string botIdentifier(argv[4]);
     std::string ip(argv[1]);
     parseArgs(ip, std::string(argv[2]));
     signal(SIGINT, sigHandler);
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
     std::string password(argv[3]);
     try
     {
-        Bot bot(ip, port, password);
+        Bot bot(ip, port, password, botIdentifier);
         bot.createBot();
     }
     catch (std::exception &e)

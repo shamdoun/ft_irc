@@ -16,7 +16,7 @@ Bot::~Bot()
     
 }
 
-Bot::Bot(std::string _ip, unsigned short port, std::string _password):_ip(_ip),_port(port),_password(_password), _nick("bot"), _user("bot bot * bot")
+Bot::Bot(std::string _ip, unsigned short port, std::string _password, std::string _nick):_ip(_ip),_port(port),_password(_password), _nick(_nick), _user("bot bot * bot")
 {
 }
 
@@ -106,11 +106,16 @@ void Bot::run()
         ret = recv(_clientSocket.getSocketFd(), _buffer, sizeof(_buffer), 0);
         if (ret < 0)
             std::cerr << "failed to receive data from server!\n";
+        if (!ret)
+        {
+            Bot::quit();
+            exit(0);
+        }
         if (std::strstr(_buffer, "Welcome") && !registered)
             registered = true;
         else if(registered)
         {
-            if (std::strstr(_buffer, "PRIVMSG"))
+            if (std::strstr(_buffer, "PRIVMSG") && !std::strstr(_buffer, "[SYSTEM]"))
             {
                 handleBotRequest(extractMessage(std::string(_buffer)));
             }
