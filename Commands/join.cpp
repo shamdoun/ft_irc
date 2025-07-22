@@ -5,9 +5,17 @@
 
 Channel &Server::GetOrCreateChannel(const std::string &channelName)
 {
+	std::string channelToLower = channelName;
+
+	for (size_t i = 0; i < channelToLower.length(); i++)
+		channelToLower[i] = irc_tolower(channelToLower[i]);
+	
 	for (size_t i = 0; i < _channels.size(); ++i)
 	{
-		if (_channels[i].getChannelName() == channelName)
+		std::string Channel_low = _channels[i].getChannelName();
+		for (size_t i = 0; i < Channel_low.length(); i++)
+			Channel_low[i] = irc_tolower(Channel_low[i]);
+		if (Channel_low == channelToLower)
 			return _channels[i];
 	}
 	_channels.push_back(Channel(channelName));

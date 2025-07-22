@@ -35,7 +35,7 @@ bool isValidUsername(const std::string& username)
     return (true);
 }
 
-char irc_tolower(char c) {
+char Server::irc_tolower(char c) {
     if (c >= 'A' && c <= 'Z')
         return c + ('a' - 'A');
     switch (c) {
