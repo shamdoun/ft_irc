@@ -57,7 +57,7 @@ class Channel
 		int							handle_Password(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		int							handle_Limit(int flag, std::vector<std::string> &params, int	&current, int prms_count);
 		void						message_to_channel2(std::string &message, Client &c);
-		std::string					getChannelMode(void);
+		std::string					getChannelMode(Server &server);
 		time_t						getCreationTime();
 		time_t						getTopicUpdateTime();
 		void						updateCreationTime();

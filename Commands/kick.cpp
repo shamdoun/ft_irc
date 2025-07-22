@@ -12,6 +12,7 @@ void Channel::RemoveOperator(size_t id, Client &c)
 	{
 		if (it_opp->getId() == id)
 		{
+			std::cout << "removing from _operators\n";
 			_Operators.erase(it_opp);
 			break;
 		}
@@ -21,6 +22,7 @@ void Channel::RemoveOperator(size_t id, Client &c)
 	{
 		if (it_cl->getId() == id)
 		{
+			std::cout << "removing from _clients\n";
 			_Clients.erase(it_cl);
 			break;
 		}
@@ -30,6 +32,7 @@ void Channel::RemoveOperator(size_t id, Client &c)
 		Channel::SetterKickFlag(true);
 		_Operators.push_back(_Clients[0]);
 		std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), "o", _Clients[0].getNickName());
+		std::cout << "sending update to channel...\n";
 		message_to_channel2(Message, c);
 	}
 }

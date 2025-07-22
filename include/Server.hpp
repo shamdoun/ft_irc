@@ -76,11 +76,12 @@ public:
     void								Mode(std::vector<std::string> &params, Client &c);
     void								Invite_Command(std::vector<std::string> &params, Client &c);
 	int									initialParsingMode(std::vector<std::string> &params, Client &c);
-	void								displayMode(Client &c, Channel channel);
+	void								displayMode(Client &c, Channel channel, Server &server);
 	void								Topic_Handler(std::vector<std::string> &params, Client &c);
 	std::string							getNickNameById(size_t id);
 	size_t 								getIdByName(std::string &nickName) const;
 	void								broadCastMessage(std::string &message, std::string old, Client &c);
+	Client								&get_clientFound( std::string &nickName, size_t &found);
 };
 
 int							identifyCommand(std::string cmd);

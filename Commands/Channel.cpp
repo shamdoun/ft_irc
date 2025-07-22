@@ -227,7 +227,7 @@ void	Channel::message_to_channel2(std::string &message, Client &c)
 		send(it->getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
 }
 
-std::string Channel::getChannelMode(void)
+std::string Channel::getChannelMode(Server &server)
 {
 	std::string mode = "";
 	if (this->Invite)
@@ -243,7 +243,7 @@ std::string Channel::getChannelMode(void)
 		mode += "o";
 		for (size_t i = 0; i < this->_Operators.size(); i++)
 		{
-			mode += " @" + this->_Operators[i].getNickName();
+			mode += " @" + server.getNickNameById(this->_Operators[i].getId());
 			if (i < this->_Operators.size() - 1)
 				mode += " ";
 		}

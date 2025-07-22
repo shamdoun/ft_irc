@@ -76,7 +76,7 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c, Ser
 			}
 			if (Ret == -2)
 			{
-				std::string err = ERR_INVALIDMODEPARM(c.getUserName(), this->getChannelName(), getChannelMode(), params[0][j]);
+				std::string err = ERR_INVALIDMODEPARM(c.getUserName(), this->getChannelName(), getChannelMode(server), params[0][j]);
 				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 				return;
 			}
@@ -102,7 +102,14 @@ void	Channel::handleModeCommand(std::vector<std::string> &params, Client &c, Ser
 				return;
 			}
 			std::string targetNick = params[current++];
-			size_t TargetId = server.get_client(targetNick).getId();
+			size_t TargetId = 0;
+			Client TargetCLient = server.get_clientFound(targetNick, TargetId);
+			if (!TargetId)
+			{
+				std::string err = ERR_NOSUCHNICK(c.getNickName() ,targetNick);
+				send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
+				return;
+			}
 			if (!this->Is_ClientInChannel_2(TargetId))
 			{
 				std::string err = ERR_USERNOTINCHANNEL(targetNick, this->getChannelName());
@@ -177,13 +184,13 @@ int	Server::initialParsingMode(std::vector<std::string> &params, Client &c)
 	return (0);
 }
 
-void Server::displayMode(Client &c, Channel channel)
+void Server::displayMode(Client &c, Channel channel, Server &server)
 {
 	std::ostringstream oss;
 	oss << channel.getCreationTime();
 	std::string timeStr = oss.str();
 	std::string Message;
-	Message = RPL_CHANNELMODEIS(c.getNickName(), channel.getChannelName(), channel.getChannelMode());
+	Message = RPL_CHANNELMODEIS(c.getNickName(), channel.getChannelName(), channel.getChannelMode(server));
 	send(c.getClientSocket().getSocketFd(), Message.c_str(), Message.size(), 0);
 	std::string timeMsg = RPL_CREATIONTIME(c.getNickName(), channel.getChannelName(), timeStr);
 	send(c.getClientSocket().getSocketFd(), timeMsg.c_str(), timeMsg.size(), 0);
@@ -206,7 +213,7 @@ void Server::Mode(std::vector<std::string> &params, Client &c)
 		Channel &channel = get_channel(params[1]);
 		if (params.size() == 2)
 		{
-			displayMode(c, channel);
+			displayMode(c, channel, *this);
 			return;
 		}
 		params.erase(params.begin());

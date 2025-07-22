@@ -11,8 +11,8 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	std::string channelName = params[1];
-	std::string nickName = params[2];
+	std::string channelName = params[2];
+	std::string nickName = params[1];
 	if (!has_theChannel(channelName))
 	{
 		std::string err = ERR_NOSUCHCHANNEL(channelName);

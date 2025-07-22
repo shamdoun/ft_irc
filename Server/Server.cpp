@@ -117,26 +117,32 @@ void Server::receiveData(int i)
 	}
 	if (!bytes)
 	{
-		// std::string Nickname = c->getNickName();
+		size_t id = c->getId();
 
-		// std::vector<Channel> &channels = getChannels();
-		// std::vector<Channel>::iterator it_Chan;
-		// for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
-		// {
-		// 	Channel &channel = *it_Chan;
-		// 	if (channel.Is_OperatorInChannel(*c))
-		// 	{
-		// 		channel.RemoveOperator(Nickname, *c);
-		// 		std::string message = RPL_QUIT(Nickname, "Client has disconnected");
-		// 		channel.message_to_channel2(message, *c);
-		// 	}
-		// 	else if (channel.Is_ClientInChannel(*c))
-		// 	{
-		// 		channel.RemoveClient(Nickname);
-		// 		std::string message = RPL_QUIT(Nickname, "Client has disconnected");
-		// 		channel.message_to_channel2(message, *c);
-		// 	}
-		// }
+		std::vector<Channel> &channels = getChannels();
+		std::vector<Channel>::iterator it_Chan;
+		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		{
+			Channel &channel = *it_Chan;
+			if (channel.Is_OperatorInChannel(*c))
+			{
+				std::cout << "removimg operator " << c->getNickName() << std::endl;
+				std::cout << "Size before " << channel.getOpperators().size() << std::endl;
+				channel.RemoveOperator(id, *c);
+				std::cout << "Size after " << channel.getOpperators().size() << std::endl;
+				std::string message = RPL_QUIT(c->getNickName(), "Client has disconnected");
+				channel.message_to_channel2(message, *c);
+			}
+			else if (channel.Is_ClientInChannel(*c))
+			{
+				std::cout << "removimg Client " << c->getNickName() << std::endl;
+				std::cout << "Size before " << channel.getClients().size() << std::endl;
+				channel.RemoveClient(id);
+				std::cout << "Size after " << channel.getClients().size() << std::endl;
+				std::string message = RPL_QUIT(c->getNickName(), "Client has disconnected");
+				channel.message_to_channel2(message, *c);
+			}
+		}
 		std::cout << "Client <" << GREEN_P << c->getId() << GREEN_S << "> has gracefully closed the connection" << std::endl;
 		close(_pfds[i].fd);
 		std::vector<Client>::iterator it = find(_allClients.begin(), _allClients.end(), (*c));
@@ -195,7 +201,7 @@ void Server::acceptConnection()
 		throw std::runtime_error("failed to make a file non-blocking");
 	c.setIpAddress(inet_ntoa(c.getSocketAddress().sin_addr));
 	Client newClient(c);
-	newClient.setId(_allClients.size() + 1);
+	newClient.setId(fd);
 	_allClients.push_back(newClient);
 	pfd.fd = fd;
 	pfd.events = POLL_IN;

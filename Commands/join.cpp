@@ -63,6 +63,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 		return;
 	}
 	Channel &channel = GetOrCreateChannel(channelName);
+	std::cout << "channel size "<< channel.getClientSize_inChannel() << std::endl;
 	bool isNewChannel = false;
 	if (channel.getClientSize_inChannel() == 0)
 		isNewChannel = true;
@@ -108,6 +109,32 @@ void Server::join(std::vector<std::string> &params, Client &c)
 		std::string err = ERR_NEEDMOREPARAMS(params[0]);
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
+	}
+	if (params.size() == 2 && params[1] == "0") //* todo
+	{
+		size_t id = c.getId();
+		std::vector<Channel> &channels = getChannels();
+		std::vector<Channel>::iterator it_Chan;
+
+		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		{
+			Channel &channel = *it_Chan;
+			if (channel.Is_OperatorInChannel(c))
+			{
+				std::cout << "removimg operator " << c.getNickName() << std::endl;
+				channel.RemoveOperator(id, c);
+				std::string message = RPL_QUIT(c.getNickName(), "Client has disconnected");
+				channel.message_to_channel2(message, c);
+			}
+			else if (channel.Is_ClientInChannel(c))
+			{
+				std::cout << "removimg Client " << c.getNickName() << std::endl;
+				channel.RemoveClient(id);
+				std::string message = RPL_QUIT(c.getNickName(), "Client has disconnected");
+				channel.message_to_channel2(message, c);
+			}
+		}
+		return ;
 	}
 	std::string channelsNames = params[1];
 	std::string channelsPasswords = "";

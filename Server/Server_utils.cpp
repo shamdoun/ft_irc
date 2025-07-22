@@ -51,6 +51,20 @@ Client &Server::get_client( std::string &nickName)
 	return _allClients[0];
 }
 
+Client &Server::get_clientFound( std::string &nickName, size_t &found)
+{
+	std::vector<Client>::iterator it = _allClients.begin();
+	for ( ;it != _allClients.end(); it++)
+	{
+		if (it->getNickName() == nickName)
+		{
+			found = getIdByName(nickName);
+			return (*it);
+		}
+	}
+	return _allClients[0];
+}
+
 
 void Server::message_to_Allclients( std::string &channelName, const std::string &message)
 {
