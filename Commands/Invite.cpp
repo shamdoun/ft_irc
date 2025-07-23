@@ -45,8 +45,9 @@ void	Server::Invite_Command(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	std::cout << targetClient.getId() << "<=== " << std::endl;
 	channel.addAsInvited(targetClient);
 	std::string message = RPL_INVITING(c.getNickName(), channel.getChannelName(), targetClient.getNickName());
-	send(targetClient.getClientSocket().getSocketFd(), message.c_str(), message.size(), 0); //! should i send to client ? 
+	send(c.getClientSocket().getSocketFd(), message.c_str(), message.size(), 0);
+	std::string message2 = MSG_INVITE(c.getNickName(), c.getUserName(), targetClient.getNickName(), channel.getChannelName());
+	send(targetClient.getClientSocket().getSocketFd(), message2.c_str(), message2.size(), 0);
 }
