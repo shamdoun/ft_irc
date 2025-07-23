@@ -123,8 +123,20 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	}
 	else if (c->getIsAuthenticated())
 	{
-		std::string msg = "[SYSTEM] " + oldNick + " changed his nickname to " + params[1];
-		broadCastMessage(msg, oldNick, *c);
+		// std::string msg = "[SYSTEM] " + oldNick + " changed his nickname to " + params[1];
+		// broadCastMessage(msg, oldNick, *c);
+		std::string message = RPL_NICKCHANGE(oldNick, c->getUserName(), c->getClientSocket().getIpAddress(), c->getNickName());
+
+		std::vector<Channel> &channels = getChannels();
+		std::vector<Channel>::iterator it_Chan;
+		for (it_Chan = channels.begin(); it_Chan != channels.end(); it_Chan++)
+		{
+			Channel &channel = *it_Chan;
+			if (channel.Is_OperatorInChannel(*c) ||channel.Is_ClientInChannel(*c))
+			{
+				channel.message_to_channel2(message, *c);
+			}
+		}
 	}
 }
 

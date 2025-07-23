@@ -57,3 +57,4 @@
 #define RPL_CHANNELMODEIS(nickName, channelName, modes) ": 324 " + nickName + " " + channelName + " " + modes + POSTFIX
 #define RPL_CREATIONTIME(nickName, channelName, time) ": 329 " + nickName + " " + channelName + " " + time + POSTFIX
 #define RPL_TOPICWHOTIME(nickName, channelName, who, time) ": 333 " + nickName + " " + channelName + " " + who + " " + time + POSTFIX
+#define RPL_NICKCHANGE(oldnick, username, ip, newnick)":" + oldnick + "!" + username + "@" + ip + " NICK :" + newnick + POSTFIX

@@ -25,4 +25,4 @@ If the user is already on the target channel, the server MUST reject the command
 
 When the invite is successful, the server MUST send a RPL_INVITING numeric to the command issuer, and an INVITE message, with the issuer as <source>, to the target user. Other channel members SHOULD NOT be notified.
 
-RPL_INVITING (341) 
+RPL_INVITING (341)
