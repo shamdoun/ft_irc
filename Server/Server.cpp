@@ -111,7 +111,6 @@ void Server::receiveData(int i)
 		_buffer[bytes] = '\0';
 		message += _buffer;
 		std::memset(_buffer, 0, sizeof(_buffer));
-		// if (message.find("\n") != std::string::npos)
 		if (hasTrailingCFLF(message))
 			break ;
 	}

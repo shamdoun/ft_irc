@@ -53,17 +53,13 @@ int Server::nickNameAlreadyExists(std::string const &nick)
 	std::string nickLower = nick;
 
 	for (size_t i = 0; i < nickLower.length(); i++)
-	{
 		nickLower[i] = irc_tolower(nickLower[i]);
-	}
 	it = _allClients.begin();
 	while (it != _allClients.end())
 	{
 		std::string clientNick = it->getNickName();
 		for (size_t i = 0; i < clientNick.length(); i++)
-		{
 			clientNick[i] = irc_tolower(clientNick[i]);
-		}
 		if(clientNick == nickLower)
 			return (1);
 		++it;
@@ -75,17 +71,11 @@ void Server::handlePassCommand(std::vector<std::string> &params, Client *c)
 {
 	std::string err;
 	if (c->getIsRegistered())
-	{
         sendError(ERR_ALREADYREGISTERED(c->getNickName()), c);
-	}
 	else if (params.size() < 2)
-	{
         sendError(ERR_NEEDMOREPARAMS(params[0]), c);
-	}
 	else if (params[1] != _password)
-	{
         sendError(ERR_PASSWDMISMATCH(c->getNickName()), c);
-	}
 	else
 	{
 		c->setIsRegistered(true);

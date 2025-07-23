@@ -25,14 +25,13 @@ Channel &Server::GetOrCreateChannel(const std::string &channelName)
 bool Server::valid_joining_channel(Channel &channel, Client &c, std::string password)
 {
 	std::string Client_NickName = c.getNickName();
-	// std::cout << "Client Nickname: " << Client_NickName << std::endl;
 	if (channel.getterLimit() <=  channel.getClientSize_inChannel() && channel.getterLimit())
 	{
 		std::string err_join = ERR_CHANNELISFULL(c.getNickName(), channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
 		return false;
 	}
-	else if (channel.getterInvite() && !channel.Is_Invited(c)) //? i changed from client nickname to c 
+	else if (channel.getterInvite() && !channel.Is_Invited(c))
 	{
 		std::string err_join = ERR_INVITEONLYCHAN(c.getNickName(), channel.getChannelName());
 		send(c.getClientSocket().getSocketFd(), err_join.c_str(), err_join.size(), 0);
@@ -71,7 +70,6 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 		return;
 	}
 	Channel &channel = GetOrCreateChannel(channelName);
-	std::cout << "channel size "<< channel.getClientSize_inChannel() << std::endl;
 	bool isNewChannel = false;
 	if (channel.getClientSize_inChannel() == 0)
 		isNewChannel = true;
@@ -93,8 +91,7 @@ void Server::join_each_channel(std::string &channelName, Client &c, std::string 
 	std::string joinMsg = RPL_JOINMSG(c.getAlteredHost(), c.getClientSocket().getIpAddress(), newchannelName);
 	send(c.getClientSocket().getSocketFd(), joinMsg.c_str(), joinMsg.size(), 0);
 	std::string nickname = c.getNickName();
-	std::cout << "nickname is : " << nickname << std::endl;
-	channel.RemoveFromInvite(c);  //? i changed from nickname to c
+	channel.RemoveFromInvite(c);
 	Server::message_to_Channel(newchannelName, joinMsg, c);
 	Server::SendChannelInfos(newchannelName, c);
 }
@@ -118,7 +115,7 @@ void Server::join(std::vector<std::string> &params, Client &c)
 		send(c.getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 		return;
 	}
-	if (params.size() == 2 && params[1] == "0") //* todo
+	if (params.size() == 2 && params[1] == "0")
 	{
 		size_t id = c.getId();
 		std::vector<Channel> &channels = getChannels();

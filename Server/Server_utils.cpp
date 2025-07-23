@@ -95,10 +95,8 @@ void Server::SendChannelInfos(std::string &channelName, Client &c)
 	{
 		if (channel.Is_OperatorInChannel(clients[i]))
 			listOfClients += "@" + getNickNameById(clients[i].getId());
-			// listOfClients += "@" + clients[i].getNickName();
 		else
 			listOfClients += getNickNameById(clients[i].getId());
-			// listOfClients += clients[i].getNickName();
 		if (i < clients.size() - 1)
 			listOfClients += " ";
 	}

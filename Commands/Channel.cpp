@@ -288,8 +288,7 @@ int	Channel::addAsInvited(Client &client)
 
 int Channel::Is_Invited(Client &client) 
 {
-	std::vector<Client>::iterator it = _Invited.begin();
-	for (; it != _Invited.end(); it++)
+	for (std::vector<Client>::iterator it = _Invited.begin(); it != _Invited.end(); it++)
 	{
 		if (it->getId() == client.getId()) 
 			return 1;
