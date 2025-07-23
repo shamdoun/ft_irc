@@ -3,10 +3,7 @@
 
 void sendError(std::string err, Client *c)
 {
-		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-		{
-			std::cerr << "failed to send " << err << std::endl;
-		}
+		send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0);
 }
 
 int isValidNickname(std::string const &nick)

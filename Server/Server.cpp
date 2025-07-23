@@ -96,15 +96,15 @@ void Server::receiveData(int i)
 	std::memset(_buffer, 0, sizeof(_buffer));
 	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
 	{
-		if (bytes == BUFFER_SIZE && !hasTrailingCFLF(message))
-		{
-			message[message.size() - 1] = '\n';
-			message[message.size() - 2] = '\r';
-		}
-		if (bytes > BUFFER_SIZE)
+		// if (bytes == BUFFER_SIZE && !hasTrailingCFLF(message))
+		// {
+		// 	message[message.size() - 1] = '\n';
+		// 	message[message.size() - 2] = '\r';
+		// }
+		if (bytes >= BUFFER_SIZE)
 		{
 			sendError(ERR_INPUTTOOLONG(c->getNickName()), c);
-			std::cout << "Buffer overflow detected, message too long!" << std::endl;
+			// std::cout << "Buffer overflow detected, message too long!" << std::endl;
 			memset(_buffer, 0, sizeof(_buffer));
 			break;
 		}
@@ -125,10 +125,10 @@ void Server::receiveData(int i)
 			Channel &channel = *it_Chan;
 			if (channel.Is_OperatorInChannel(*c))
 			{
-				std::cout << "removimg operator " << c->getNickName() << std::endl;
-				std::cout << "Size before " << channel.getOpperators().size() << std::endl;
+				// std::cout << "removimg operator " << c->getNickName() << std::endl;
+				// std::cout << "Size before " << channel.getOpperators().size() << std::endl;
 				channel.RemoveOperator(id, *c);
-				std::cout << "Size after " << channel.getOpperators().size() << std::endl;
+				// std::cout << "Size after " << channel.getOpperators().size() << std::endl;
 				std::string message = RPL_QUIT(c->getNickName(), "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}

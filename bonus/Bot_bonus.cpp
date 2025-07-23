@@ -115,7 +115,7 @@ void Bot::run()
             registered = true;
         else if(registered)
         {
-            if (std::strstr(_buffer, "PRIVMSG") && !std::strstr(_buffer, "[SYSTEM]"))
+            if (std::strstr(_buffer, "PRIVMSG"))
             {
                 handleBotRequest(extractMessage(std::string(_buffer)));
             }

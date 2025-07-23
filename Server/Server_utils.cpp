@@ -146,9 +146,7 @@ void handleUnkownCommand(std::string cmd, Client *c)
 {
     std::string err = ERR_UNKNOWNCOMMAND(cmd);
     if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)
-    {
-            std::cerr << "failed to send " << err << std::endl;
-    }
+		return ;
 }
 
 std::string extractMessage(std::string m)

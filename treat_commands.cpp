@@ -9,9 +9,7 @@ void Server::Commands(std::vector<std::string> &params, Client *c)
 	{   
 		err = ERR_NOTREGISTERED(c->getNickName());
 		if (send(c->getClientSocket().getSocketFd(), err.c_str(), err.size(), 0) < 1)   
-		{    
-			std::cerr << "failed to send " << err << std::endl;
-		}   return ;
+			return ;
 	} 
 	if (c == NULL)
 		return;
