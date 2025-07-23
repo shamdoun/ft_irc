@@ -32,32 +32,15 @@ bool isValidUsername(const std::string& username)
     return (true);
 }
 
-char Server::irc_tolower(char c) {
-    if (c >= 'A' && c <= 'Z')
-        return c + ('a' - 'A');
-    switch (c) {
-        case '[': return '{';
-        case ']': return '}';
-        case '\\': return '|';
-		case '~': return '^';
-        default: return c;
-    }
-}
-
 int Server::nickNameAlreadyExists(std::string const &nick)
 {
 	std::vector<Client>::iterator it;
-	std::string nickLower = nick;
 
-	for (size_t i = 0; i < nickLower.length(); i++)
-		nickLower[i] = irc_tolower(nickLower[i]);
 	it = _allClients.begin();
 	while (it != _allClients.end())
 	{
 		std::string clientNick = it->getNickName();
-		for (size_t i = 0; i < clientNick.length(); i++)
-			clientNick[i] = irc_tolower(clientNick[i]);
-		if(clientNick == nickLower)
+		if(clientNick == nick)
 			return (1);
 		++it;
 	}
@@ -120,8 +103,6 @@ void Server::handleNickNameCommand(std::vector<std::string> &params, Client *c)
 	}
 	else if (c->getIsAuthenticated())
 	{
-		// std::string msg = "[SYSTEM] " + oldNick + " changed his nickname to " + params[1];
-		// broadCastMessage(msg, oldNick, *c);
 		std::string message = RPL_NICKCHANGE(oldNick, c->getUserName(), c->getClientSocket().getIpAddress(), c->getNickName());
 
 		std::vector<Channel> &channels = getChannels();

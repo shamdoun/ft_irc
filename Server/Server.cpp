@@ -96,15 +96,9 @@ void Server::receiveData(int i)
 	std::memset(_buffer, 0, sizeof(_buffer));
 	while ((bytes = recv(_pfds[i].fd, _buffer, sizeof(_buffer), 0)) != 0)
 	{
-		// if (bytes == BUFFER_SIZE && !hasTrailingCFLF(message))
-		// {
-		// 	message[message.size() - 1] = '\n';
-		// 	message[message.size() - 2] = '\r';
-		// }
 		if (bytes >= BUFFER_SIZE)
 		{
 			sendError(ERR_INPUTTOOLONG(c->getNickName()), c);
-			// std::cout << "Buffer overflow detected, message too long!" << std::endl;
 			memset(_buffer, 0, sizeof(_buffer));
 			break;
 		}
@@ -125,19 +119,13 @@ void Server::receiveData(int i)
 			Channel &channel = *it_Chan;
 			if (channel.Is_OperatorInChannel(*c))
 			{
-				// std::cout << "removimg operator " << c->getNickName() << std::endl;
-				// std::cout << "Size before " << channel.getOpperators().size() << std::endl;
 				channel.RemoveOperator(id, *c);
-				// std::cout << "Size after " << channel.getOpperators().size() << std::endl;
 				std::string message = RPL_QUIT(c->getNickName(), "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}
 			else if (channel.Is_ClientInChannel(*c))
 			{
-				std::cout << "removimg Client " << c->getNickName() << std::endl;
-				std::cout << "Size before " << channel.getClients().size() << std::endl;
 				channel.RemoveClient(id);
-				std::cout << "Size after " << channel.getClients().size() << std::endl;
 				std::string message = RPL_QUIT(c->getNickName(), "Client has disconnected");
 				channel.message_to_channel2(message, *c);
 			}
@@ -298,7 +286,7 @@ void Server::parseParams(std::vector<std::string> &params, Client *c)
 	}
 }
 
-std::string							Server::getNickNameById(size_t id)
+std::string	Server::getNickNameById(size_t id)
 {
 	for (std::vector<Client>::iterator it = _allClients.begin(); it != _allClients.end(); it++)
 	{
@@ -308,7 +296,7 @@ std::string							Server::getNickNameById(size_t id)
 	return "";
 }
 
-size_t 								Server::getIdByName(std::string &nickName) const
+size_t	Server::getIdByName(std::string &nickName) const
 {
 	for (std::vector<Client>::const_iterator it = _allClients.begin(); it != _allClients.end(); it++)
 	{

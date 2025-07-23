@@ -12,7 +12,6 @@ void Channel::RemoveOperator(size_t id, Client &c)
 	{
 		if (it_opp->getId() == id)
 		{
-			std::cout << "removing from _operators\n";
 			_Operators.erase(it_opp);
 			break;
 		}
@@ -22,7 +21,6 @@ void Channel::RemoveOperator(size_t id, Client &c)
 	{
 		if (it_cl->getId() == id)
 		{
-			std::cout << "removing from _clients\n";
 			_Clients.erase(it_cl);
 			break;
 		}
@@ -32,7 +30,6 @@ void Channel::RemoveOperator(size_t id, Client &c)
 		Channel::SetterKickFlag(true);
 		_Operators.push_back(_Clients[0]);
 		std::string Message = RPL_UMODEIS(c.getNickName(), this->getChannelName(), "o", _Clients[0].getNickName());
-		std::cout << "sending update to channel...\n";
 		message_to_channel2(Message, c);
 	}
 }
@@ -119,7 +116,6 @@ void Server::kick_from_channel(std::vector<std::string> &params, Client &c)
 		return ;
 	}
 	std::string clients_to_kick = params[2];
-	std::cout << "clients_to_kick: " << clients_to_kick << std::endl;
 	std::vector<std::string> clients_need_ToKick  = splitBy_delimeter(clients_to_kick, ',');
 	for (size_t i = 0; i < clients_need_ToKick.size(); i++)
 	{

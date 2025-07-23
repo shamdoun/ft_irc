@@ -82,7 +82,6 @@ public:
 	size_t 								getIdByName(std::string &nickName) const;
 	void								broadCastMessage(std::string &message, std::string old, Client &c);
 	Client								&get_clientFound( std::string &nickName, size_t &found);
-	char								irc_tolower(char c);
 };
 
 int							identifyCommand(std::string cmd);

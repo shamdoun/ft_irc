@@ -4,18 +4,10 @@
 #include "../include/Channel.hpp"
 
 Channel &Server::GetOrCreateChannel(const std::string &channelName)
-{
-	std::string channelToLower = channelName;
-
-	for (size_t i = 0; i < channelToLower.length(); i++)
-		channelToLower[i] = irc_tolower(channelToLower[i]);
-	
+{	
 	for (size_t i = 0; i < _channels.size(); ++i)
 	{
-		std::string Channel_low = _channels[i].getChannelName();
-		for (size_t i = 0; i < Channel_low.length(); i++)
-			Channel_low[i] = irc_tolower(Channel_low[i]);
-		if (Channel_low == channelToLower)
+		if (_channels[i].getChannelName() == channelName)
 			return _channels[i];
 	}
 	_channels.push_back(Channel(channelName));
@@ -126,14 +118,12 @@ void Server::join(std::vector<std::string> &params, Client &c)
 			Channel &channel = *it_Chan;
 			if (channel.Is_OperatorInChannel(c))
 			{
-				std::cout << "removimg operator " << c.getNickName() << std::endl;
 				channel.RemoveOperator(id, c);
 				std::string message = RPL_QUIT(c.getNickName(), "Client has disconnected");
 				channel.message_to_channel2(message, c);
 			}
 			else if (channel.Is_ClientInChannel(c))
 			{
-				std::cout << "removimg Client " << c.getNickName() << std::endl;
 				channel.RemoveClient(id);
 				std::string message = RPL_QUIT(c.getNickName(), "Client has disconnected");
 				channel.message_to_channel2(message, c);

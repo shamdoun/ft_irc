@@ -33,6 +33,8 @@ Bot &Bot::operator=(const Bot &other)
         _clientSocket = other._clientSocket;
         _port = other._port;
         _ip = other._ip;
+        _nick = other._nick;
+        _user = other._user;
     }
     return (*this);
 }

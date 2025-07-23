@@ -65,7 +65,7 @@ class Channel
 		int							addAsInvited(Client &client);
 		int							Is_Invited(Client &client);
 		std::string 				WhoUpdatedGetter(void);
-		void						WhoUpdatedSetter(std::string WhoChandedstr); //^ i should change it to saving the id or the client class not the nickname
+		void						WhoUpdatedSetter(std::string WhoChandedstr);
 		void						RemoveFromInvite(Client &client);
 		bool						isAllDigits(const std::string& str);
 	};
